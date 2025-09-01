@@ -1,5 +1,5 @@
 import Link from "next/link";
 
 export default function HomePage() {
-  return <main className=""></main>;
+  return <main className="h-screen w-full"></main>;
 }
