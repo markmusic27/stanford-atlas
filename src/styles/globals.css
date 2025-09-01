@@ -36,3 +36,7 @@
   --radius-md: 20px;
   --radius-lg: 24px;
 }
+
+@utility font-default {
+  font-weight: 600;
+}
