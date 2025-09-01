@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
-      <body className="bg-primary-2">{children}</body>
+      <body className="bg-primary-2 font-light">{children}</body>
     </html>
   );
 }
