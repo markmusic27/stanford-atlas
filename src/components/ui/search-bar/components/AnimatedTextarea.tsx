@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 interface AnimatedTextareaProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: (value: string) => void;
+  name?: string;
   className?: string;
 }
 
@@ -21,7 +21,7 @@ const placeholderTexts = [
 const AnimatedTextarea = ({
   value,
   onChange,
-  onSubmit,
+  name,
   className = "",
 }: AnimatedTextareaProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -88,6 +88,7 @@ const AnimatedTextarea = ({
         className={`text-primary-text placeholder-secondary-text-4 caret-text-cursor minimal-scrollbar max-h-[40vh] min-h-[24px] w-full resize-none bg-transparent text-[16px] outline-none`}
         autoComplete="off"
         aria-label="Search"
+        name={name}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={1}
@@ -98,7 +99,11 @@ const AnimatedTextarea = ({
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            onSubmit(value);
+            // Only submit if there is non-empty content
+            if (value.trim().length > 0) {
+              const form = (e.currentTarget as HTMLTextAreaElement).form;
+              form?.requestSubmit();
+            }
           }
         }}
         onInput={(e) => {
