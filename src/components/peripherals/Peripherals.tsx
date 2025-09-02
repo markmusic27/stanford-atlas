@@ -7,6 +7,7 @@ const Peripherals = () => {
       <PeripheralCard
         title={"Sign In"}
         onAction={async () => {
+          //  TODO: implement sign in later (USE CLERK)
           "use server";
           console.log("hello world");
         }}

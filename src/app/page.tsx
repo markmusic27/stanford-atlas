@@ -4,7 +4,8 @@ import SearchBar from "~/components/search-bar/SearchBar";
 export default function HomePage() {
   async function submitAction(formData: FormData) {
     "use server";
-    const query = String(formData.get("query") ?? "").trim();
+    const queryValue = formData.get("query");
+    const query = (typeof queryValue === "string" ? queryValue : "").trim();
     // TODO: implement your server-side logic with `query`
     console.log("Search submitted:", query);
   }

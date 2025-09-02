@@ -72,9 +72,7 @@ const CursorScale = ({
     };
 
     const ensureRaf = () => {
-      if (rafIdRef.current == null) {
-        rafIdRef.current = window.requestAnimationFrame(animate);
-      }
+      rafIdRef.current ??= window.requestAnimationFrame(animate);
     };
 
     const handlePointerEnter = () => {
