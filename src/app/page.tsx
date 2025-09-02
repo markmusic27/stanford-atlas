@@ -1,4 +1,5 @@
-import SearchBar from "~/components/ui/search-bar/SearchBar";
+import Peripherals from "~/components/peripherals/Peripherals";
+import SearchBar from "~/components/search-bar/SearchBar";
 
 export default function HomePage() {
   async function submitAction(formData: FormData) {
@@ -8,8 +9,14 @@ export default function HomePage() {
     console.log("Search submitted:", query);
   }
   return (
-    <main className="flex h-screen w-full items-center justify-center">
-      <SearchBar action={submitAction} />
+    <main className="relative h-screen w-full">
+      {/* Chat Window */}
+      <div className="mx-auto flex h-full w-full max-w-[800px] flex-col px-[16px]">
+        <div className="h-[200px]" /> {/* TEMPORARY */}
+        <SearchBar action={submitAction} />
+        <div className="h-[32px]" />
+        <Peripherals />
+      </div>
     </main>
   );
 }

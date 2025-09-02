@@ -1,4 +1,4 @@
-import Icon, { IconType } from "../../icons/Icon";
+import Icon, { IconType } from "../../ui/icons/Icon";
 
 enum SearchButtonState {
   Default,
