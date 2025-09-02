@@ -1,6 +1,7 @@
 "use client";
 
 import Icon, { IconType } from "../icons/Icon";
+import CursorShimmer from "../CursorShimmer";
 import { useState } from "react";
 
 const SearchBar = () => {
@@ -31,17 +32,19 @@ const SearchBar = () => {
       </div>
       {/* Spacer */}
       <div className="h-[28px] w-full" />
-      <div className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-center gap-[10px] transition-all duration-300 hover:scale-101">
-        <Icon
-          type={IconType.Plus}
-          width={12}
-          height={12}
-          className="text-secondary-text-5 block"
-        />
-        <p className="text-secondary-text-5 text-[15px] leading-none">
-          Add your major, interests, etc
-        </p>
-      </div>
+      <CursorShimmer strength={0.5} radius={90}>
+        <div className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-center gap-[10px] transition-all duration-300 hover:scale-101">
+          <Icon
+            type={IconType.Plus}
+            width={12}
+            height={12}
+            className="text-secondary-text-5 block"
+          />
+          <p className="text-secondary-text-5 text-[15px] leading-none">
+            Add your major, interests, etc
+          </p>
+        </div>
+      </CursorShimmer>
     </div>
   );
 };
