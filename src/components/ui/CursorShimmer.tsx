@@ -67,9 +67,7 @@ const CursorShimmer = ({
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       pendingPositionRef.current = { x, y };
-      if (rafIdRef.current == null) {
-        rafIdRef.current = window.requestAnimationFrame(flushPosition);
-      }
+      rafIdRef.current ??= window.requestAnimationFrame(flushPosition);
     };
 
     container.addEventListener("pointerenter", handlePointerEnter);
