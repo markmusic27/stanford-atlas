@@ -3,6 +3,7 @@
 import Icon, { IconType } from "../icons/Icon";
 import CursorShimmer from "../CursorShimmer";
 import { useState } from "react";
+import SearchButton, { SearchButtonState } from "./components/SearchButton";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -47,7 +48,14 @@ const SearchBar = () => {
           </div>
         </CursorShimmer>
 
-        <div className="h-[28px] w-[28px] bg-amber-600" />
+        <SearchButton
+          state={
+            query.trim().length > 0
+              ? SearchButtonState.Active
+              : SearchButtonState.Default
+          }
+          onClick={() => {}}
+        />
       </div>
     </div>
   );

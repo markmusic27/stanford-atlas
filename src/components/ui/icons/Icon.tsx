@@ -1,9 +1,11 @@
+import { ArrowUpIcon } from "./components/ArrowUp.icon";
 import { MagnifyingGlassIcon } from "./components/MagnifyingGlass.icon";
 import { PlusIcon } from "./components/Plus.icon";
 
 enum IconType {
   MagnifyingGlass,
   Plus,
+  ArrowUp,
 }
 
 export interface IconProps {
@@ -18,6 +20,8 @@ function getIconComponent(type: IconType) {
       return MagnifyingGlassIcon;
     case IconType.Plus:
       return PlusIcon;
+    case IconType.ArrowUp:
+      return ArrowUpIcon;
   }
 }
 
