@@ -1,5 +1,4 @@
 import PeripheralCard from "./components/PeripheralCard";
-import { redirect } from "next/navigation";
 
 const Peripherals = () => {
   return (
@@ -28,11 +27,8 @@ const Peripherals = () => {
       />
       <PeripheralCard
         title={"GitHub"}
-        onAction={async () => {
-          "use server";
-          console.log("hello world");
-          redirect("https://github.com/markmusic27/stanford-atlas");
-        }}
+        href="https://github.com/markmusic27/stanford-atlas"
+        target="_blank"
       />
     </div>
   );
