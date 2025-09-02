@@ -87,7 +87,12 @@ const CursorShimmer = ({
     };
   }, [disabled, strength, color]);
 
-  const containerClasses = ["relative", "isolate", "overflow-hidden", className]
+  const containerClasses = [
+    "relative",
+    "isolate",
+    "overflow-visible",
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 
