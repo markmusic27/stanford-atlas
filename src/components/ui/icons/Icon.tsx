@@ -1,7 +1,9 @@
 import { MagnifyingGlassIcon } from "./components/MagnifyingGlass.icon";
+import { PlusIcon } from "./components/Plus.icon";
 
 enum IconType {
-  MagnifyingGlass = "magnifying_glass",
+  MagnifyingGlass,
+  Plus,
 }
 
 export interface IconProps {
@@ -14,6 +16,8 @@ function getIconComponent(type: IconType) {
   switch (type) {
     case IconType.MagnifyingGlass:
       return MagnifyingGlassIcon;
+    case IconType.Plus:
+      return PlusIcon;
   }
 }
 
