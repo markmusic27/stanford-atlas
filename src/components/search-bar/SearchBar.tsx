@@ -39,7 +39,7 @@ const SearchBar = ({ action }: SearchBarProps) => {
       <div className="flex w-full flex-row items-center justify-between">
         <CursorShimmer strength={0.5} radius={90}>
           <Link
-            href="/context" // TODO: change to actual context page
+            href="/personalize"
             className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-center gap-[10px] transition-all duration-300 hover:scale-101"
           >
             <Icon

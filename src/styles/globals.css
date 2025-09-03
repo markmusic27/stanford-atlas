@@ -75,3 +75,8 @@ body {
   overflow: hidden;
   overscroll-behavior: none;
 }
+
+/* Enable momentum scrolling on iOS for scrollable containers TODO: perhaps remove */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}

@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <main className="relative h-[100dvh] w-full">
       {/* Chat Window */}
-      <div className="mx-auto flex h-full w-full max-w-[800px] flex-col px-[8px] md:px-[16px]">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[800px] flex-col px-[8px] md:px-[16px]">
         <div className="flex-1" />
         <img src="/brand/logo.svg" alt="logo" className="h-[40px]" />
         <div className="h-[10dvh] max-h-[95px] min-h-[40px]" />
