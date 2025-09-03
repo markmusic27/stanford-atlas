@@ -18,7 +18,6 @@ export default function PersonalizationPage() {
           title="Enable Course Memory Feature"
           isEnabled={false}
           description="This allows the Atlas AI to remember what courses you've taken, providing you with better guidance on which courses to take later."
-          onToggle={() => {}}
         />
       </div>
     </main>
