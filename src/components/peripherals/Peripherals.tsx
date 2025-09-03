@@ -2,7 +2,7 @@ import PeripheralCard from "./components/PeripheralCard";
 
 const Peripherals = () => {
   return (
-    <div className="flex flex-row justify-center gap-[6px]">
+    <div className="flex flex-row flex-wrap justify-center gap-[6px]">
       <PeripheralCard
         title={"Sign In"}
         onAction={async () => {

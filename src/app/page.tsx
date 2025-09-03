@@ -10,7 +10,7 @@ export default function HomePage() {
     console.log("Search submitted:", query);
   }
   return (
-    <main className="relative h-screen w-full">
+    <main className="relative h-[100dvh] w-full">
       {/* Chat Window */}
       <div className="mx-auto flex h-full w-full max-w-[800px] flex-col px-[8px] md:px-[16px]">
         <div className="flex-1" />

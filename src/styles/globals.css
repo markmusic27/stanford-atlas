@@ -64,3 +64,14 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
 }
+
+/* Prevent body scroll and rubber-banding on iOS */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
