@@ -21,6 +21,7 @@ export default function HomePage() {
         <Peripherals />
         <div className="flex-2" />
       </div>
+      {/* ADD COURSES LAST UPDATED... */}
     </main>
   );
 }

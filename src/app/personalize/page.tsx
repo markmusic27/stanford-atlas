@@ -1,5 +1,5 @@
 import Card from "~/components/ui/card/Card";
-import CustomTextarea from "~/components/ui/CustomTextArea";
+import CustomTextArea from "~/components/ui/CustomTextArea";
 
 export default function PersonalizationPage() {
   async function onUpdateAction(value: string) {
@@ -29,11 +29,7 @@ export default function PersonalizationPage() {
           What’s your major—or your best guess?
         </p>
         <div className="h-[12px]" />
-        <CustomTextarea
-          name="interests"
-          placeholder="ou’re interested in studying at Stanford here."
-          onUpdate={onUpdateAction}
-        />
+        <CustomTextArea placeholder="It doesn’t matter if you haven’t declared. Describe what you’re interested in studying at Stanford here." />
       </div>
     </main>
   );
