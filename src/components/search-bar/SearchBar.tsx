@@ -21,7 +21,7 @@ const SearchBar = ({ action }: SearchBarProps) => {
   return (
     <form
       action={action}
-      className="bg-primary-1 border-primary-9 w-full flex-col gap-[28px] rounded-lg border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
+      className="bg-primary-1 border-primary-9 w-full flex-col gap-[28px] rounded-[24px] border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
     >
       <div className="flex flex-row items-start justify-center gap-[10px]">
         <div className="pt-[5px]">
