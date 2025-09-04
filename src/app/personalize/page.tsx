@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PersonalizationField from "~/components/personalization-field/PersonalizationField";
 import Card from "~/components/ui/card/Card";
+import Logo from "~/components/ui/Logo";
 import SaveButton from "~/components/ui/SaveButton";
 
 export default function PersonalizationPage() {
@@ -13,11 +14,7 @@ export default function PersonalizationPage() {
       <div className="mx-auto flex h-full w-full max-w-[660px] flex-col px-[12px]">
         <div className="h-[8dvh] max-h-[80px] min-h-[30px]" />
         <Link href="/">
-          <img
-            src="/brand/logo.svg"
-            alt="logo"
-            className="mx-auto h-[40px] cursor-pointer transition-all duration-300 hover:scale-[1.01]"
-          />
+          <Logo />
         </Link>
         <div className="h-[6dvh] max-h-[60px] min-h-[20px]" />
         <p className="text-primary-text text-[22px]">Personalization</p>
