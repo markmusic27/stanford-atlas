@@ -5,35 +5,22 @@ import Icon, { IconType } from "~/components/ui/icons/Icon";
 
 interface PeripheralCardProps {
   title: string;
-  onAction?: (title: string) => Promise<void> | void;
+  onClick?: () => void;
   href?: string;
-  target?: "_self" | "_blank" | "_parent" | "_top";
 }
 
-const PeripheralCard = ({
-  title,
-  onAction,
-  href,
-  target = "_self",
-}: PeripheralCardProps) => {
-  const handleClick = () => {
-    if (href) {
-      if (target === "_blank") {
-        const newWindow = window.open(href, "_blank", "noopener,noreferrer");
-        if (newWindow) newWindow.opener = null;
-      } else {
-        window.location.assign(href);
-      }
-      return;
-    }
-    if (onAction) void onAction(title);
-  };
-
+const PeripheralCard = ({ title, onClick, href }: PeripheralCardProps) => {
   return (
     <CursorScale hoverScale={1.01} maxTranslate={1}>
       <div
         className="bg-primary-6/[0.7] flex h-[30px] cursor-pointer flex-row items-center gap-[4px] rounded-[10px] pr-[8px] pl-[10px]"
-        onClick={handleClick}
+        onClick={() => {
+          if (href) {
+            window.open(href, "_blank");
+          } else {
+            onClick?.();
+          }
+        }}
       >
         <Icon
           type={IconType.Slash}

@@ -8,10 +8,10 @@ import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
 
 interface SearchBarProps {
-  action: (formData: FormData) => Promise<void> | void;
+  onSubmit: (query: string) => void;
 }
 
-const SearchBar = ({ action }: SearchBarProps) => {
+const SearchBar = ({ onSubmit }: SearchBarProps) => {
   const [query, setQuery] = useState("");
   const iconClassName =
     query.trim().length > 0
@@ -20,7 +20,7 @@ const SearchBar = ({ action }: SearchBarProps) => {
 
   return (
     <form
-      action={action}
+      action={() => onSubmit(query)}
       className="bg-primary-1 border-primary-9 w-full flex-col gap-[28px] rounded-[24px] border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
     >
       <div className="flex flex-row items-start justify-center gap-[10px]">

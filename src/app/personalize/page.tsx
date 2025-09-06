@@ -3,12 +3,9 @@ import PersonalizationField from "~/components/personalization-field/Personaliza
 import Card from "~/components/ui/card/Card";
 import Logo from "~/components/ui/Logo";
 import SaveButton from "~/components/ui/SaveButton";
+import { usePageTransitionStore } from "~/store/page-transition.store";
 
 export default function PersonalizationPage() {
-  async function onUpdateAction(value: string) {
-    "use server";
-    console.log("Personalize onUpdate:", value);
-  }
   return (
     <main className="w-full">
       <div className="mx-auto flex h-full w-full max-w-[660px] flex-col px-[12px]">
