@@ -1,17 +1,26 @@
 "use client";
 
-import Link from "next/link";
 import Icon, { IconType } from "../ui/icons/Icon";
 import CursorShimmer from "../ui/CursorShimmer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
+import { usePageTransitionStore } from "~/store/page-transition.store";
+import { useRouter } from "next/navigation";
+import { TRANSITION_DURATION } from "~/lib/constants";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
 }
 
 const SearchBar = ({ onSubmit }: SearchBarProps) => {
+  const enqueue = usePageTransitionStore((state) => state.enqueue);
+  const dequeue = usePageTransitionStore((state) => state.dequeue);
+  const router = useRouter();
+
+  useEffect(() => {
+    dequeue();
+  }, [dequeue]);
   const [query, setQuery] = useState("");
   const iconClassName =
     query.trim().length > 0
@@ -38,8 +47,16 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
       <div className="h-[28px] w-full" />
       <div className="flex w-full flex-row items-center justify-between">
         <CursorShimmer strength={0.5} radius={90}>
-          <Link
-            href="/personalize"
+          <div
+            onClick={async () => {
+              enqueue();
+              await new Promise((resolve) =>
+                setTimeout(resolve, TRANSITION_DURATION),
+              );
+              router.push("/personalize");
+              await new Promise((resolve) => setTimeout(resolve, 50));
+              dequeue();
+            }}
             className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-center gap-[10px] transition-all duration-300 hover:scale-101"
           >
             <Icon
@@ -51,7 +68,7 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
             <p className="text-secondary-text-5 text-[15px] leading-none">
               Add your major, interests, etc.
             </p>
-          </Link>
+          </div>
         </CursorShimmer>
 
         <SearchButton

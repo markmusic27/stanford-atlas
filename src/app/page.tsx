@@ -1,4 +1,4 @@
-import ClientHomePage from "~/components/client-home-page/ClientHomePage";
+import ClientHomePage from "~/components/client-pages/ClientHomePage";
 
 export default function HomePage() {
   async function submitAction(formData: FormData) {

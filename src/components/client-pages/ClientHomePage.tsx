@@ -1,12 +1,26 @@
 "use client";
 
+import { usePageTransitionStore } from "~/store/page-transition.store";
 import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
+import { TRANSITION_DURATION } from "~/lib/constants";
+import { useFadeIn } from "~/hooks/useFadeIn";
 
 const ClientHomePage = () => {
+  const { opacity, transition } = useFadeIn(TRANSITION_DURATION);
+  const queuedTransition = usePageTransitionStore(
+    (state) => state.queuedTransition,
+  );
+
+  // Override opacity to 0 when queuedTransition is true
+  const currentOpacity = queuedTransition ? 0 : opacity;
+
   return (
-    <main className="relative h-[100dvh] w-full">
+    <main
+      className={`relative h-[100dvh] w-full transition-all duration-[${TRANSITION_DURATION}]`}
+      style={{ opacity: currentOpacity, transition }}
+    >
       {/* Chat Window */}
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[800px] flex-col px-[8px] md:px-[16px]">
         <div className="flex-1" />
