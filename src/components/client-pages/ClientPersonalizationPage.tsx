@@ -44,7 +44,8 @@ const ClientPersonalizationPage = () => {
         <div className="h-[8px]" />
         <p className="text-secondary-text-2 text-[16px]">
           More context on you leads to better course recommendations and
-          planning abilities. We don't store grades (nor will we ask for them).
+          planning abilities. We don&apos;t store grades (nor will we ask for
+          them).
         </p>
         <div className="h-[28px]" />
         <Card

@@ -6,7 +6,7 @@ const CustomSwitch = ({ className }: { className?: string }) => {
 
   return (
     <div
-      className={`relative flex h-[22px] w-[36px] cursor-pointer items-center rounded-full shadow-inner transition-all duration-200 ${enabled ? "bg-primary-9" : "bg-blue-500"} ${className || ""}`}
+      className={`relative flex h-[22px] w-[36px] cursor-pointer items-center rounded-full shadow-inner transition-all duration-200 ${enabled ? "bg-primary-9" : "bg-blue-500"} ${className ?? ""}`}
       onClick={() => setEnabled(!enabled)}
     >
       <div

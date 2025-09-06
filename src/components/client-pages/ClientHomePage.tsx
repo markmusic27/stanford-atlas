@@ -54,7 +54,6 @@ const ClientHomePage = () => {
   const computeSpacing = () => {
     const scale = 2;
     if (windowHeight === undefined || searchHeight === undefined) {
-      console.log("H or h is undefined");
       return 0;
     }
 
@@ -82,7 +81,7 @@ const ClientHomePage = () => {
       {/* Chat Window */}
       <div
         ref={searchRef}
-        className={`relative z-10 mx-auto flex w-full max-w-[800px] flex-col px-[8px] md:px-[16px]`}
+        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] md:px-[16px]`}
         style={{
           top: computeSpacing(),
         }}
@@ -99,7 +98,7 @@ const ClientHomePage = () => {
         <Peripherals />
       </div>
 
-      <Footer />
+      <Footer className="z-1" />
     </main>
   );
 };

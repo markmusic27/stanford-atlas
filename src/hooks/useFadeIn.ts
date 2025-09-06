@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useFadeIn = (duration: number = 300) => {
+export const useFadeIn = (duration = 300) => {
   const [opacity, setOpacity] = useState(0);
 
   useEffect(() => {
