@@ -11,9 +11,10 @@ import { TRANSITION_DURATION } from "~/lib/constants";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
+  isChatOpen: boolean;
 }
 
-const SearchBar = ({ onSubmit }: SearchBarProps) => {
+const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
   const enqueue = usePageTransitionStore((state) => state.enqueue);
   const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
