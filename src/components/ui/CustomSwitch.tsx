@@ -18,8 +18,8 @@ const CustomSwitch = ({
     <div
       className={`relative flex h-[22px] w-[36px] cursor-pointer items-center rounded-full shadow-inner transition-all duration-200 ${enabled ? "bg-blue-500" : "bg-primary-9"} ${className ?? ""}`}
       onClick={() => {
+        onToggle?.(!enabled);
         setEnabled(!enabled);
-        onToggle?.(enabled);
       }}
     >
       <div

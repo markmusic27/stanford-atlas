@@ -53,13 +53,13 @@ const ClientHomePage = () => {
   }, []);
 
   const computeSpacing = () => {
-    const scale = 2;
-    if (windowHeight === undefined || searchHeight === undefined) {
+    if (isChatOpen) {
       return 0;
     }
 
-    if (isChatOpen) {
-      return 300;
+    const scale = 2;
+    if (windowHeight === undefined || searchHeight === undefined) {
+      return 0;
     }
 
     return (windowHeight - searchHeight) / (scale + 1);
@@ -102,8 +102,10 @@ const ClientHomePage = () => {
       <Footer className="z-1" />
       <CustomSwitch
         defaultEnabled={false}
+        className="absolute top-10 left-10 scale-[1.2]"
         onToggle={(e) => {
           console.log(e);
+          setIsChatOpen(e);
         }}
       />
     </main>
