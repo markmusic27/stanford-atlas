@@ -7,6 +7,7 @@ import Logo from "../ui/Logo";
 import { TRANSITION_DURATION } from "~/lib/constants";
 import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useState, useRef } from "react";
+import Footer from "../footer/Footer";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -98,9 +99,7 @@ const ClientHomePage = () => {
         <Peripherals />
       </div>
 
-      <p className="text-secondary-text-6 absolute bottom-[36px] left-1/2 -translate-x-1/2 text-center text-[14px]">
-        Courses last updated yesterday @ 11:59 PM
-      </p>
+      <Footer />
     </main>
   );
 };

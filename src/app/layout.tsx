@@ -30,7 +30,7 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </head>
-      <body className="bg-primary-2 font-default">{children}</body>
+      <body className="font-default bg-primary-2">{children}</body>
     </html>
   );
 }

@@ -15,6 +15,7 @@
   /* Colors - you can add custom colors here */
   --color-primary-1: #ffffff;
   --color-primary-2: #fdfdfd;
+  --color-primary-2-rgb: 253, 253, 253;
   --color-primary-3: #fdfdfd;
   --color-primary-4: #f6f6f6;
   --color-primary-5: #f5f5f5;
@@ -67,4 +68,12 @@
 .minimal-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.footer-gradient {
+  background: linear-gradient(
+    to top,
+    rgba(var(--color-primary-2-rgb), 1) 60%,
+    rgba(var(--color-primary-2-rgb), 0) 100%
+  );
 }
