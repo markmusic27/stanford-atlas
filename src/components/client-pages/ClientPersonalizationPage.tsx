@@ -22,7 +22,7 @@ const ClientPersonalizationPage = () => {
     enqueue();
     await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION));
     router.push("/");
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     dequeue();
   }
 

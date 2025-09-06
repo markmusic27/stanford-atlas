@@ -8,6 +8,7 @@ import { TRANSITION_DURATION } from "~/lib/constants";
 import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useState, useRef } from "react";
 import Footer from "../footer/Footer";
+import { CustomSwitch } from "../ui/CustomSwitch";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -99,6 +100,12 @@ const ClientHomePage = () => {
       </div>
 
       <Footer className="z-1" />
+      <CustomSwitch
+        defaultEnabled={false}
+        onToggle={(e) => {
+          console.log(e);
+        }}
+      />
     </main>
   );
 };

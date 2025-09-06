@@ -55,7 +55,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
                 setTimeout(resolve, TRANSITION_DURATION),
               );
               router.push("/personalize");
-              await new Promise((resolve) => setTimeout(resolve, 50));
+              await new Promise((resolve) => setTimeout(resolve, 100));
               dequeue();
             }}
             className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-center gap-[10px] transition-all duration-300 hover:scale-101"
