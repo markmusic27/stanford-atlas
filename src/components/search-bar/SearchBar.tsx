@@ -96,7 +96,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
         </AnimatedCollapsable>
       </div>
       <div
-        className={`flex flex-none items-end ${isChatOpen ? "pb-[4px]" : "pb-[0px]"}`}
+        className={`flex flex-none items-end ${isChatOpen ? "pb-[4px] pl-[10px]" : "pb-[0px] pl-[0px]"}`}
       >
         <SearchButton
           state={
