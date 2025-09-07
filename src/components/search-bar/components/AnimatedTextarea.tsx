@@ -7,6 +7,7 @@ interface AnimatedTextareaProps {
   onChange: (value: string) => void;
   name?: string;
   className?: string;
+  isChatOpen?: boolean;
 }
 
 const placeholderTexts = [
@@ -23,6 +24,7 @@ const AnimatedTextarea = ({
   onChange,
   name,
   className = "",
+  isChatOpen = false,
 }: AnimatedTextareaProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -31,12 +33,27 @@ const AnimatedTextarea = ({
   const timeoutRef = useRef<number | null>(null);
   const intervalRef = useRef<number | null>(null);
 
+  // When chat is open, show a single static placeholder and disable animation
+  const placeholders = isChatOpen
+    ? ["Ask another question..."]
+    : placeholderTexts;
+
   useEffect(() => {
+    // Clear any existing timers when dependencies change
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    if (intervalRef.current) window.clearInterval(intervalRef.current);
+
+    // Disable animation when chat is open or when there is only one placeholder
+    if (isChatOpen || placeholders.length <= 1) {
+      setIsAnimating(false);
+      return;
+    }
+
     const startAnimation = () => {
       setIsAnimating(true);
       // After the animation finishes, commit the next index and reset
       timeoutRef.current = window.setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % placeholderTexts.length);
+        setCurrentIndex((prev) => (prev + 1) % placeholders.length);
         setIsAnimating(false);
       }, animationDurationMs);
     };
@@ -47,16 +64,16 @@ const AnimatedTextarea = ({
       if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
       if (intervalRef.current) window.clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [isChatOpen, animationDurationMs, intervalMs, placeholders.length]);
 
-  const nextIndex = (currentIndex + 1) % placeholderTexts.length;
-  const currentText = placeholderTexts[currentIndex];
-  const upcomingText = placeholderTexts[nextIndex];
+  const nextIndex = (currentIndex + 1) % placeholders.length;
+  const currentText = placeholders[currentIndex];
+  const upcomingText = placeholders[nextIndex];
 
   return (
     <div className={`relative w-full ${className}`}>
       {/* Animated placeholder overlay - visible only when empty */}
-      {value.length === 0 && (
+      {value.length === 0 && !isChatOpen && (
         <div
           className="pointer-events-none absolute top-0 left-0 w-full overflow-visible"
           aria-hidden
@@ -89,6 +106,7 @@ const AnimatedTextarea = ({
         autoComplete="off"
         aria-label="Search"
         name={name}
+        placeholder={isChatOpen ? "Ask another question..." : undefined}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={1}

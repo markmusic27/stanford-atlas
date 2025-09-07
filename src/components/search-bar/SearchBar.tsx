@@ -56,7 +56,12 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
               className={iconClassName}
             />
           </div>
-          <AnimatedTextarea value={query} onChange={setQuery} name="query" />
+          <AnimatedTextarea
+            value={query}
+            onChange={setQuery}
+            name="query"
+            isChatOpen={isChatOpen}
+          />
         </div>
         <AnimatedCollapsable isOpen={!isChatOpen} duration={300}>
           <div className="h-[34px]" />
