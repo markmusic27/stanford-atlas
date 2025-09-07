@@ -9,6 +9,7 @@ import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useState, useRef } from "react";
 import Footer from "../footer/Footer";
 import { CustomSwitch } from "../ui/CustomSwitch";
+import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -34,6 +35,8 @@ const ClientHomePage = () => {
 
     return () => window.removeEventListener("resize", updateSize);
   }, []);
+
+  // Animate Logo collapse/expand while also removing it from layout when collapsed
 
   useEffect(() => {
     const updateWindowHeight = () => {
@@ -87,7 +90,9 @@ const ClientHomePage = () => {
           top: computeSpacing(),
         }}
       >
-        <Logo />
+        <AnimatedCollapsable isOpen={!isChatOpen}>
+          <Logo />
+        </AnimatedCollapsable>
         <div className="h-[10dvh] max-h-[95px] min-h-[40px]" />
         <SearchBar
           onSubmit={(query) => {
@@ -102,7 +107,7 @@ const ClientHomePage = () => {
       <Footer className="z-1" />
       <CustomSwitch
         defaultEnabled={false}
-        className="absolute top-10 left-10 scale-[1.2]"
+        className="absolute bottom-10 left-10 scale-[1.2]"
         onToggle={(e) => {
           console.log(e);
           setIsChatOpen(e);
