@@ -8,6 +8,8 @@ import AnimatedTextarea from "./components/AnimatedTextarea";
 import { usePageTransitionStore } from "~/store/page-transition.store";
 import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
+import { AnimatePresence, motion } from "framer-motion";
+import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
@@ -22,6 +24,8 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
   useEffect(() => {
     dequeue();
   }, [dequeue]);
+
+  // Framer Motion will handle mount/unmount animations for the shimmer row
   const [query, setQuery] = useState("");
   const iconClassName =
     query.trim().length > 0
@@ -33,7 +37,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
       action={() => onSubmit(query)}
       className="bg-primary-1 border-primary-9 flex w-full flex-row rounded-[24px] border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
     >
-      <div className="flex flex-1 flex-col gap-[34px]">
+      <div className="flex flex-1 flex-col">
         <div className="flex flex-row items-start justify-center gap-[10px]">
           <div className="pt-[5px]">
             <Icon
@@ -45,34 +49,37 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
           </div>
           <AnimatedTextarea value={query} onChange={setQuery} name="query" />
         </div>
-        <CursorShimmer
-          strength={0.5}
-          radius={90}
-          className="w-fit self-start pb-[6px]"
-        >
-          <div
-            onClick={async () => {
-              enqueue();
-              await new Promise((resolve) =>
-                setTimeout(resolve, TRANSITION_DURATION),
-              );
-              router.push("/personalize");
-              await new Promise((resolve) => setTimeout(resolve, 100));
-              dequeue();
-            }}
-            className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-start gap-[10px] transition-all duration-300 hover:scale-101"
+        <AnimatedCollapsable isOpen={!isChatOpen}>
+          <div className="h-[34px]" />
+          <CursorShimmer
+            strength={0.5}
+            radius={90}
+            className="w-fit self-start pb-[6px]"
           >
-            <Icon
-              type={IconType.Plus}
-              width={12}
-              height={12}
-              className="text-secondary-text-5 block"
-            />
-            <p className="text-secondary-text-5 text-[15px] leading-none">
-              Add your major, interests, etc.
-            </p>
-          </div>
-        </CursorShimmer>
+            <div
+              onClick={async () => {
+                enqueue();
+                await new Promise((resolve) =>
+                  setTimeout(resolve, TRANSITION_DURATION),
+                );
+                router.push("/personalize");
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                dequeue();
+              }}
+              className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-start gap-[10px] transition-all duration-300 hover:scale-101"
+            >
+              <Icon
+                type={IconType.Plus}
+                width={12}
+                height={12}
+                className="text-secondary-text-5 block"
+              />
+              <p className="text-secondary-text-5 text-[15px] leading-none">
+                Add your major, interests, etc.
+              </p>
+            </div>
+          </CursorShimmer>
+        </AnimatedCollapsable>
       </div>
       <div className="flex flex-none items-end">
         <SearchButton
