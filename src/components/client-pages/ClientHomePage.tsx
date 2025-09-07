@@ -57,7 +57,7 @@ const ClientHomePage = () => {
 
   const computeSpacing = () => {
     if (isChatOpen) {
-      return 0;
+      return 500;
     }
 
     const scale = 2;

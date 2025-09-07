@@ -35,11 +35,20 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
   return (
     <form
       action={() => onSubmit(query)}
-      className="bg-primary-1 border-primary-9 flex w-full flex-row rounded-[24px] border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
+      className={`bg-primary-1 border-primary-9 flex w-full flex-row rounded-[24px] border-[1px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]`}
+      style={{
+        transition: "padding 300ms ease-in-out",
+        paddingTop: isChatOpen ? "12px" : "20px",
+        paddingRight: isChatOpen ? "14px" : "14px",
+        paddingBottom: isChatOpen ? "8px" : "14px",
+        paddingLeft: isChatOpen ? "20px" : "18px",
+      }}
     >
-      <div className="flex flex-1 flex-col">
-        <div className="flex flex-row items-start justify-center gap-[10px]">
-          <div className="pt-[5px]">
+      <div className="flex flex-1 flex-col justify-center">
+        <div className="flex flex-row items-start justify-center">
+          <div
+            className={`mr-[10px] pt-[5px] ${isChatOpen ? "hidden" : "block"}`}
+          >
             <Icon
               type={IconType.MagnifyingGlass}
               width={14}
@@ -49,7 +58,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
           </div>
           <AnimatedTextarea value={query} onChange={setQuery} name="query" />
         </div>
-        <AnimatedCollapsable isOpen={!isChatOpen}>
+        <AnimatedCollapsable isOpen={!isChatOpen} duration={300}>
           <div className="h-[34px]" />
           <CursorShimmer
             strength={0.5}
@@ -81,7 +90,9 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
           </CursorShimmer>
         </AnimatedCollapsable>
       </div>
-      <div className="flex flex-none items-end">
+      <div
+        className={`flex flex-none items-end ${isChatOpen ? "pb-[4px]" : "pb-[0px]"}`}
+      >
         <SearchButton
           state={
             query.trim().length > 0
