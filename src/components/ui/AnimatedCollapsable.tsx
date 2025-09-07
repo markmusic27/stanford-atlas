@@ -21,7 +21,10 @@ const AnimatedCollapsable = ({
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const hideTimerRef = useRef<number | null>(null);
+  const openRaf1Ref = useRef<number | null>(null);
+  const openRaf2Ref = useRef<number | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const [isAnimatingOpen, setIsAnimatingOpen] = useState<boolean>(false);
 
   // Measure content height and respond to size changes
   useEffect(() => {
@@ -62,16 +65,37 @@ const AnimatedCollapsable = ({
       window.clearTimeout(hideTimerRef.current);
       hideTimerRef.current = null;
     }
+    if (openRaf1Ref.current !== null) {
+      cancelAnimationFrame(openRaf1Ref.current);
+      openRaf1Ref.current = null;
+    }
+    if (openRaf2Ref.current !== null) {
+      cancelAnimationFrame(openRaf2Ref.current);
+      openRaf2Ref.current = null;
+    }
 
     if (isOpen) {
-      // Make it visible immediately so expansion can animate
+      // Show wrapper and start from collapsed state for one frame
       setIsWrapperVisible(true);
+      setIsAnimatingOpen(true);
+      // Measure after becoming visible, then expand next frame
+      openRaf1Ref.current = requestAnimationFrame(() => {
+        const node = contentRef.current;
+        if (node) {
+          setMeasuredHeight(node.scrollHeight);
+        }
+        openRaf2Ref.current = requestAnimationFrame(() => {
+          setIsAnimatingOpen(false);
+        });
+      });
     } else {
       // After collapse animation completes, remove from layout
       hideTimerRef.current = window.setTimeout(() => {
         setIsWrapperVisible(false);
         hideTimerRef.current = null;
       }, duration);
+      // Ensure we are not in an open animation phase
+      setIsAnimatingOpen(false);
     }
 
     return () => {
@@ -86,8 +110,8 @@ const AnimatedCollapsable = ({
     <div
       className={`${isWrapperVisible ? "" : "hidden"} overflow-hidden transition-[max-height,opacity] ${className}`}
       style={{
-        maxHeight: isOpen ? (measuredHeight ? measuredHeight : undefined) : 0,
-        opacity: isOpen ? 1 : 0,
+        maxHeight: isOpen ? (isAnimatingOpen ? 0 : measuredHeight || 0) : 0,
+        opacity: isOpen ? (isAnimatingOpen ? 0 : 1) : 0,
         transitionDuration: isMounted ? `${duration}ms` : "0ms",
       }}
       aria-hidden={!isWrapperVisible}

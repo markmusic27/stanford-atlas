@@ -100,8 +100,9 @@ const ClientHomePage = () => {
           }}
           isChatOpen={isChatOpen}
         />
-        <div className="h-[32px]" />
-        <Peripherals />
+        <AnimatedCollapsable isOpen={!isChatOpen}>
+          <Peripherals />
+        </AnimatedCollapsable>
       </div>
 
       <Footer className="z-1" />

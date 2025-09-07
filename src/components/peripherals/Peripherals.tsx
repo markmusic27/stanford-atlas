@@ -2,7 +2,9 @@ import PeripheralCard from "./components/PeripheralCard";
 
 const Peripherals = () => {
   return (
-    <div className="flex flex-row flex-wrap justify-center gap-[6px]">
+    <div
+      className={`flex flex-row flex-wrap justify-center gap-[6px] pt-[32px]`}
+    >
       <PeripheralCard
         title={"Sign In"}
         onClick={() => {
