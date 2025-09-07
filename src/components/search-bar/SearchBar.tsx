@@ -31,23 +31,25 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
   return (
     <form
       action={() => onSubmit(query)}
-      className="bg-primary-1 border-primary-9 w-full flex-col gap-[28px] rounded-[24px] border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
+      className="bg-primary-1 border-primary-9 flex w-full flex-row rounded-[24px] border-[1px] pt-[20px] pr-[14px] pb-[14px] pl-[18px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]"
     >
-      <div className="flex flex-row items-start justify-center gap-[10px]">
-        <div className="pt-[5px]">
-          <Icon
-            type={IconType.MagnifyingGlass}
-            width={14}
-            height={14}
-            className={iconClassName}
-          />
+      <div className="flex flex-1 flex-col gap-[34px]">
+        <div className="flex flex-row items-start justify-center gap-[10px]">
+          <div className="pt-[5px]">
+            <Icon
+              type={IconType.MagnifyingGlass}
+              width={14}
+              height={14}
+              className={iconClassName}
+            />
+          </div>
+          <AnimatedTextarea value={query} onChange={setQuery} name="query" />
         </div>
-        <AnimatedTextarea value={query} onChange={setQuery} name="query" />
-      </div>
-      {/* Spacer */}
-      <div className="h-[28px] w-full" />
-      <div className="flex w-full flex-row items-center justify-between">
-        <CursorShimmer strength={0.5} radius={90}>
+        <CursorShimmer
+          strength={0.5}
+          radius={90}
+          className="w-fit self-start pb-[6px]"
+        >
           <div
             onClick={async () => {
               enqueue();
@@ -58,7 +60,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
               await new Promise((resolve) => setTimeout(resolve, 100));
               dequeue();
             }}
-            className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-center gap-[10px] transition-all duration-300 hover:scale-101"
+            className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-start gap-[10px] transition-all duration-300 hover:scale-101"
           >
             <Icon
               type={IconType.Plus}
@@ -71,7 +73,8 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
             </p>
           </div>
         </CursorShimmer>
-
+      </div>
+      <div className="flex flex-none items-end">
         <SearchButton
           state={
             query.trim().length > 0

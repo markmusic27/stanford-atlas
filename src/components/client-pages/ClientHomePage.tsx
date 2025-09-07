@@ -92,8 +92,9 @@ const ClientHomePage = () => {
       >
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <Logo />
+          <div className="h-[10dvh] max-h-[95px] min-h-[40px]" />
         </AnimatedCollapsable>
-        <div className="h-[10dvh] max-h-[95px] min-h-[40px]" />
+
         <SearchBar
           onSubmit={(query) => {
             console.log(query);
@@ -101,6 +102,7 @@ const ClientHomePage = () => {
           isChatOpen={isChatOpen}
         />
         <AnimatedCollapsable isOpen={!isChatOpen}>
+          <div className="h-[36px]" />
           <Peripherals />
         </AnimatedCollapsable>
       </div>
