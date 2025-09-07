@@ -82,7 +82,7 @@ const ClientHomePage = () => {
       {/* Chat Window */}
       <div
         ref={searchRef}
-        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] md:px-[16px]`}
+        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] transition-[top] duration-500 md:px-[16px]`}
         style={{
           top: computeSpacing(),
         }}
