@@ -9,6 +9,8 @@ import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useState, useRef } from "react";
 import Footer from "../footer/Footer";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
+import { CustomSwitch } from "../ui/CustomSwitch";
+import Chat from "../chat/Chat";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -84,7 +86,15 @@ const ClientHomePage = () => {
       className={`relative h-[100dvh] w-full transition-all duration-[${TRANSITION_DURATION}]`}
       style={{ opacity: currentOpacity, transition }}
     >
-      {/* Chat Window */}
+      {/* Chat Container */}
+      <div
+        className="transition-[opacity] duration-300"
+        style={{ opacity: isChatOpen ? 1 : 0 }}
+      >
+        <Chat />
+      </div>
+
+      {/* Search Container */}
       <div
         ref={searchRef}
         className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] transition-[top] duration-500 ease-in-out md:px-[16px]`}
@@ -99,7 +109,7 @@ const ClientHomePage = () => {
 
         <SearchBar
           onSubmit={(query) => {
-            setIsChatOpen(true);
+            console.log(query);
           }}
           isChatOpen={isChatOpen}
         />
@@ -109,7 +119,15 @@ const ClientHomePage = () => {
         </AnimatedCollapsable>
       </div>
 
-      <Footer className="z-1" isChatOpen={isChatOpen} />
+      <Footer className="z-1" isChatOpen={isChatOpen}>
+        <CustomSwitch
+          defaultEnabled={false}
+          className="absolute bottom-10 left-10 scale-[1.2]"
+          onToggle={(e) => {
+            setIsChatOpen(e);
+          }}
+        />
+      </Footer>
     </main>
   );
 };
