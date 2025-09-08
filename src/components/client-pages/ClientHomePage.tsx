@@ -56,13 +56,16 @@ const ClientHomePage = () => {
   }, []);
 
   const computeSpacing = () => {
-    if (isChatOpen) {
-      return 500;
-    }
+    const barHeight = 58;
+    const spacing = 58;
 
     const scale = 2;
     if (windowHeight === undefined || searchHeight === undefined) {
       return 0;
+    }
+
+    if (isChatOpen) {
+      return windowHeight - (barHeight + spacing);
     }
 
     return (windowHeight - searchHeight) / (scale + 1);
@@ -85,7 +88,7 @@ const ClientHomePage = () => {
       {/* Chat Window */}
       <div
         ref={searchRef}
-        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] transition-[top] duration-500 md:px-[16px]`}
+        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] transition-[top] duration-600 ease-in-out md:px-[16px]`}
         style={{
           top: computeSpacing(),
         }}
@@ -107,15 +110,16 @@ const ClientHomePage = () => {
         </AnimatedCollapsable>
       </div>
 
-      <Footer className="z-1" />
-      <CustomSwitch
-        defaultEnabled={false}
-        className="absolute bottom-10 left-10 scale-[1.2]"
-        onToggle={(e) => {
-          console.log(e);
-          setIsChatOpen(e);
-        }}
-      />
+      <Footer className="z-1" isChatOpen={isChatOpen}>
+        <CustomSwitch
+          defaultEnabled={false}
+          className="absolute bottom-10 left-10 mx-auto scale-[1.2]"
+          onToggle={(e) => {
+            console.log(e);
+            setIsChatOpen(e);
+          }}
+        />
+      </Footer>
     </main>
   );
 };
