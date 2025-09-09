@@ -22,11 +22,11 @@ const ActivityTimeline = ({ steps }: { steps: Steps[] }) => {
         {/* Icons */}
         <div className="flex w-[14px] flex-col items-center">
           <ActivityIcon type={"thinking"} />
-          <ActivityLine />
+          <ActivityLine pre={"thinking"} post={"thinking"} />
           <ActivityIcon type={"thinking"} />
-          <ActivityLine />
+          <ActivityLine pre={"thinking"} post={"searching"} />
           <ActivityIcon type={"searching"} />
-          <ActivityLine />
+          <ActivityLine pre={"searching"} post={"thinking"} />
           <ActivityIcon type={"thinking"} />
         </div>
         {/* Text */}
