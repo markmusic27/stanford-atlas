@@ -1,5 +1,6 @@
 import { ACTIVITY_TIMELINE_SPACING } from "~/lib/constants";
 import type { ActivityTool } from "../ActivityTimeline.chat";
+import { motion } from "motion/react";
 
 interface ActivityLineProps {
   pre: ActivityTool;
@@ -37,8 +38,11 @@ const ActivityLine = ({ pre, post }: ActivityLineProps) => {
 
   return (
     // Animate the height from 0 to handleHeight()!
-    <div
+    <motion.div
       className="bg-primary-7 w-[2px] rounded-full"
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: handleHeight() }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       style={{
         marginTop: handleMargin().top,
         marginBottom: handleMargin().bottom,
