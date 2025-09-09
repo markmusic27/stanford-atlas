@@ -1,11 +1,11 @@
 import { ACTIVITY_TIMELINE_SPACING } from "~/lib/constants";
 
-interface ActionTextProps {
+interface ActivityTextProps {
   text: string;
   i: number;
 }
 
-const ActionText = ({ text, i }: ActionTextProps) => {
+const ActivityText = ({ text, i }: ActivityTextProps) => {
   return (
     <p
       className="text-secondary-text-2 text-[14px] font-[400]"
@@ -16,4 +16,4 @@ const ActionText = ({ text, i }: ActionTextProps) => {
   );
 };
 
-export default ActionText;
+export default ActivityText;

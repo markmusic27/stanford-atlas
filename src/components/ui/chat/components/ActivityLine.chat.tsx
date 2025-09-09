@@ -1,6 +1,6 @@
 import { ACTIVITY_TIMELINE_SPACING } from "~/lib/constants";
 
-const AnimatedLine = () => {
+const ActivityLine = () => {
   return (
     <div
       className={`flex ${"h-[" + ACTIVITY_TIMELINE_SPACING + "px]"} flex-col justify-center`}
@@ -15,4 +15,4 @@ const AnimatedLine = () => {
   );
 };
 
-export default AnimatedLine;
+export default ActivityLine;

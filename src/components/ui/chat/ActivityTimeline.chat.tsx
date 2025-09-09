@@ -1,11 +1,12 @@
 import { TextShimmer } from "../TextShimmer";
-import ActionText from "./components/ActionText.chat";
-import AnimatedLine from "./components/AnimatedLine.chat";
-import Bullet from "./components/Bullet.chat";
+import ActivityIcon from "./components/ActivityIcon.chat";
+import ActivityLine from "./components/ActivityLine.chat";
+import ActivityText from "./components/ActivityText.chat";
 
+export type ActivityTool = "thinking" | "searching";
 interface Steps {
   text: string;
-  tool: "thinking" | "searching";
+  tool: ActivityTool;
 }
 
 const ActivityTimeline = ({ steps }: { steps: Steps[] }) => {
@@ -20,20 +21,20 @@ const ActivityTimeline = ({ steps }: { steps: Steps[] }) => {
       <div className="flex flex-row gap-[8px]">
         {/* Icons */}
         <div className="flex w-[14px] flex-col items-center">
-          <Bullet />
-          <AnimatedLine />
-          <Bullet />
-          <AnimatedLine />
-          <Bullet />
-          <AnimatedLine />
-          <Bullet />
+          <ActivityIcon type={"thinking"} />
+          <ActivityLine />
+          <ActivityIcon type={"thinking"} />
+          <ActivityLine />
+          <ActivityIcon type={"searching"} />
+          <ActivityLine />
+          <ActivityIcon type={"thinking"} />
         </div>
         {/* Text */}
         <div className="flex flex-col items-start">
-          <ActionText text={steps[0]?.text ?? ""} i={0} />
-          <ActionText text={steps[1]?.text ?? ""} i={1} />
-          <ActionText text={steps[2]?.text ?? ""} i={2} />
-          <ActionText text={steps[2]?.text ?? ""} i={3} />
+          <ActivityText text={steps[0]?.text ?? ""} i={0} />
+          <ActivityText text={steps[1]?.text ?? ""} i={1} />
+          <ActivityText text={steps[2]?.text ?? ""} i={2} />
+          <ActivityText text={steps[2]?.text ?? ""} i={3} />
         </div>
       </div>
     </div>
