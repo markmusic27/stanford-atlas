@@ -18,7 +18,7 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <ActivityTimeline steps={[]} />
+        <ActivityTimeline steps={[]} loading={true} />
         <div className={`h-[${FOOTER_HEIGHT}px]`} />
       </div>
     </div>
