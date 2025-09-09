@@ -7,8 +7,10 @@ interface ActivityLineProps {
 }
 
 const ActivityLine = ({ pre, post }: ActivityLineProps) => {
+  const spacing = 2;
+
   const handleHeight = () => {
-    let base = ACTIVITY_TIMELINE_SPACING - 2;
+    let base = ACTIVITY_TIMELINE_SPACING - spacing;
     if (pre === "searching") {
       base -= 3;
     }
@@ -20,8 +22,8 @@ const ActivityLine = ({ pre, post }: ActivityLineProps) => {
   };
 
   const handleMargin = () => {
-    let top = 1;
-    let bottom = 1;
+    let top = spacing / 2;
+    let bottom = spacing / 2;
 
     if (pre === "searching") {
       top += 3;
@@ -34,6 +36,7 @@ const ActivityLine = ({ pre, post }: ActivityLineProps) => {
   };
 
   return (
+    // Animate the height from 0 to handleHeight()!
     <div
       className="bg-primary-7 w-[2px] rounded-full"
       style={{
