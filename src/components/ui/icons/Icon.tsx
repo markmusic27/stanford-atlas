@@ -1,4 +1,5 @@
 import { ArrowUpIcon } from "./components/ArrowUp.icon";
+import { ChevronIcon } from "./components/Chevron.icon";
 import { MagnifyingGlassIcon } from "./components/MagnifyingGlass.icon";
 import { PlusIcon } from "./components/Plus.icon";
 import { SlashIcon } from "./components/Slash.icon";
@@ -8,6 +9,7 @@ enum IconType {
   Plus,
   ArrowUp,
   Slash,
+  Chevron,
 }
 
 export interface IconProps {
@@ -26,6 +28,8 @@ function getIconComponent(type: IconType) {
       return ArrowUpIcon;
     case IconType.Slash:
       return SlashIcon;
+    case IconType.Chevron:
+      return ChevronIcon;
   }
 }
 

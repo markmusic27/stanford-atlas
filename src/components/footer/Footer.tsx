@@ -1,3 +1,6 @@
+import { useViewportWidth } from "~/hooks/useViewportWidth";
+import { FOOTER_HEIGHT } from "~/lib/constants";
+
 interface FooterProps {
   className?: string;
   isChatOpen?: boolean;
@@ -5,9 +8,13 @@ interface FooterProps {
 }
 
 const Footer = ({ className, children, isChatOpen }: FooterProps) => {
+  const vw = useViewportWidth();
   return (
     <div
-      className={`footer-gradient absolute bottom-0 flex h-[160px] w-full flex-col ${className}`}
+      className={`footer-gradient absolute bottom-0 left-1/2 mx-auto flex -translate-x-1/2 ${"h-[" + FOOTER_HEIGHT + "px]"} -translate-x-1/2 flex-col ${className}`}
+      style={{
+        width: vw ? vw - 32 : "100%",
+      }}
     >
       {children}
       <div className="flex-1" />

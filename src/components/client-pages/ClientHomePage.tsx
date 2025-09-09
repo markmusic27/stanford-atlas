@@ -4,7 +4,7 @@ import { usePageTransitionStore } from "~/store/page-transition.store";
 import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
-import { TRANSITION_DURATION } from "~/lib/constants";
+import { BAR_HEIGHT, SPACING, TRANSITION_DURATION } from "~/lib/constants";
 import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useState, useRef } from "react";
 import Footer from "../footer/Footer";
@@ -57,16 +57,13 @@ const ClientHomePage = () => {
   }, []);
 
   const computeSpacing = () => {
-    const barHeight = 58;
-    const spacing = 58;
-
     const scale = 2;
     if (windowHeight === undefined || searchHeight === undefined) {
       return 0;
     }
 
     if (isChatOpen) {
-      return windowHeight - (barHeight + spacing);
+      return windowHeight - (BAR_HEIGHT + SPACING);
     }
 
     return (windowHeight - searchHeight) / (scale + 1);
@@ -97,7 +94,7 @@ const ClientHomePage = () => {
       {/* Search Container */}
       <div
         ref={searchRef}
-        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[8px] transition-[top] duration-500 ease-in-out md:px-[16px]`}
+        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[16px] transition-[top] duration-500 ease-in-out`}
         style={{
           top: computeSpacing(),
         }}
