@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import Icon, { IconType } from "../../icons/Icon";
-import type { ActivityTool } from "../ActivityTimeline.chat";
+import type { ActivityTool } from "../ActivityTimeline";
 
 const ActivityIcon = ({ type }: { type: ActivityTool }) => {
   return (

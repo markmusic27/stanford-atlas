@@ -1,7 +1,9 @@
 import { useViewportHeight } from "~/hooks/useViewportHeigh";
-import Message from "../ui/chat/Message.chat";
+import Message from "../ui/message/Message";
 import { BAR_HEIGHT, FOOTER_HEIGHT, SPACING } from "~/lib/constants";
-import ActivityTimeline, { type Steps } from "../ui/chat/ActivityTimeline.chat";
+import ActivityTimeline, {
+  type Steps,
+} from "../ui/activity-timeline/ActivityTimeline";
 import { useState } from "react";
 
 const Chat = () => {
@@ -18,7 +20,7 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <ActivityTimeline steps={[]} loading={true} />
+        <Response />
         <div className={`h-[${FOOTER_HEIGHT}px]`} />
       </div>
     </div>

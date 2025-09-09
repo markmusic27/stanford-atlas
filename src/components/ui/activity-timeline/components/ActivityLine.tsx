@@ -1,5 +1,5 @@
 import { ACTIVITY_TIMELINE_SPACING } from "~/lib/constants";
-import type { ActivityTool } from "../ActivityTimeline.chat";
+import type { ActivityTool } from "../ActivityTimeline";
 import { motion } from "motion/react";
 
 interface ActivityLineProps {
