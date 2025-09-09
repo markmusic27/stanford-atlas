@@ -1,9 +1,9 @@
 import { motion, AnimatePresence } from "motion/react";
 import { TextShimmer } from "../TextShimmer";
-import ActivityIcon from "./components/ActivityIcon.chat";
-import ActivityLine from "./components/ActivityLine.chat";
-import ActivityLoader from "./components/ActivityLoader.chat";
-import ActivityText from "./components/ActivityText.chat";
+import ActivityIcon from "./components/ActivityIcon";
+import ActivityLine from "./components/ActivityLine";
+import ActivityLoader from "./components/ActivityLoader";
+import ActivityText from "./components/ActivityText";
 
 export type ActivityTool = "thinking" | "searching";
 export interface Steps {

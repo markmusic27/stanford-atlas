@@ -78,7 +78,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
                 );
                 router.push("/personalize");
                 await new Promise((resolve) =>
-                  setTimeout(resolve, TRANSITION_DURATION),
+                  setTimeout(resolve, 3 * TRANSITION_DURATION),
                 );
                 dequeue();
               }}

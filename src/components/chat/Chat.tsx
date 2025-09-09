@@ -1,10 +1,9 @@
 import { useViewportHeight } from "~/hooks/useViewportHeigh";
 import Message from "../ui/message/Message";
-import { BAR_HEIGHT, FOOTER_HEIGHT, SPACING } from "~/lib/constants";
-import ActivityTimeline, {
-  type Steps,
-} from "../ui/activity-timeline/ActivityTimeline";
-import { useState } from "react";
+import { FOOTER_HEIGHT } from "~/lib/constants";
+import Response from "../ui/response/Response";
+import SingleCourseCard from "../ui/single-course-card/SingleCourseCard";
+import { DUMMY_COURSE } from "~/lib/course.util";
 
 const Chat = () => {
   return (
@@ -20,7 +19,7 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <Response />
+        <SingleCourseCard course={DUMMY_COURSE} />
         <div className={`h-[${FOOTER_HEIGHT}px]`} />
       </div>
     </div>

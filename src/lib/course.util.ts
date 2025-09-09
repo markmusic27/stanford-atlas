@@ -1,0 +1,73 @@
+export interface CourseCardData {
+  /** e.g., "CS 106B"  ← Course.subject + " " + Course.code */
+  subjectCode: string;
+
+  /** e.g., "Autumn 2025"  ← derive from Section.term */
+  termLabel: string;
+
+  /** e.g., "From Player to Maker: 2D Engine-Based Game Development" ← Course.title */
+  title: string;
+
+  section: {
+    /** e.g., "Lec"  ← Section.component ("LEC" → "Lec", etc.) */
+    kindLabel: string;
+
+    /** e.g., "01" ← Section.section_num */
+    number: string;
+
+    /** e.g., 2236  ← Section.class_id */
+    classNumber: number;
+
+    /** e.g., "4"  ← Section.units (fallback to Course.unitsMin/unitsMax if needed) */
+    unitsText: string;
+  };
+
+  schedule: {
+    /** e.g., "2025-09-22" ← Schedule.start_date (ISO/string passthrough OK) */
+    startDate: string;
+    /** e.g., "2025-12-05" ← Schedule.end_date */
+    endDate: string;
+
+    /** e.g., ["Tues","Thurs"] ← Schedule.days (format to your preferred labels) */
+    days: string[];
+
+    /** e.g., "10:30am" ← Schedule.start_time */
+    startTime: string;
+    /** e.g., "11:50am" ← Schedule.end_time */
+    endTime: string;
+
+    /** e.g., "CODA B80" ← Schedule.location */
+    location: string;
+  };
+
+  /** Primary + co-instructors for the row under "Instructor" ← Schedule.instructors */
+  instructors: Array<{
+    /** e.g., "Arya, M." or "Arya M." ← Instructor fields combined to your taste */
+    displayName: string;
+    isPrimary: boolean;
+  }>;
+}
+
+export const DUMMY_COURSE: CourseCardData = {
+  subjectCode: "CS 106B",
+  termLabel: "Autumn 2025",
+  title: "From Player to Maker: 2D Engine-Based Game Development",
+  section: {
+    kindLabel: "Lec",
+    number: "01",
+    classNumber: 2236,
+    unitsText: "4",
+  },
+  schedule: {
+    startDate: "2025-09-22",
+    endDate: "2025-12-05",
+    days: ["Tues", "Thurs"],
+    startTime: "10:30am",
+    endTime: "11:50am",
+    location: "CODA B80",
+  },
+  instructors: [
+    { displayName: "Arya M.", isPrimary: true },
+    { displayName: "Cain J.", isPrimary: false },
+  ],
+};
