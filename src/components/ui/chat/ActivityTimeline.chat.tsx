@@ -1,4 +1,7 @@
 import { TextShimmer } from "../TextShimmer";
+import ActionText from "./components/ActionText.chat";
+import AnimatedLine from "./components/AnimatedLine.chat";
+import Bullet from "./components/Bullet.chat";
 
 interface Steps {
   text: string;
@@ -14,11 +17,24 @@ const ActivityTimeline = ({ steps }: { steps: Steps[] }) => {
       >
         Thinking...
       </TextShimmer>
-      <div className="flex-row gap-[8px]">
+      <div className="flex flex-row gap-[8px]">
         {/* Icons */}
-        <div></div>
+        <div className="flex w-[14px] flex-col items-center">
+          <Bullet />
+          <AnimatedLine />
+          <Bullet />
+          <AnimatedLine />
+          <Bullet />
+          <AnimatedLine />
+          <Bullet />
+        </div>
         {/* Text */}
-        <div></div>
+        <div className="flex flex-col items-start">
+          <ActionText text={steps[0]?.text ?? ""} i={0} />
+          <ActionText text={steps[1]?.text ?? ""} i={1} />
+          <ActionText text={steps[2]?.text ?? ""} i={2} />
+          <ActionText text={steps[2]?.text ?? ""} i={3} />
+        </div>
       </div>
     </div>
   );

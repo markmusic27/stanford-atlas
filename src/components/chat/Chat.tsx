@@ -22,6 +22,7 @@ const Chat = () => {
             { text: "Searching for robotics courses", tool: "thinking" },
             { text: "Searching for course schedules", tool: "thinking" },
             { text: "Searching course catalog", tool: "searching" },
+            { text: "Reviewing potential candidates", tool: "thinking" },
           ]}
         />
         <div className={`h-[${FOOTER_HEIGHT}px]`} />
