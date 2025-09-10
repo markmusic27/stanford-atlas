@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Stanford Atlas",
@@ -30,7 +31,10 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </head>
-      <body className="font-default bg-primary-2">{children}</body>
+      <body className="font-default bg-primary-2">
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
