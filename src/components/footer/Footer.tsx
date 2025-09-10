@@ -4,19 +4,18 @@ import { FOOTER_HEIGHT } from "~/lib/constants";
 interface FooterProps {
   className?: string;
   isChatOpen?: boolean;
-  children?: React.ReactNode;
 }
 
-const Footer = ({ className, children, isChatOpen }: FooterProps) => {
+const Footer = ({ className, isChatOpen }: FooterProps) => {
   const vw = useViewportWidth();
   return (
     <div
-      className={`footer-gradient absolute bottom-0 left-1/2 mx-auto flex -translate-x-1/2 ${"h-[" + FOOTER_HEIGHT + "px]"} -translate-x-1/2 flex-col ${className}`}
+      className={`footer-gradient absolute bottom-0 left-1/2 mx-auto flex -translate-x-1/2 flex-col ${className}`}
       style={{
         width: vw ? vw - 32 : "100%",
+        height: FOOTER_HEIGHT,
       }}
     >
-      {children}
       <div className="flex-1" />
       <p className="text-secondary-text-6 w-full px-[16px] text-center text-[14px]">
         {isChatOpen
