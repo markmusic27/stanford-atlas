@@ -9,12 +9,14 @@ interface CardContentItemProps {
 
 const CardContentItem = ({ icon, title, value }: CardContentItemProps) => {
   return (
-    <div className="flex h-[18px] flex-row items-center justify-start gap-[8px]">
+    <div className="flex min-h-[18px] flex-row items-center justify-start gap-[8px]">
       {icon && (
         <Icon className="text-secondary-text-4 h-[14px] w-[14px]" type={icon} />
       )}
-      {title && <p className="text-secondary-text-4 text-[14px]">{title}</p>}
-      <p className="text-secondary-text-1 text-[14px]">{value}</p>
+      {title && (
+        <span className="text-secondary-text-4 text-[14px]">{title}</span>
+      )}
+      <span className="text-secondary-text-1 text-[14px]">{value}</span>
     </div>
   );
 };

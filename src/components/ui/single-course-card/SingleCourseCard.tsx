@@ -9,6 +9,7 @@ interface SingleCourseCardProps {
 
 const SingleCourseCard = ({ course }: SingleCourseCardProps) => {
   return (
+    // TODO: Replace with Course Card if width is less than 600px
     <CursorScale hoverScale={1.003} maxTranslate={2}>
       <a
         href={`https://navigator.stanford.edu/classes/${course.termCode}/${course.section.classNumber}`}
