@@ -16,7 +16,7 @@ const SingleCourseCard = ({ course }: SingleCourseCardProps) => {
         rel="noopener noreferrer"
         className="block"
       >
-        <div className="bg-primary-1 border-primary-7 flex h-[169px] w-full cursor-pointer flex-row items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
+        <div className="bg-primary-1 border-primary-7 flex w-full cursor-pointer flex-row items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
           <CardBarHeader course={course} />
           <div className="bg-primary-10 my-[16px] w-[1px] shrink-0 self-stretch"></div>
           <CardBarContent course={course} />

@@ -23,7 +23,8 @@ export interface CourseCardData {
     classNumber: number;
 
     /** e.g., "4"  ← Section.units (fallback to Course.unitsMin/unitsMax if needed) */
-    unitsText: string;
+    unitsMin: number;
+    unitsMax: number;
   };
 
   schedule: {
@@ -62,7 +63,8 @@ export const DUMMY_COURSE: CourseCardData = {
     kindLabel: "Lec",
     number: "01",
     classNumber: 7376,
-    unitsText: "4",
+    unitsMin: 3,
+    unitsMax: 4,
   },
   schedule: {
     startDate: "2025-09-22",
