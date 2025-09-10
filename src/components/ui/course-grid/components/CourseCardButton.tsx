@@ -1,11 +1,11 @@
 import CursorScale from "../../CursorScale";
 
-interface CardButtonProps {
+interface CourseCardButtonProps {
   text: string;
   onClick?: () => void;
 }
 
-const CardButton = ({ text, onClick }: CardButtonProps) => {
+const CourseCardButton = ({ text, onClick }: CourseCardButtonProps) => {
   return (
     <CursorScale hoverScale={1.005} maxTranslate={1}>
       <div
@@ -18,4 +18,4 @@ const CardButton = ({ text, onClick }: CardButtonProps) => {
   );
 };
 
-export default CardButton;
+export default CourseCardButton;

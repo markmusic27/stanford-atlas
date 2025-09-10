@@ -5,7 +5,7 @@ import CursorScale from "../CursorScale";
 import CardBarHeader from "./components/CardBarHeader";
 import CardBarContent from "./components/CardBarContent";
 import { useEffect, useRef, useState } from "react";
-import CardComponent from "../grid-course-card/components/CardComponent";
+import CardComponent from "../course-grid/components/CourseCard";
 
 interface SingleCourseCardProps {
   course: CourseCardData;

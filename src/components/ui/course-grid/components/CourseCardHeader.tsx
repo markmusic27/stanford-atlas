@@ -1,9 +1,12 @@
-interface CardHeaderProps {
+interface CourseCardHeaderProps {
   subjectCode: string;
   termLabel: string;
 }
 
-const CardHeader = ({ subjectCode, termLabel }: CardHeaderProps) => {
+const CourseCardHeader = ({
+  subjectCode,
+  termLabel,
+}: CourseCardHeaderProps) => {
   return (
     <div className="bg-primary-2 relative flex flex-row items-center justify-between px-[16px] pt-[20px] pb-[14px]">
       <svg
@@ -35,4 +38,4 @@ const CardHeader = ({ subjectCode, termLabel }: CardHeaderProps) => {
   );
 };
 
-export default CardHeader;
+export default CourseCardHeader;

@@ -1,10 +1,8 @@
 import { useViewportHeight } from "~/hooks/useViewportHeigh";
 import Message from "../ui/message/Message";
 import { FOOTER_HEIGHT } from "~/lib/constants";
-import Response from "../ui/response/Response";
-import SingleCourseCard from "../ui/single-course-card/SingleCourseCard";
 import { DUMMY_COURSE } from "~/lib/course.util";
-import CardComponent from "../ui/grid-course-card/components/CardComponent";
+import CourseGrid from "../ui/course-grid/CourseGrid";
 
 const Chat = () => {
   return (
@@ -20,8 +18,8 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <SingleCourseCard course={DUMMY_COURSE} />
-        <div className={`h-[${FOOTER_HEIGHT}px]`} />
+        <CourseGrid courses={[DUMMY_COURSE, DUMMY_COURSE, DUMMY_COURSE]} />
+        <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT }} />
       </div>
     </div>
   );

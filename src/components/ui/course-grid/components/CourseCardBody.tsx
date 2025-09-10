@@ -1,10 +1,10 @@
 import type { CourseCardData } from "~/lib/course.util";
 import { isoToUSDate } from "~/lib/utils";
-import CardContentItem from "../../single-course-card/components/CardContentItem";
 import { IconType } from "../../icons/Icon";
-import CardButton from "./CardButton";
+import CourseCardButton from "./CourseCardButton";
+import CardContentItem from "../../single-course-card/components/CardContentItem";
 
-const CardBody = ({ course }: { course: CourseCardData }) => {
+const CourseCardBody = ({ course }: { course: CourseCardData }) => {
   return (
     <div className="flex flex-1 flex-col p-[16px]">
       <p className="text-secondary-text-1 text-[14px]">{`${course.section.kindLabel}: ${course.section.number}`}</p>
@@ -47,7 +47,7 @@ const CardBody = ({ course }: { course: CourseCardData }) => {
         }
       />
       <div className="h-[18px]" />
-      <CardButton
+      <CourseCardButton
         text="View details"
         onClick={() => {
           window.open(
@@ -61,4 +61,4 @@ const CardBody = ({ course }: { course: CourseCardData }) => {
   );
 };
 
-export default CardBody;
+export default CourseCardBody;

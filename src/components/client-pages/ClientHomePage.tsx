@@ -11,6 +11,7 @@ import Footer from "../footer/Footer";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 import { CustomSwitch } from "../ui/CustomSwitch";
 import Chat from "../chat/Chat";
+import { useViewportWidth } from "~/hooks/useViewportWidth";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
