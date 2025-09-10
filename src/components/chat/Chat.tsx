@@ -20,7 +20,7 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <CardComponent course={DUMMY_COURSE} />
+        <SingleCourseCard course={DUMMY_COURSE} />
         <div className={`h-[${FOOTER_HEIGHT}px]`} />
       </div>
     </div>
