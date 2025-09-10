@@ -10,6 +10,8 @@ const CardBarContent = ({ course }: { course: CourseCardData }) => {
         <p className="text-secondary-text-1 text-[14px]">{`${course.courseType} -`}</p>
         <p className="text-secondary-text-4 text-[14px]">{`${isoToUSDate(course.schedule.startDate)} - ${isoToUSDate(course.schedule.endDate)}`}</p>
       </div>
+      <div className="h-[12px]" />
+      <div></div>
     </div>
   );
 };

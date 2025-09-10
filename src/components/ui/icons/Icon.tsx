@@ -1,6 +1,9 @@
 import { ArrowUpIcon } from "./components/ArrowUp.icon";
+import { CalendarIcon } from "./components/Calendar.icon";
 import { ChevronIcon } from "./components/Chevron.icon";
+import { ClockIcon } from "./components/Clock.icon";
 import { GlobeIcon } from "./components/Globe.icon";
+import { LocationIcon } from "./components/Location.icon";
 import { MagnifyingGlassIcon } from "./components/MagnifyingGlass.icon";
 import { PlusIcon } from "./components/Plus.icon";
 import { SlashIcon } from "./components/Slash.icon";
@@ -12,6 +15,9 @@ enum IconType {
   Slash,
   Globe,
   Chevron,
+  Location,
+  Calendar,
+  Clock,
 }
 
 export interface IconProps {
@@ -34,6 +40,12 @@ function getIconComponent(type: IconType) {
       return GlobeIcon;
     case IconType.Chevron:
       return ChevronIcon;
+    case IconType.Location:
+      return LocationIcon;
+    case IconType.Calendar:
+      return CalendarIcon;
+    case IconType.Clock:
+      return ClockIcon;
   }
 }
 
