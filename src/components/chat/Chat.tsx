@@ -4,6 +4,7 @@ import { FOOTER_HEIGHT } from "~/lib/constants";
 import Response from "../ui/response/Response";
 import SingleCourseCard from "../ui/single-course-card/SingleCourseCard";
 import { DUMMY_COURSE } from "~/lib/course.util";
+import CardComponent from "../ui/grid-course-card/components/CardComponent";
 
 const Chat = () => {
   return (
@@ -19,7 +20,7 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <SingleCourseCard course={DUMMY_COURSE} />
+        <CardComponent course={DUMMY_COURSE} />
         <div className={`h-[${FOOTER_HEIGHT}px]`} />
       </div>
     </div>
