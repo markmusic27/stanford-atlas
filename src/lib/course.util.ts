@@ -8,6 +8,10 @@ export interface CourseCardData {
   /** e.g., "From Player to Maker: 2D Engine-Based Game Development" ← Course.title */
   title: string;
 
+  courseType: string;
+
+  termCode: number;
+
   section: {
     /** e.g., "Lec"  ← Section.component ("LEC" → "Lec", etc.) */
     kindLabel: string;
@@ -52,10 +56,12 @@ export const DUMMY_COURSE: CourseCardData = {
   subjectCode: "CS 106B",
   termLabel: "Autumn 2025",
   title: "From Player to Maker: 2D Engine-Based Game Development",
+  termCode: 1264,
+  courseType: "Activity",
   section: {
     kindLabel: "Lec",
     number: "01",
-    classNumber: 2236,
+    classNumber: 7376,
     unitsText: "4",
   },
   schedule: {
