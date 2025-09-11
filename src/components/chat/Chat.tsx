@@ -14,8 +14,7 @@ const Chat = () => {
     fetch("/temp/example_response.json")
       .then((res) => res.text())
       .then((text) => {
-        const json = JSON.parse(text);
-        const result = parseBlocks(json);
+        const result = parseBlocks(JSON.parse(text) as unknown);
 
         const newBlocks: Block[] = result.success
           ? result.data
@@ -47,7 +46,7 @@ const Chat = () => {
           }}
         />
         <BlockRenderer blocks={blocks} />
-        <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT }} />
+        <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT * 2 }} />
       </div>
     </div>
   );
