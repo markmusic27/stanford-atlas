@@ -70,9 +70,11 @@ export const CourseGridSchema = z
 
 // *---------------- Response Schema ----------------*
 
-export const BlockSchema = z.object({
-  type: [MarkdownSchema, CourseCardSchema, CourseGridSchema],
-});
+export const BlockSchema = z.discriminatedUnion("type", [
+  MarkdownSchema,
+  CourseCardSchema,
+  CourseGridSchema,
+]);
 
 export type Block = z.infer<typeof BlockSchema>;
 
