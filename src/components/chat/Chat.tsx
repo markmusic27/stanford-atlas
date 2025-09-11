@@ -1,7 +1,6 @@
 import { useViewportHeight } from "~/hooks/useViewportHeigh";
 import Message from "../ui/message/Message";
 import { FOOTER_HEIGHT } from "~/lib/constants";
-import { DUMMY_COURSE } from "~/lib/course.util";
 import CourseGrid from "../ui/course-grid/CourseGrid";
 
 const Chat = () => {
@@ -18,7 +17,6 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <CourseGrid courses={[DUMMY_COURSE, DUMMY_COURSE, DUMMY_COURSE]} />
         <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT }} />
       </div>
     </div>

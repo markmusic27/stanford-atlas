@@ -1,0 +1,92 @@
+[
+    {"type":"markdown","markdown":"## Featured course"},
+    {
+      "type":"course-card",
+      "props":
+      {
+        "subjectCode": "CS 106B",
+        "termLabel": "Autumn 2025",
+        "title": "From Player to Maker: 2D Engine-Based Game Development",
+        "termCode": 1264,
+        "courseType": "Activity",
+        "section": {
+            "kindLabel": "Lec",
+            "number": "01",
+            "classNumber": 7376,
+            "unitsMin": 3,
+            "unitsMax": 4
+        },
+        "schedule": {
+            "startDate": "2025-09-22",
+            "endDate": "2025-12-05",
+            "days": ["Tues", "Thurs"],
+            "startTime": "10:30am",
+            "endTime": "11:50am",
+            "location": "CODA B80"
+        },
+        "instructors": [
+            { "displayName": "Arya M.", "isPrimary": true },
+            { "displayName": "Cain J.", "isPrimary": false }
+        ]
+       }
+    },
+    {"type":"markdown","markdown":"### You might also like:"},
+    {
+      "type":"course-grid",
+      "props":{"courses":[
+        {
+            "subjectCode": "CS 106B",
+            "termLabel": "Autumn 2025",
+            "title": "From Player to Maker: 2D Engine-Based Game Development",
+            "termCode": 1264,
+            "courseType": "Activity",
+            "section": {
+                "kindLabel": "Lec",
+                "number": "01",
+                "classNumber": 7376,
+                "unitsMin": 3,
+                "unitsMax": 4
+            },
+            "schedule": {
+                "startDate": "2025-09-22",
+                "endDate": "2025-12-05",
+                "days": ["Tues", "Thurs"],
+                "startTime": "10:30am",
+                "endTime": "11:50am",
+                "location": "CODA B80"
+            },
+            "instructors": [
+                { "displayName": "Arya M.", "isPrimary": true },
+                { "displayName": "Cain J.", "isPrimary": false }
+            ]
+           },
+           {
+            "subjectCode": "CS 106B",
+            "termLabel": "Autumn 2025",
+            "title": "From Player to Maker: 2D Engine-Based Game Development",
+            "termCode": 1264,
+            "courseType": "Activity",
+            "section": {
+                "kindLabel": "Lec",
+                "number": "01",
+                "classNumber": 7376,
+                "unitsMin": 3,
+                "unitsMax": 4
+            },
+            "schedule": {
+                "startDate": "2025-09-22",
+                "endDate": "2025-12-05",
+                "days": ["Tues", "Thurs"],
+                "startTime": "10:30am",
+                "endTime": "11:50am",
+                "location": "CODA B80"
+            },
+            "instructors": [
+                { "displayName": "Arya M.", "isPrimary": true },
+                { "displayName": "Cain J.", "isPrimary": false }
+            ]
+           }
+      ]}
+    }
+  ]
+  
