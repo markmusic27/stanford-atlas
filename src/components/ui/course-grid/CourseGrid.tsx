@@ -7,8 +7,8 @@ const CourseGrid = ({ courses }: { courses: CourseCardData[] }) => {
     <SingleCourseCard course={courses[0]!} />
   ) : (
     <div className="grid w-full grid-cols-1 gap-[16px] sm:grid-cols-2">
-      {courses.map((course, index) => (
-        <CourseCard key={index} course={course} />
+      {courses.map((course, i) => (
+        <CourseCard key={i} course={course} />
       ))}
     </div>
   );

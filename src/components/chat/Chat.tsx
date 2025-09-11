@@ -3,20 +3,30 @@
 import { useEffect, useState } from "react";
 import Message from "../ui/message/Message";
 import { FOOTER_HEIGHT } from "~/lib/constants";
-import { Markdown } from "../ui/Markdown";
+import BlockRenderer from "../ui/BlockRenderer";
+import { parseBlocks, type Block } from "~/lib/blocks";
 
 const Chat = () => {
-  const [markdownText, setMarkdownText] = useState<string>("");
+  const [blocks, setBlocks] = useState<Block[]>([]);
 
   useEffect(() => {
     let isMounted = true;
-    fetch("/temp/example_markdown.txt")
+    fetch("/temp/example_response.json")
       .then((res) => res.text())
       .then((text) => {
-        if (isMounted) setMarkdownText(text);
+        const json = JSON.parse(text);
+        const result = parseBlocks(json);
+
+        const newBlocks: Block[] = result.success
+          ? result.data
+          : [{ type: "markdown", markdown: "Invalid block structure." }];
+        if (isMounted) setBlocks(newBlocks);
       })
       .catch(() => {
-        if (isMounted) setMarkdownText("Failed to load markdown.");
+        if (isMounted)
+          setBlocks([
+            { type: "markdown", markdown: "Invalid block structure." },
+          ]);
       });
     return () => {
       isMounted = false;
@@ -36,7 +46,7 @@ const Chat = () => {
             id: "1",
           }}
         />
-        <Markdown text={markdownText || "Loading markdown..."} />
+        <BlockRenderer blocks={blocks} />
         <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT }} />
       </div>
     </div>
