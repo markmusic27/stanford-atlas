@@ -112,13 +112,7 @@ Reference-style link: [Example][ex-ref]
 
 Inline image (remote):
 
-![Alt text placeholder](https://via.placeholder.com/600x200?text=Image)
-
-Reference-style image:
-
-![Diagram][img-ref]
-
-[img-ref]: https://via.placeholder.com/300x150?text=Diagram "Diagram"
+![Alt text placeholder](https://stanforddaily.com/wp-content/uploads/2021/10/7-1-scaled.jpg?resize=2048,1538)
 
 ---
 
