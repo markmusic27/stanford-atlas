@@ -23,6 +23,7 @@ const ClientHomePage = () => {
     undefined,
   );
   const searchRef = useRef<HTMLDivElement>(null);
+  const vw = useViewportWidth();
 
   useEffect(() => {
     const updateSize = () => {
@@ -64,7 +65,12 @@ const ClientHomePage = () => {
     }
 
     if (isChatOpen) {
-      return windowHeight - (BAR_HEIGHT + SPACING);
+      let minimizer = 0;
+
+      if (vw && vw < 630) {
+        minimizer = 16;
+      }
+      return windowHeight - (BAR_HEIGHT + SPACING) + minimizer;
     }
 
     return (windowHeight - searchHeight) / (scale + 1);

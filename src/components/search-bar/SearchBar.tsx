@@ -8,7 +8,6 @@ import AnimatedTextarea from "./components/AnimatedTextarea";
 import { usePageTransitionStore } from "~/store/page-transition.store";
 import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
-import { AnimatePresence, motion } from "framer-motion";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 
 interface SearchBarProps {

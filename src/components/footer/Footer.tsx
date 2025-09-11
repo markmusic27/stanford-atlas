@@ -23,7 +23,7 @@ const Footer = ({ className, isChatOpen }: FooterProps) => {
           : "Courses last updated yesterday @ 11:59 PM"}
       </p>
       <div
-        className={`${isChatOpen ? "h-[25px]" : "h-[36px]"} transition-all duration-300`}
+        className={`${isChatOpen ? "h-[12px] sm:h-[25px]" : "h-[36px]"} transition-all duration-300`}
       />
     </div>
   );
