@@ -117,15 +117,7 @@ const ClientHomePage = () => {
         </AnimatedCollapsable>
       </div>
 
-      <Footer className="z-1" isChatOpen={isChatOpen}>
-        <CustomSwitch
-          defaultEnabled={false}
-          className="absolute bottom-10 left-10 scale-[1.2]"
-          onToggle={(e) => {
-            setIsChatOpen(e);
-          }}
-        />
-      </Footer>
+      <Footer className="z-1" isChatOpen={isChatOpen} />
     </main>
   );
 };
