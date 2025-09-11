@@ -1,6 +1,6 @@
-import type { CourseCardData } from "~/lib/course.util";
 import CourseCard from "./components/CourseCard";
 import SingleCourseCard from "../single-course-card/SingleCourseCard";
+import type { CourseCardData } from "~/lib/blocks";
 
 const CourseGrid = ({ courses }: { courses: CourseCardData[] }) => {
   return courses.length == 1 ? (

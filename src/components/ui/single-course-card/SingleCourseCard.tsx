@@ -1,11 +1,11 @@
 "use client";
 
-import type { CourseCardData } from "~/lib/course.util";
 import CursorScale from "../CursorScale";
 import CardBarHeader from "./components/CardBarHeader";
 import CardBarContent from "./components/CardBarContent";
 import { useEffect, useRef, useState } from "react";
 import CardComponent from "../course-grid/components/CourseCard";
+import type { CourseCardData } from "~/lib/blocks";
 
 interface SingleCourseCardProps {
   course: CourseCardData;

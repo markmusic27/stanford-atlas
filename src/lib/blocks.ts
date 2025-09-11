@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// *---------------- Course Card Block ----------------*
+// *---------------- Course Card Schemas ----------------*
 
 export const SectionSchema = z
   .object({
@@ -23,22 +23,61 @@ export const ScheduleSchema = z
   })
   .strict();
 
-export const InstructorSchema = z.object({
-  displayName: z.string(),
-  isPrimary: z.boolean(),
+export const InstructorSchema = z
+  .object({
+    displayName: z.string(),
+    isPrimary: z.boolean(),
+  })
+  .strict();
+
+export const CourseCardDataSchema = z
+  .object({
+    subjectCode: z.string(),
+    termLabel: z.string(),
+    title: z.string(),
+    termCode: z.number(),
+    courseType: z.string(),
+    section: SectionSchema,
+    schedule: ScheduleSchema,
+    instructors: z.array(InstructorSchema),
+  })
+  .strict();
+
+export type CourseCardData = z.infer<typeof CourseCardDataSchema>;
+
+// *----------------  Block Schemas ----------------*
+
+export const MarkdownSchema = z
+  .object({
+    type: z.literal("markdown"),
+    markdown: z.string(),
+  })
+  .strict();
+
+export const CourseCardSchema = z
+  .object({
+    type: z.literal("course-card"),
+    props: CourseCardDataSchema,
+  })
+  .strict();
+
+export const CourseGridSchema = z
+  .object({
+    type: z.literal("course-grid"),
+    props: z.array(CourseCardDataSchema),
+  })
+  .strict();
+
+// *---------------- Response Schema ----------------*
+
+export const BlockSchema = z.object({
+  type: [MarkdownSchema, CourseCardSchema, CourseGridSchema],
 });
 
-export const CourseCardSchema = z.object({
-  subjectCode: z.string(),
-  termLabel: z.string(),
-  title: z.string(),
-  termCode: z.number(),
-  courseLabel: z.string(),
-  section: SectionSchema,
-  schedule: ScheduleSchema,
-  instructors: z.array(InstructorSchema),
-});
+export type Block = z.infer<typeof BlockSchema>;
 
-// *---------------- Markdown Block ----------------*
+export const BlocksSchema = z.array(BlockSchema);
 
-// *---------------- Response Block ----------------*
+export function parseBlocks(raw: unknown) {
+  return BlocksSchema.safeParse(raw);
+}

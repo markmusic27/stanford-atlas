@@ -1,6 +1,6 @@
-import type { CourseCardData } from "~/lib/course.util";
 import CourseCardHeader from "./CourseCardHeader";
 import CourseCardBody from "./CourseCardBody";
+import type { CourseCardData } from "~/lib/blocks";
 
 interface CourseCard {
   course: CourseCardData;

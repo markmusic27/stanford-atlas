@@ -33,7 +33,7 @@
     {"type":"markdown","markdown":"### You might also like:"},
     {
       "type":"course-grid",
-      "props":{"courses":[
+      "props":[
         {
             "subjectCode": "CS 106B",
             "termLabel": "Autumn 2025",
@@ -86,7 +86,7 @@
                 { "displayName": "Cain J.", "isPrimary": false }
             ]
            }
-      ]}
+      ]
     }
   ]
   

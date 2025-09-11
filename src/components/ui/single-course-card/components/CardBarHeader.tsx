@@ -1,4 +1,4 @@
-import type { CourseCardData } from "~/lib/course.util";
+import type { CourseCardData } from "~/lib/blocks";
 
 const CardBarHeader = ({ course }: { course: CourseCardData }) => {
   return (

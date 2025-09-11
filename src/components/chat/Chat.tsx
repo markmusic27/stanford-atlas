@@ -1,9 +1,28 @@
-import { useViewportHeight } from "~/hooks/useViewportHeigh";
+"use client";
+
+import { useEffect, useState } from "react";
 import Message from "../ui/message/Message";
 import { FOOTER_HEIGHT } from "~/lib/constants";
-import CourseGrid from "../ui/course-grid/CourseGrid";
+import { Markdown } from "../ui/Markdown";
 
 const Chat = () => {
+  const [markdownText, setMarkdownText] = useState<string>("");
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/temp/example_markdown.txt")
+      .then((res) => res.text())
+      .then((text) => {
+        if (isMounted) setMarkdownText(text);
+      })
+      .catch(() => {
+        if (isMounted) setMarkdownText("Failed to load markdown.");
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className="absolute h-full w-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[800px] flex-col gap-[44px] px-[16px] pt-[32px] md:pt-[48px]">
@@ -17,6 +36,7 @@ const Chat = () => {
             id: "1",
           }}
         />
+        <Markdown text={markdownText || "Loading markdown..."} />
         <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT }} />
       </div>
     </div>

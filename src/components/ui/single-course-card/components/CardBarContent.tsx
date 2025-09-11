@@ -1,7 +1,7 @@
-import type { CourseCardData } from "~/lib/course.util";
 import { isoToUSDate } from "~/lib/utils";
 import CardContentItem from "./CardContentItem";
 import { IconType } from "../../icons/Icon";
+import type { CourseCardData } from "~/lib/blocks";
 
 const CardBarContent = ({ course }: { course: CourseCardData }) => {
   return (

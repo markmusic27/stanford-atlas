@@ -23,6 +23,7 @@
   --color-primary-8: #b3b4b4;
   --color-primary-9: #eceded;
   --color-primary-10: #ebebeb;
+  --color-primary-11: #d9d9d9;
   --color-primary-accent: #262626;
 
   /* Text Colors */
@@ -77,4 +78,94 @@
     rgba(var(--color-primary-2-rgb), 1) 60%,
     rgba(var(--color-primary-2-rgb), 0) 100%
   );
+}
+
+/* Markdown styles */
+.markdown {
+  @apply text-primary-text max-w-none;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 .markdown h1 {
+  @apply mt-4 mb-2 text-[24px] font-[500];
+}
+.markdown h2 {
+  @apply mt-4 mb-2 text-[20px] font-[500];
+}
+.markdown h3 {
+  @apply mt-3 mb-2.5 text-[18px] font-[500];
+}
+.markdown h4 {
+  @apply mt-3 mb-2.5 text-[16px] font-[500];
+}
+.markdown h5 {
+  @apply mt-2 mb-1 text-[16px] font-[500];
+}
+.markdown h6 {
+  @apply mt-2 mb-1 text-[16px] font-[350];
+}
+
+.markdown p {
+  @apply text-primary-text my-2 leading-7;
+}
+.markdown strong {
+  @apply font-semibold;
+}
+.markdown em {
+  @apply italic;
+}
+.markdown del {
+  @apply line-through;
+}
+
+.markdown a {
+  @apply text-blue-600 underline hover:opacity-80;
+}
+
+.markdown ul {
+  @apply my-3 list-disc pl-6;
+}
+.markdown ol {
+  @apply my-3 list-decimal pl-6;
+}
+.markdown li {
+  @apply my-1;
+}
+
+.markdown blockquote {
+  @apply border-primary-11 text-primary-text my-4 rounded-l-[3px] border-l-[3px] pl-[18px];
+}
+
+.markdown code {
+  @apply bg-primary-6/70 text-primary-text rounded-sm px-1.5 py-0.5 font-mono text-sm;
+}
+
+.markdown pre {
+  @apply my-4 overflow-x-auto rounded-md bg-[#0b0c0e] p-4 text-[#f0f3f6];
+}
+
+.markdown pre > code {
+  @apply bg-transparent p-0 text-inherit;
+}
+
+.markdown hr {
+  @apply border-primary-11 my-8;
+}
+
+.markdown table {
+  @apply my-6 w-full border-collapse text-left;
+}
+.markdown th {
+  @apply border-primary-8 border-b pb-2 font-semibold;
+}
+.markdown td {
+  @apply border-primary-9 border-b py-2 align-top;
+}
+
+.dark .markdown {
+  @apply text-primary-1;
 }

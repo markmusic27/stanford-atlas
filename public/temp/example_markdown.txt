@@ -1,0 +1,209 @@
+# Markdown Notes (No LaTeX)
+
+Use this as a quick visual tour of common Markdown features—everything here avoids LaTeX.
+
+---
+
+## Headings
+
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+---
+
+## Paragraphs & Line Breaks
+
+A normal paragraph is just text wrapped at any width.
+
+Line break (hard break) after two spaces at end of line:  
+This sentence appears on the next line.
+
+---
+
+## Emphasis
+
+*Italic*  
+**Bold**  
+***Bold + Italic***  
+~~Strikethrough~~  
+
+Escaped characters: \*not italic\*, \_not italic\_.
+
+---
+
+## Inline Code
+
+Use backticks for `inline code` within a sentence.
+
+---
+
+## Code Blocks
+
+```bash
+# Shell
+echo "Hello, Markdown"
+```
+
+```javascript
+// JavaScript
+function sum(a, b) {
+  return a + b;
+}
+console.log(sum(2, 3));
+```
+
+```diff
+# Diffs
+- old line
++ new line
+```
+
+---
+
+## Blockquotes
+
+> A single-level blockquote for highlighting a passage.
+
+> **Tip:** You can format inside blockquotes.
+>
+> > Nested blockquote for layered commentary.
+
+---
+
+## Lists
+
+### Unordered
+- Item A
+  - Sub-item A1
+    - Sub-item A1a
+- Item B
+
+### Ordered
+1. Step one
+2. Step two
+   1. Sub-step 2.1
+   2. Sub-step 2.2
+3. Step three
+
+### Task Lists (GFM)
+- [x] Write outline
+- [x] Draft content
+- [ ] Polish and publish
+
+---
+
+## Links
+
+Inline link: [OpenAI](https://www.openai.com)  
+With title: [MDN Web Docs](https://developer.mozilla.org "MDN")  
+Autolink: <https://example.com>
+
+Reference-style link: [Example][ex-ref]
+
+[ex-ref]: https://example.com "Example Reference"
+
+---
+
+## Images
+
+Inline image (remote):
+
+![Alt text placeholder](https://via.placeholder.com/600x200?text=Image)
+
+Reference-style image:
+
+![Diagram][img-ref]
+
+[img-ref]: https://via.placeholder.com/300x150?text=Diagram "Diagram"
+
+---
+
+## Tables
+
+| Feature        | Supported | Notes                          |
+|----------------|:---------:|--------------------------------|
+| Alignment      |    Yes    | Left, center, right            |
+| Multiline text |    Yes    | Use `<br>` if needed           |
+| Code in cells  |    Yes    | `inline` works                 |
+
+Alignment demo:
+
+| Left | Center | Right |
+|:-----|:------:|------:|
+| a    |   b    |     c |
+| 10   |  200   |  3000 |
+
+---
+
+## Horizontal Rules
+
+Three or more `-`, `*`, or `_`:
+
+---
+***
+___
+
+---
+
+## Footnotes (GFM)
+
+A sentence with a footnote reference.[^1] Another reference here.[^note]
+
+[^1]: This is the first footnote.
+[^note]: Another footnote with **formatting** and a link to <https://example.com>.
+
+---
+
+## Definition Lists (Parser-Dependent)
+
+Term
+: Definition for the term.
+
+Another Term
+: First definition
+: Second definition
+
+*(Note: Works in some Markdown parsers like Kramdown; not standard GFM.)*
+
+---
+
+## Details/Disclosure (HTML-in-Markdown)
+
+<details>
+  <summary>Click to expand details</summary>
+  This content is hidden by default and shown when expanded.
+</details>
+
+---
+
+## Admonition-Style (Portable)
+
+> **Note**  
+> This is a portable “admonition” using a blockquote and bold label.
+
+> **Warning**  
+> Use caution with experimental features.
+
+---
+
+## Escaping & Special Characters
+
+Backslash escapes for literal characters:  
+\* \_ \` \# \[ \] \( \) \> \! \| \\
+
+Inline HTML (allowed in many parsers):  
+<span style="font-variant: small-caps;">Small caps (if your renderer allows inline HTML)</span>.
+
+HTML comment (won’t render in many viewers):
+<!-- Hidden note: this will not be displayed -->
+
+---
+
+## Reference Section (Examples You Can Reuse)
+
+- Link reference: `[label][ex-ref]` with definition at the bottom.  
+- Image reference: `![alt][img-ref]`
