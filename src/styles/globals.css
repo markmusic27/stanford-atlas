@@ -75,7 +75,7 @@
 .footer-gradient {
   background: linear-gradient(
     to top,
-    rgba(var(--color-primary-2-rgb), 1) 60%,
+    rgba(var(--color-primary-2-rgb), 1) 70%,
     rgba(var(--color-primary-2-rgb), 0) 100%
   );
 }
@@ -109,13 +109,14 @@
   @apply mt-2 mb-1 text-[16px] font-[350];
 }
 
-.markdown img {
-  @apply rounded-[16px];
-}
-
 .markdown p {
   @apply text-primary-text my-2 leading-7;
 }
+
+.markdown img {
+  @apply rounded-[16px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)];
+}
+
 .markdown strong {
   @apply font-semibold;
 }
