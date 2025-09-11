@@ -137,15 +137,20 @@
 }
 
 .markdown blockquote {
-  @apply border-primary-11 text-primary-text my-4 rounded-l-[3px] border-l-[3px] pl-[18px];
+  @apply text-primary-text relative my-4 pl-[18px];
+}
+
+.markdown blockquote::before {
+  content: "";
+  @apply bg-primary-11 absolute top-0 bottom-0 left-0 w-[3px] rounded-full;
 }
 
 .markdown code {
-  @apply bg-primary-6/70 text-primary-text rounded-sm px-1.5 py-0.5 font-mono text-sm;
+  @apply bg-primary-6 text-primary-text rounded-[4px] px-1.5 py-0.5 font-mono text-sm;
 }
 
 .markdown pre {
-  @apply my-4 overflow-x-auto rounded-md bg-[#0b0c0e] p-4 text-[#f0f3f6];
+  @apply bg-primary-4 text-primary-text my-3 overflow-x-auto rounded-md p-4;
 }
 
 .markdown pre > code {
@@ -160,7 +165,7 @@
   @apply my-6 w-full border-collapse text-left;
 }
 .markdown th {
-  @apply border-primary-8 border-b pb-2 font-semibold;
+  @apply border-primary-11 border-b pb-2 font-[500];
 }
 .markdown td {
   @apply border-primary-9 border-b py-2 align-top;
