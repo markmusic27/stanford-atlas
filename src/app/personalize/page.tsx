@@ -4,7 +4,7 @@ import PersonalizationField from "~/components/personalization-field/Personaliza
 import Card from "~/components/ui/card/Card";
 import Logo from "~/components/ui/Logo";
 import SaveButton from "~/components/ui/SaveButton";
-import { usePageTransitionStore } from "~/store/page-transition.store";
+import { usePageTransitionStore } from "~/store/pageTransition.store";
 
 export default function PersonalizationPage() {
   return <ClientPersonalizationPage />;

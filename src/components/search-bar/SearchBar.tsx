@@ -5,7 +5,7 @@ import CursorShimmer from "../ui/CursorShimmer";
 import { useEffect, useState } from "react";
 import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
-import { usePageTransitionStore } from "~/store/page-transition.store";
+import { usePageTransitionStore } from "~/store/pageTransition.store";
 import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";

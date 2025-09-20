@@ -24,3 +24,7 @@ export const GeneratedContentSchema = z.discriminatedUnion("type", [
   GeneratedCourseSchema,
   GeneratedCourseGridSchema,
 ]);
+
+export type GeneratedContent = z.infer<typeof GeneratedContentSchema>;
+
+export const GeneratedCOntentListSchema = z.array(GeneratedContentSchema);

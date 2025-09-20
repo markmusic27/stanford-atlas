@@ -1,6 +1,6 @@
 "use client";
 
-import { usePageTransitionStore } from "~/store/page-transition.store";
+import { usePageTransitionStore } from "~/store/pageTransition.store";
 import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
@@ -14,7 +14,7 @@ import Chat from "../chat/Chat";
 import { useViewportWidth } from "~/hooks/useViewportWidth";
 
 const ClientHomePage = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(true);
   const [windowHeight, setWindowHeight] = useState<number | undefined>(
     undefined,
   );

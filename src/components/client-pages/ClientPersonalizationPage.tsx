@@ -6,7 +6,7 @@ import Logo from "../ui/Logo";
 import SaveButton from "../ui/SaveButton";
 import { useFadeIn } from "../../hooks/useFadeIn";
 import { TRANSITION_DURATION } from "~/lib/constants";
-import { usePageTransitionStore } from "~/store/page-transition.store";
+import { usePageTransitionStore } from "~/store/pageTransition.store";
 import { useRouter } from "next/navigation";
 
 const ClientPersonalizationPage = () => {

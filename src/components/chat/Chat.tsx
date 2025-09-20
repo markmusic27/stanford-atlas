@@ -9,29 +9,6 @@ import { parseBlocks, type Block } from "~/lib/blocks";
 const Chat = () => {
   const [blocks, setBlocks] = useState<Block[]>([]);
 
-  useEffect(() => {
-    let isMounted = true;
-    fetch("/temp/example_response.json")
-      .then((res) => res.text())
-      .then((text) => {
-        const result = parseBlocks(JSON.parse(text) as unknown);
-
-        const newBlocks: Block[] = result.success
-          ? result.data
-          : [{ type: "markdown", markdown: "Invalid block structure." }];
-        if (isMounted) setBlocks(newBlocks);
-      })
-      .catch(() => {
-        if (isMounted)
-          setBlocks([
-            { type: "markdown", markdown: "Invalid block structure." },
-          ]);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   return (
     <div className="absolute h-full w-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[800px] flex-col gap-[44px] px-[16px] pt-[32px] md:pt-[48px]">
