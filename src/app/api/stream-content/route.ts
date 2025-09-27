@@ -1,7 +1,9 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { generateText, type ModelMessage } from "ai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
+import { Schema } from "./returnSchema";
+import { PROMPT } from "./prompt";
+import { streamObject, type ModelMessage } from "ai";
 
 const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
 
@@ -19,9 +21,11 @@ export const POST = async (req: NextRequest) => {
 
     const messages = body as ModelMessage[];
 
-    const result = await generateText({
+    const { object } = await streamObject({
       model: openai("gpt-4o"),
-      messages,
+      schema: Schema,
+      messages: messages,
+      system: PROMPT,
     });
 
     return Response.json(result.response.messages);

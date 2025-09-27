@@ -9,7 +9,6 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
     OPENAI_API_KEY: z.string(),
-    SYSTEM_PROMPT: z.string().optional(),
     API_SECRET_KEY: z.string(),
   },
 
@@ -29,7 +28,6 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    SYSTEM_PROMPT: process.env.SYSTEM_PROMPT,
     API_SECRET_KEY: process.env.API_SECRET_KEY,
     NEXT_PUBLIC_API_SECRET_KEY: process.env.NEXT_PUBLIC_API_SECRET_KEY,
   },

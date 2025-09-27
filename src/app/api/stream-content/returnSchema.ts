@@ -1,0 +1,58 @@
+import z from "zod";
+
+export const MarkdownSchema = z
+  .object({
+    type: z
+      .literal("markdown")
+      .describe(
+        "Markdown string. Use for explanations, summaries, or guidance. Supports all markdown blocks (except LATEX). Do not invent course details.",
+      ),
+    data: z.string(),
+  })
+  .strict();
+
+export const CourseCardSchema = z
+  .object({
+    type: z.literal("course-card"),
+    data: z
+      .number()
+      .describe(
+        "Single numeric course ID (example: 225317). Do not use catalog codes like 'CS 106A'.",
+      ),
+  })
+  .strict();
+
+export const CourseListSchema = z
+  .object({
+    type: z.literal("course-list"),
+    data: z
+      .array(
+        z
+          .number()
+          .describe(
+            "Single numeric course ID (example: 225317). Do not use catalog codes like 'CS 106A'.",
+          ),
+      )
+      .describe(
+        "Array of numeric course IDs. Deduplicate and order by relevance.",
+      ),
+  })
+  .strict();
+
+export const Block = z
+  .discriminatedUnion("type", [
+    MarkdownSchema,
+    CourseCardSchema,
+    CourseListSchema,
+  ])
+  .describe(
+    "One UI block. Choose among: 'markdown' (explain/guide), 'course-card' (spotlight one course), 'course-list' (several related courses).",
+  );
+
+export const Schema = z.object({
+  payload: z
+    .array(Block)
+    .describe(
+      "List of UI blocks shown to user: markdown | course-card | course-list",
+    ),
+});
