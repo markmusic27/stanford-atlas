@@ -1,67 +1,40 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import type { ModelMessage } from "ai";
-
-interface StreamContentResponse {
-  text: string;
-  usage?: {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-  };
-  finishReason: string;
-}
-
-interface StreamContentError {
-  error: string;
-}
+import { env } from "~/env";
 
 export const useStreamContent = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [response, setResponse] = useState<StreamContentResponse | null>(null);
-
-  const streamContent = useCallback(async (messages: ModelMessage[]) => {
-    setIsLoading(true);
-    setError(null);
-    setResponse(null);
-
+  const stream = useCallback(async (message: ModelMessage) => {
+    // Set is loading to true
+    const messages = [message];
     try {
       const res = await fetch("/api/stream-content", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${env.NEXT_PUBLIC_API_SECRET_KEY}`,
         },
-        body: JSON.stringify({ body: messages }),
+        body: JSON.stringify(messages),
       });
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      const data = (await res.json()) as
-        | StreamContentResponse
-        | StreamContentError;
+      const newMessages = (await res.json()) as ModelMessage[];
 
-      if ("error" in data) {
-        throw new Error(data.error);
-      }
-
-      setResponse(data);
-      return data;
+      console.log(newMessages);
+      return newMessages;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
-      setError(errorMessage);
+      console.log(errorMessage);
       throw err;
     } finally {
-      setIsLoading(false);
+      console.log("DONE");
     }
   }, []);
 
   return {
-    streamContent,
-    isLoading,
-    error,
-    response,
+    stream,
   };
 };

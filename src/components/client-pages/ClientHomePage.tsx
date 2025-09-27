@@ -13,6 +13,8 @@ import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 import Chat from "../chat/Chat";
 import { useViewportWidth } from "~/hooks/useViewportWidth";
 import { useChatStore } from "~/store/chat.store";
+import { useStreamContent } from "~/hooks/useStreamContent";
+import type { UserModelMessage } from "ai";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -25,28 +27,20 @@ const ClientHomePage = () => {
   );
   const searchRef = useRef<HTMLDivElement>(null);
   const vw = useViewportWidth();
-  const { append } = useChatStore();
+  const { stream } = useStreamContent();
 
   const handleOnSubmit = async (query: string) => {
-    // Check if not already streaming
-    if (useChatStore.getState().isStreaming) {
-      return;
-    }
+    // TODO: Check if the AI is already streaming text
 
     const trimmed = query.trim();
     if (!trimmed) return;
 
-    // // reset previous generated output
-    useChatStore.getState().setGenerated(undefined);
+    const message: UserModelMessage = {
+      role: "user",
+      content: trimmed,
+    };
 
-    // Adds message to list of blocks
-    append([{ type: "message", content: query }]);
-
-    // TODO: send message to AI
-    console.log(trimmed);
-
-    // start streaming and then open chat
-    setIsChatOpen(true);
+    stream(message);
   };
 
   useEffect(() => {
