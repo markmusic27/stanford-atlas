@@ -1,22 +1,34 @@
 import { create } from "zustand";
-import type { GeneratedContent } from "~/lib/generatedContent";
+import type { Block } from "~/lib/blocks";
 
 type ChatStore = {
-  context: GeneratedContent[];
+  content: Block[];
   isStreaming: boolean;
   error?: string;
-  append: (newItems: GeneratedContent[]) => void;
+  generated?: unknown;
+  append: (newItems: Block[]) => void;
+  setContent: (items: Block[]) => void;
   setStreaming: (v: boolean) => void;
   setError: (e?: string) => void;
+  setGenerated: (items?: unknown) => void;
   reset: () => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  context: [],
+  content: [],
   isStreaming: false,
   error: undefined,
-  append: (newItems) => set({ context: [...get().context, ...newItems] }),
+  generated: undefined,
+  append: (newItems) => set({ content: [...get().content, ...newItems] }),
+  setContent: (items) => set({ content: items }),
   setStreaming: (v) => set({ isStreaming: v }),
   setError: (e) => set({ error: e }),
-  reset: () => set({ context: [], isStreaming: false, error: undefined }),
+  setGenerated: (items) => set({ generated: items }),
+  reset: () =>
+    set({
+      content: [],
+      isStreaming: false,
+      error: undefined,
+      generated: undefined,
+    }),
 }));

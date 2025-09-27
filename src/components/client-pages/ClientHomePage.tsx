@@ -6,15 +6,16 @@ import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
 import { BAR_HEIGHT, SPACING, TRANSITION_DURATION } from "~/lib/constants";
 import { useFadeIn } from "~/hooks/useFadeIn";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import Footer from "../footer/Footer";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
-import { CustomSwitch } from "../ui/CustomSwitch";
 import Chat from "../chat/Chat";
 import { useViewportWidth } from "~/hooks/useViewportWidth";
+import { useChatStore } from "~/store/chat.store";
 
 const ClientHomePage = () => {
-  const [isChatOpen, setIsChatOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [windowHeight, setWindowHeight] = useState<number | undefined>(
     undefined,
   );
@@ -24,26 +25,62 @@ const ClientHomePage = () => {
   );
   const searchRef = useRef<HTMLDivElement>(null);
   const vw = useViewportWidth();
+  const { append } = useChatStore();
+
+  const handleOnSubmit = async (query: string) => {
+    // Check if not already streaming
+    if (useChatStore.getState().isStreaming) {
+      return;
+    }
+
+    const trimmed = query.trim();
+    if (!trimmed) return;
+
+    // // reset previous generated output
+    useChatStore.getState().setGenerated(undefined);
+
+    // Adds message to list of blocks
+    append([{ type: "message", content: query }]);
+
+    // TODO: send message to AI
+    console.log(trimmed);
+
+    // start streaming and then open chat
+    setIsChatOpen(true);
+  };
 
   useEffect(() => {
+    let rafId: number | null = null;
     const updateSize = () => {
-      if (searchRef.current) {
-        setSearchHeight(searchRef.current.offsetHeight);
-      }
+      if (rafId != null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (searchRef.current) {
+          const next = searchRef.current.offsetHeight;
+          setSearchHeight((prev) => (prev === next ? prev : next));
+        }
+      });
     };
 
     updateSize();
 
     window.addEventListener("resize", updateSize);
 
-    return () => window.removeEventListener("resize", updateSize);
+    return () => {
+      if (rafId != null) cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", updateSize);
+    };
   }, []);
 
   // Animate Logo collapse/expand while also removing it from layout when collapsed
 
   useEffect(() => {
+    let rafId: number | null = null;
     const updateWindowHeight = () => {
-      setWindowHeight(window.innerHeight);
+      if (rafId != null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const next = window.innerHeight;
+        setWindowHeight((prev) => (prev === next ? prev : next));
+      });
     };
 
     // Set initial height
@@ -54,6 +91,7 @@ const ClientHomePage = () => {
 
     // Cleanup event listener on unmount
     return () => {
+      if (rafId != null) cancelAnimationFrame(rafId);
       window.removeEventListener("resize", updateWindowHeight);
     };
   }, []);
@@ -75,6 +113,11 @@ const ClientHomePage = () => {
 
     return (windowHeight - searchHeight) / (scale + 1);
   };
+
+  const spacing = useMemo(
+    () => computeSpacing(),
+    [windowHeight, searchHeight, isChatOpen, vw],
+  );
 
   // Transition state
   const { opacity, transition } = useFadeIn(TRANSITION_DURATION);
@@ -99,29 +142,24 @@ const ClientHomePage = () => {
       </div>
 
       {/* Search Container */}
-      <div
+      <motion.div
         ref={searchRef}
-        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[16px] transition-[top] duration-500 ease-in-out`}
-        style={{
-          top: computeSpacing(),
-        }}
+        className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[16px] will-change-transform`}
+        initial={false}
+        animate={{ y: spacing }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
       >
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <Logo />
           <div className="h-[10dvh] max-h-[95px] min-h-[40px]" />
         </AnimatedCollapsable>
 
-        <SearchBar
-          onSubmit={(query) => {
-            console.log(query);
-          }}
-          isChatOpen={isChatOpen}
-        />
+        <SearchBar onSubmit={handleOnSubmit} isChatOpen={isChatOpen} />
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <div className="h-[36px]" />
           <Peripherals />
         </AnimatedCollapsable>
-      </div>
+      </motion.div>
 
       <Footer className="z-1" isChatOpen={isChatOpen} />
     </main>

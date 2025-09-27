@@ -9,6 +9,7 @@ import { usePageTransitionStore } from "~/store/pageTransition.store";
 import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
+import { useChatStore } from "~/store/chat.store";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
@@ -19,6 +20,8 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
   const enqueue = usePageTransitionStore((state) => state.enqueue);
   const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
+
+  const { isStreaming } = useChatStore();
 
   useEffect(() => {
     dequeue();
@@ -33,7 +36,13 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
 
   return (
     <form
-      action={() => onSubmit(query)}
+      action={() => {
+        onSubmit(query);
+
+        if (!isStreaming) {
+          setQuery("");
+        }
+      }}
       className={`bg-primary-1 border-primary-9 flex w-full flex-row rounded-[24px] border-[1px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]`}
       style={{
         transition: "padding 300ms ease-in-out",

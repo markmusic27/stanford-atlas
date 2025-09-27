@@ -68,12 +68,40 @@ export const CourseGridSchema = z
   })
   .strict();
 
+export const MessageSchema = z
+  .object({
+    type: z.literal("message"),
+    content: z.string(),
+  })
+  .strict();
+
+export const GeneratedCourseCardSchema = z
+  .object({
+    type: z.literal("course-card-from-id"),
+    id: z.string(),
+  })
+  .strict();
+
+export const GeneratedCourseGridSchema = z
+  .object({
+    type: z.literal("course-grid-from-ids"),
+    ids: z.array(z.string()),
+  })
+  .strict();
+
 // *---------------- Response Schema ----------------*
 
 export const BlockSchema = z.discriminatedUnion("type", [
   MarkdownSchema,
   CourseCardSchema,
   CourseGridSchema,
+  MessageSchema,
+]);
+
+export const GeneratedContentSchema = z.discriminatedUnion("type", [
+  MarkdownSchema,
+  GeneratedCourseCardSchema,
+  GeneratedCourseGridSchema,
 ]);
 
 export type Block = z.infer<typeof BlockSchema>;
