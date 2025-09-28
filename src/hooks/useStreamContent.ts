@@ -17,9 +17,9 @@ export const useStreamContent = () => {
     const parsed = PayloadSchema.safeParse(obj);
     if (parsed.success) {
       const data = parsed.data;
-      if (data) {
+      if (data && data.blocks) {
         // Only update when we have a payload for the response entry
-        edit({ type: "response", payload: data });
+        edit({ type: "response", payload: data.blocks });
       }
     }
   };

@@ -1,7 +1,7 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
-import { PayloadSchema, ResponseSchema } from "./returnSchema";
+import { PayloadSchema } from "./returnSchema";
 import { PROMPT } from "./prompt";
 import { streamObject, type ModelMessage } from "ai";
 
@@ -21,20 +21,6 @@ export const POST = async (req: NextRequest) => {
     const cloned = req.clone();
     const messages = (await cloned.json()) as ModelMessage[];
 
-    const response = streamObject({
-      model: openai("gpt-4o"),
-      schema: PayloadSchema,
-      messages: messages,
-      system: PROMPT,
-    });
-
-    for await (const obj of response.partialObjectStream) {
-      console.clear();
-      console.dir(obj);
-    }
-
-    return;
-
     // Stream partial objects to the client as NDJSON
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
@@ -42,11 +28,73 @@ export const POST = async (req: NextRequest) => {
 
     (async () => {
       try {
-        for await (const obj of response.partialObjectStream) {
-          console.clear();
-          console.dir(obj);
-          const line = JSON.stringify(obj) + "\n";
-          await writer.write(encoder.encode(line));
+        const maxAttempts = 3;
+        let attempt = 1;
+        let finalPayload: unknown = null;
+        let lastError: string | null = null;
+
+        const runAttempt = async (
+          attemptMessages: ModelMessage[],
+          shouldStream: boolean,
+        ) => {
+          const response = streamObject({
+            model: openai("gpt-4o"),
+            schema: PayloadSchema,
+            messages: attemptMessages,
+            system: PROMPT,
+          });
+
+          let lastObj: unknown = null;
+          for await (const obj of response.partialObjectStream) {
+            lastObj = obj;
+            if (shouldStream) {
+              const line = JSON.stringify(obj) + "\n";
+              await writer.write(encoder.encode(line));
+            }
+          }
+          return lastObj;
+        };
+
+        // First attempt: stream to client as usual
+        finalPayload = await runAttempt(messages, true);
+
+        // Validate
+        let validation = PayloadSchema.safeParse(finalPayload);
+        if (!validation.success) {
+          lastError = validation.error.message;
+
+          // Retry up to maxAttempts without streaming
+          while (attempt < maxAttempts) {
+            attempt++;
+
+            const systemErrorMessage: ModelMessage = {
+              role: "system",
+              content:
+                `The previous assistant output failed schema validation. Error: ${lastError}. ` +
+                `You must return ONLY a JSON object that strictly matches this schema (no extra fields, no commentary): ${PayloadSchema.toString()}`,
+            };
+
+            finalPayload = await runAttempt(
+              [...messages, systemErrorMessage],
+              true,
+            );
+
+            validation = PayloadSchema.safeParse(finalPayload);
+            if (validation.success) {
+              break;
+            }
+            lastError = validation.error.message;
+          }
+        }
+
+        if (!validation.success) {
+          const errorPayload =
+            JSON.stringify({
+              error: true,
+              reason: "Schema validation failed after max retry attempts",
+              details: lastError,
+            }) + "\n";
+          await writer.write(encoder.encode(errorPayload));
         }
       } catch (err) {
         const errorPayload = JSON.stringify({ error: true }) + "\n";

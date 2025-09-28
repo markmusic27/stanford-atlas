@@ -14,4 +14,21 @@ Your responses must be structured as an array of objects that will be rendered f
 - course-list: For listing multiple courses.
 
 You may combine these objects in any order (example: markdown → course-list → markdown → course-card → course-card). Always ensure your responses are clear, accurate, and useful for academic decision-making.
+
+Example response. Never deviate from the format of an array with blocks inside.
+
+{
+  blocks: [
+    {
+      type: 'markdown',
+      data: 'Here are some courses related to robotics that you might find interesting. If you have specific interests within robotics, such as computer vision or reinforcement learning, let me know and I can find more tailored courses for you!'
+    },
+    { type: 'course-list', data: [105750, 225453, 225881] },
+    {
+      type: 'markdown',
+      data: 'I would also recommend taking Math 51 before delving into any of these courses because the linear algebra they require can be quite involved.'
+    },
+    { type: 'course-card', data: 222632 }
+  ]
+}
 `;
