@@ -28,6 +28,13 @@ export const POST = async (req: NextRequest) => {
       system: PROMPT,
     });
 
+    for await (const obj of response.partialObjectStream) {
+      console.clear();
+      console.dir(obj);
+    }
+
+    return;
+
     // Stream partial objects to the client as NDJSON
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();

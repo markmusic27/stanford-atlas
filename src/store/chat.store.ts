@@ -4,7 +4,7 @@ import type { ChatHistory } from "~/app/api/stream-content/returnSchema";
 type ChatStore = {
   isStreaming: boolean;
   errorMessage: string | null;
-  history: ChatHistory[];
+  chatHistory: ChatHistory[];
   editingId: number;
   setIsStreaming: (isStreaming: boolean) => void;
   setErrorMessage: (message: string | null) => void;
@@ -17,27 +17,32 @@ type ChatStore = {
 export const useChatStore = create<ChatStore>((set, get) => ({
   isStreaming: false,
   errorMessage: null,
-  history: [],
+  chatHistory: [],
   editingId: -1,
   setIsStreaming: (isStreaming) => set({ isStreaming }),
   setErrorMessage: (message) => set({ errorMessage: message }),
   setEditingId: (editingId) => set({ editingId }),
   reset: () =>
-    set({ isStreaming: false, errorMessage: null, history: [], editingId: -1 }),
+    set({
+      isStreaming: false,
+      errorMessage: null,
+      chatHistory: [],
+      editingId: -1,
+    }),
   append: (h: ChatHistory) =>
     set((state) => ({
-      editingId: state.history.length,
-      history: [...state.history, h],
+      editingId: state.chatHistory.length,
+      chatHistory: [...state.chatHistory, h],
     })),
   edit: (h: ChatHistory) => {
     const id = get().editingId;
-    const currentHistory = get().history;
+    const currentHistory = get().chatHistory;
     if (id < 0 || id >= currentHistory.length) {
       throw Error("Index out of range.");
     }
 
     const updatedHistory = [...currentHistory];
     updatedHistory[id] = h;
-    set({ history: updatedHistory });
+    set({ chatHistory: updatedHistory });
   },
 }));

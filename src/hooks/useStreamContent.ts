@@ -1,8 +1,11 @@
 import { useCallback } from "react";
-import type { ModelMessage } from "ai";
 import { env } from "~/env";
-import { ResponseSchema } from "~/app/api/stream-content/returnSchema";
+import {
+  ResponseSchema,
+  type ChatHistory,
+} from "~/app/api/stream-content/returnSchema";
 import { useChatStore } from "~/store/chat.store";
+import type { ModelMessage } from "ai";
 
 export const useStreamContent = () => {
   const setIsStreaming = useChatStore((s) => s.setIsStreaming);
@@ -20,13 +23,26 @@ export const useStreamContent = () => {
     }
   };
 
+  const parseChatHistory = (context: ChatHistory[]): ModelMessage[] => {
+    const messages: ModelMessage[] = [];
+    for (const entry of context) {
+      if (entry.type === "query") {
+        messages.push({ role: "user", content: entry.payload });
+      } else if (entry.type === "response") {
+        messages.push({
+          role: "assistant",
+          content: JSON.stringify(entry.payload),
+        });
+      }
+    }
+    return messages;
+  };
+
   const stream = useCallback(async (query: string) => {
-    // Update for history
-    const messages = [
-      {
-        role: "user",
-        content: query,
-      },
+    const { chatHistory } = useChatStore.getState();
+    const messages: ModelMessage[] = [
+      ...parseChatHistory(chatHistory),
+      { role: "user", content: query },
     ];
 
     // Add query
