@@ -20,7 +20,6 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
   const enqueue = usePageTransitionStore((state) => state.enqueue);
   const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
-
   const { isStreaming } = useChatStore();
 
   useEffect(() => {
@@ -110,9 +109,11 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
       >
         <SearchButton
           state={
-            query.trim().length > 0
-              ? SearchButtonState.Active
-              : SearchButtonState.Default
+            isStreaming
+              ? SearchButtonState.Generating
+              : query.trim().length > 0
+                ? SearchButtonState.Active
+                : SearchButtonState.Default
           }
         />
       </div>

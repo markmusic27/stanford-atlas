@@ -28,9 +28,13 @@ const SearchButton = ({ state }: SearchButtonProps) => {
       className={`${backgroundClass} flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full transition-all duration-300`}
     >
       <Icon
-        type={IconType.ArrowUp}
-        width={14}
-        height={14}
+        type={
+          state == SearchButtonState.Generating
+            ? IconType.Pause
+            : IconType.ArrowUp
+        }
+        width={state == SearchButtonState.Generating ? 11 : 14}
+        height={state == SearchButtonState.Generating ? 11 : 14}
         className={`${baseIconClasses} ${iconColorClass}`}
       />
     </button>

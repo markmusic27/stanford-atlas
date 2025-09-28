@@ -5,12 +5,14 @@ import { ClockIcon } from "./components/Clock.icon";
 import { GlobeIcon } from "./components/Globe.icon";
 import { LocationIcon } from "./components/Location.icon";
 import { MagnifyingGlassIcon } from "./components/MagnifyingGlass.icon";
+import { PauseIcon } from "./components/Pause.icon";
 import { PlusIcon } from "./components/Plus.icon";
 import { SlashIcon } from "./components/Slash.icon";
 
 enum IconType {
   MagnifyingGlass,
   Plus,
+  Pause,
   ArrowUp,
   Slash,
   Globe,
@@ -46,6 +48,8 @@ function getIconComponent(type: IconType) {
       return CalendarIcon;
     case IconType.Clock:
       return ClockIcon;
+    case IconType.Pause:
+      return PauseIcon;
   }
 }
 

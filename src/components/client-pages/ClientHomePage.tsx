@@ -27,10 +27,13 @@ const ClientHomePage = () => {
   );
   const searchRef = useRef<HTMLDivElement>(null);
   const vw = useViewportWidth();
+  const { isStreaming } = useChatStore();
   const { stream } = useStreamContent();
 
   const handleOnSubmit = async (query: string) => {
-    // TODO: Check if the AI is already streaming text
+    if (isStreaming) return;
+
+    setIsChatOpen(true);
 
     const trimmed = query.trim();
     if (!trimmed) return;

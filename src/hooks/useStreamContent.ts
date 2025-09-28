@@ -2,12 +2,19 @@ import { useCallback } from "react";
 import type { ModelMessage } from "ai";
 import { env } from "~/env";
 import { Schema } from "~/app/api/stream-content/returnSchema";
+import { useChatStore } from "~/store/chat.store";
 
 export const useStreamContent = () => {
+  const setIsStreaming = useChatStore((s) => s.setIsStreaming);
+  const setErrorMessage = useChatStore((s) => s.setErrorMessage);
   const stream = useCallback(async (message: ModelMessage) => {
-    // Set is loading to true
     const messages = [message];
     try {
+      // Set all state values to initial state
+      setErrorMessage(null);
+      setIsStreaming(true);
+
+      // Request
       const res = await fetch("/api/stream-content", {
         method: "POST",
         headers: {
@@ -65,19 +72,18 @@ export const useStreamContent = () => {
           } else {
             console.dir(obj, { depth: null });
           }
-        } catch (e) {
-          // ignore
-        }
+        } catch (e) {}
       }
 
-      return 0;
+      return;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
       console.log(errorMessage);
+      setErrorMessage(errorMessage);
       throw err;
     } finally {
-      console.log("DONE");
+      setIsStreaming(false);
     }
   }, []);
 
