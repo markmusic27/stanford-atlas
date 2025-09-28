@@ -32,18 +32,12 @@ const ClientHomePage = () => {
 
   const handleOnSubmit = async (query: string) => {
     if (isStreaming) return;
-
     setIsChatOpen(true);
 
     const trimmed = query.trim();
     if (!trimmed) return;
 
-    const message: UserModelMessage = {
-      role: "user",
-      content: trimmed,
-    };
-
-    stream(message);
+    stream(trimmed);
   };
 
   useEffect(() => {

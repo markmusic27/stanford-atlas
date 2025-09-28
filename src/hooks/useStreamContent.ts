@@ -1,14 +1,44 @@
 import { useCallback } from "react";
 import type { ModelMessage } from "ai";
 import { env } from "~/env";
-import { Schema } from "~/app/api/stream-content/returnSchema";
+import { ResponseSchema } from "~/app/api/stream-content/returnSchema";
 import { useChatStore } from "~/store/chat.store";
 
 export const useStreamContent = () => {
   const setIsStreaming = useChatStore((s) => s.setIsStreaming);
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
-  const stream = useCallback(async (message: ModelMessage) => {
-    const messages = [message];
+  const { append, edit } = useChatStore();
+
+  const handleStreamUpdate = (obj: any) => {
+    const parsed = ResponseSchema.partial().safeParse(obj);
+    if (parsed.success) {
+      const data = parsed.data;
+      if (data && data.payload) {
+        // Only update when we have a payload for the response entry
+        edit({ type: "response", payload: data.payload });
+      }
+    }
+  };
+
+  const stream = useCallback(async (query: string) => {
+    // Update for history
+    const messages = [
+      {
+        role: "user",
+        content: query,
+      },
+    ];
+
+    // Add query
+    append({
+      type: "query",
+      payload: query,
+    });
+    // Add response
+    append({
+      type: "response",
+      payload: [],
+    });
     try {
       // Set all state values to initial state
       setErrorMessage(null);
@@ -48,12 +78,9 @@ export const useStreamContent = () => {
           if (line.length > 0) {
             try {
               const obj = JSON.parse(line);
-              const parsed = Schema.partial().safeParse(obj);
-              if (parsed.success) {
-                console.dir(parsed.data.payload, { depth: null });
-              }
+              handleStreamUpdate(obj);
             } catch (e) {
-              // Ignore malformed lines
+              setErrorMessage("An error occurred while processing the stream");
             }
           }
 
@@ -65,14 +92,10 @@ export const useStreamContent = () => {
       if (bufferedText.trim().length > 0) {
         try {
           const obj = JSON.parse(bufferedText.trim());
-          const parsed = Schema.partial().safeParse(obj);
-          console.clear();
-          if (parsed.success) {
-            console.dir(parsed.data, { depth: null });
-          } else {
-            console.dir(obj, { depth: null });
-          }
-        } catch (e) {}
+          handleStreamUpdate(obj);
+        } catch (e) {
+          setErrorMessage("An error occurred while processing the stream");
+        }
       }
 
       return;

@@ -49,10 +49,23 @@ export const Block = z
     "One UI block. Choose among: 'markdown' (explain/guide), 'course-card' (spotlight one course), 'course-list' (several related courses).",
   );
 
-export const Schema = z.object({
+export const ResponseSchema = z.object({
+  type: z.literal("response"),
   payload: z
     .array(Block)
     .describe(
       "List of UI blocks shown to user: markdown | course-card | course-list",
     ),
 });
+
+export const QuerySchema = z.object({
+  type: z.literal("query"),
+  payload: z.string(),
+});
+
+export const HistorySchema = z.discriminatedUnion("type", [
+  ResponseSchema,
+  QuerySchema,
+]);
+
+export type ChatHistory = z.infer<typeof HistorySchema>;
