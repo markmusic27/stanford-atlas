@@ -2,10 +2,17 @@ import { Markdown } from "./Markdown";
 import SingleCourseCard from "./single-course-card/SingleCourseCard";
 import CourseGrid from "./course-grid/CourseGrid";
 
-interface Block {
-  type: string;
-  content: any;
-}
+type MarkdownBlock = { type: "markdown"; content: { text: string } };
+type CourseCardBlock = {
+  type: "course-card";
+  content: { courseId: number };
+};
+type CourseGridBlock = {
+  type: "course-grid";
+  content: { courseIds: number[] };
+};
+
+type Block = MarkdownBlock | CourseCardBlock | CourseGridBlock;
 
 const BlockRenderer = ({ blocks }: { blocks: Block[] }) => {
   return (

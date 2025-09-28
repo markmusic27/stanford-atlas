@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
 
-    (async () => {
+    void (async () => {
       try {
         const maxAttempts = 3;
         let attempt = 1;
@@ -71,7 +71,7 @@ export const POST = async (req: NextRequest) => {
               role: "system",
               content:
                 `The previous assistant output failed schema validation. Error: ${lastError}. ` +
-                `You must return ONLY a JSON object that strictly matches this schema (no extra fields, no commentary): ${PayloadSchema.toString()}`,
+                "Return ONLY a JSON object with shape: { blocks: [ { type: 'markdown' | 'course-card' | 'course-list', data: ... } ] }",
             };
 
             finalPayload = await runAttempt(

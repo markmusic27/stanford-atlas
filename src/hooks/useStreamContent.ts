@@ -13,11 +13,11 @@ export const useStreamContent = () => {
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
   const { append, edit } = useChatStore();
 
-  const handleStreamUpdate = (obj: any) => {
+  const handleStreamUpdate = (obj: unknown) => {
     const parsed = PayloadSchema.safeParse(obj);
     if (parsed.success) {
       const data = parsed.data;
-      if (data && data.blocks) {
+      if (data?.blocks) {
         // Only update when we have a payload for the response entry
         edit({ type: "response", payload: data.blocks });
       }
@@ -39,93 +39,98 @@ export const useStreamContent = () => {
     return messages;
   };
 
-  const stream = useCallback(async (query: string) => {
-    const { chatHistory } = useChatStore.getState();
-    const messages: ModelMessage[] = [
-      ...parseChatHistory(chatHistory),
-      { role: "user", content: query },
-    ];
+  const stream = useCallback(
+    async (query: string) => {
+      const { chatHistory } = useChatStore.getState();
+      const messages: ModelMessage[] = [
+        ...parseChatHistory(chatHistory),
+        { role: "user", content: query },
+      ];
 
-    // Add query
-    append({
-      type: "query",
-      payload: query,
-    });
-    // Add response
-    append({
-      type: "response",
-      payload: [],
-    });
-    try {
-      // Set all state values to initial state
-      setErrorMessage(null);
-      setIsStreaming(true);
-
-      // Request
-      const res = await fetch("/api/stream-content", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${env.NEXT_PUBLIC_API_SECRET_KEY}`,
-        },
-        body: JSON.stringify(messages),
+      // Add query
+      append({
+        type: "query",
+        payload: query,
       });
+      // Add response
+      append({
+        type: "response",
+        payload: [],
+      });
+      try {
+        // Set all state values to initial state
+        setErrorMessage(null);
+        setIsStreaming(true);
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      // Consume NDJSON stream line by line
-      const reader = res.body?.getReader();
-      if (!reader) return 0;
+        // Request
+        const res = await fetch("/api/stream-content", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${env.NEXT_PUBLIC_API_SECRET_KEY}`,
+          },
+          body: JSON.stringify(messages),
+        });
 
-      const decoder = new TextDecoder();
-      let bufferedText = "";
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        // Consume NDJSON stream line by line
+        const reader = res.body?.getReader();
+        if (!reader) return;
 
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        const decoder = new TextDecoder();
+        let bufferedText = "";
 
-        bufferedText += decoder.decode(value, { stream: true });
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        let newlineIndex = bufferedText.indexOf("\n");
-        while (newlineIndex !== -1) {
-          const line = bufferedText.slice(0, newlineIndex).trim();
-          bufferedText = bufferedText.slice(newlineIndex + 1);
+          bufferedText += decoder.decode(value, { stream: true });
 
-          if (line.length > 0) {
-            try {
-              const obj = JSON.parse(line);
-              handleStreamUpdate(obj);
-            } catch (e) {
-              setErrorMessage("An error occurred while processing the stream");
+          let newlineIndex = bufferedText.indexOf("\n");
+          while (newlineIndex !== -1) {
+            const line = bufferedText.slice(0, newlineIndex).trim();
+            bufferedText = bufferedText.slice(newlineIndex + 1);
+
+            if (line.length > 0) {
+              try {
+                const obj = JSON.parse(line) as unknown;
+                handleStreamUpdate(obj);
+              } catch {
+                setErrorMessage(
+                  "An error occurred while processing the stream",
+                );
+              }
             }
+
+            newlineIndex = bufferedText.indexOf("\n");
           }
-
-          newlineIndex = bufferedText.indexOf("\n");
         }
-      }
 
-      // Flush any remaining buffered text
-      if (bufferedText.trim().length > 0) {
-        try {
-          const obj = JSON.parse(bufferedText.trim());
-          handleStreamUpdate(obj);
-        } catch (e) {
-          setErrorMessage("An error occurred while processing the stream");
+        // Flush any remaining buffered text
+        if (bufferedText.trim().length > 0) {
+          try {
+            const obj = JSON.parse(bufferedText.trim()) as unknown;
+            handleStreamUpdate(obj);
+          } catch {
+            setErrorMessage("An error occurred while processing the stream");
+          }
         }
-      }
 
-      return;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unexpected error occurred";
-      console.log(errorMessage);
-      setErrorMessage(errorMessage);
-      throw err;
-    } finally {
-      setIsStreaming(false);
-    }
-  }, []);
+        return;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "An unexpected error occurred";
+        console.log(errorMessage);
+        setErrorMessage(errorMessage);
+        throw err;
+      } finally {
+        setIsStreaming(false);
+      }
+    },
+    [append, edit, handleStreamUpdate, setErrorMessage, setIsStreaming],
+  );
 
   return {
     stream,

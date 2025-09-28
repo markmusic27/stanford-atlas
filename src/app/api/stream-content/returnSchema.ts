@@ -60,7 +60,7 @@ export const PayloadJsonSchema = z
   .string()
   .transform((s, ctx) => {
     try {
-      return JSON.parse(s);
+      return JSON.parse(s) as unknown;
     } catch {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

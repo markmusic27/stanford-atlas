@@ -37,7 +37,8 @@ const ClientHomePage = () => {
     const trimmed = query.trim();
     if (!trimmed) return;
 
-    stream(trimmed);
+    // Intentionally fire-and-forget; stream manages its own errors/state
+    void stream(trimmed);
   };
 
   useEffect(() => {
