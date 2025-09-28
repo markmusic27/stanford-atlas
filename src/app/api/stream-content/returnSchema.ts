@@ -49,13 +49,15 @@ export const Block = z
     "One UI block. Choose among: 'markdown' (explain/guide), 'course-card' (spotlight one course), 'course-list' (several related courses).",
   );
 
+export const PayloadSchema = z
+  .array(Block)
+  .describe(
+    "List of UI blocks shown to user: markdown | course-card | course-list",
+  );
+
 export const ResponseSchema = z.object({
   type: z.literal("response"),
-  payload: z
-    .array(Block)
-    .describe(
-      "List of UI blocks shown to user: markdown | course-card | course-list",
-    ),
+  payload: PayloadSchema,
 });
 
 export const QuerySchema = z.object({

@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { env } from "~/env";
 import {
+  PayloadSchema,
   ResponseSchema,
   type ChatHistory,
 } from "~/app/api/stream-content/returnSchema";
@@ -13,12 +14,12 @@ export const useStreamContent = () => {
   const { append, edit } = useChatStore();
 
   const handleStreamUpdate = (obj: any) => {
-    const parsed = ResponseSchema.partial().safeParse(obj);
+    const parsed = PayloadSchema.safeParse(obj);
     if (parsed.success) {
       const data = parsed.data;
-      if (data && data.payload) {
+      if (data) {
         // Only update when we have a payload for the response entry
-        edit({ type: "response", payload: data.payload });
+        edit({ type: "response", payload: data });
       }
     }
   };

@@ -1,7 +1,7 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
-import { ResponseSchema } from "./returnSchema";
+import { PayloadSchema, ResponseSchema } from "./returnSchema";
 import { PROMPT } from "./prompt";
 import { streamObject, type ModelMessage } from "ai";
 
@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
 
     const response = streamObject({
       model: openai("gpt-4o"),
-      schema: ResponseSchema,
+      schema: PayloadSchema,
       messages: messages,
       system: PROMPT,
     });
@@ -43,6 +43,8 @@ export const POST = async (req: NextRequest) => {
     (async () => {
       try {
         for await (const obj of response.partialObjectStream) {
+          console.clear();
+          console.dir(obj);
           const line = JSON.stringify(obj) + "\n";
           await writer.write(encoder.encode(line));
         }
