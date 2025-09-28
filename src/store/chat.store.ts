@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ChatHistory } from "~/app/api/stream-content/returnSchema";
+import type { ChatHistory } from "~/app/api/stream-content/schemas";
 
 type ChatStore = {
   isStreaming: boolean;

@@ -1,8 +1,8 @@
 import CourseCard from "./components/CourseCard";
 import SingleCourseCard from "../single-course-card/SingleCourseCard";
-import type { CourseCardData } from "~/lib/blocks";
+import type { CourseCardData } from "~/lib/courseSchema";
 
-const CourseGrid = ({ courses }: { courses: CourseCardData[] }) => {
+const CourseGrid = ({ courses }: { courses: number[] }) => {
   return courses.length == 1 ? (
     <SingleCourseCard course={courses[0]!} />
   ) : (

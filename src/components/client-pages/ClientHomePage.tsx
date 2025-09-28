@@ -17,7 +17,8 @@ import { useStreamContent } from "~/hooks/useStreamContent";
 import type { UserModelMessage } from "ai";
 
 const ClientHomePage = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // TODO: Change to false
+  const [isChatOpen, setIsChatOpen] = useState(true);
   const [windowHeight, setWindowHeight] = useState<number | undefined>(
     undefined,
   );

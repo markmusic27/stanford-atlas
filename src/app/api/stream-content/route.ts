@@ -1,7 +1,7 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
-import { PayloadSchema } from "./returnSchema";
+import { PayloadSchema } from "./schemas";
 import { PROMPT } from "./prompt";
 import { streamObject, type ModelMessage } from "ai";
 

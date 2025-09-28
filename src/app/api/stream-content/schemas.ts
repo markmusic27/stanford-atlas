@@ -33,7 +33,7 @@ export const CourseListSchema = z
   })
   .strict();
 
-export const Block = z
+export const BlockSchema = z
   .discriminatedUnion("type", [
     MarkdownSchema,
     CourseCardSchema,
@@ -43,9 +43,11 @@ export const Block = z
     "One UI block. Choose among: 'markdown' (explain/guide), 'course-card' (spotlight one course), 'course-list' (several related courses).",
   );
 
+export type Block = z.infer<typeof BlockSchema>;
+
 export const PayloadSchema = z.object({
   blocks: z
-    .array(Block)
+    .array(BlockSchema)
     .describe(
       "List of UI blocks shown to user: markdown | course-card | course-list",
     ),
@@ -53,7 +55,7 @@ export const PayloadSchema = z.object({
 
 export const ResponseSchema = z.object({
   type: z.literal("response"),
-  payload: z.array(Block),
+  payload: z.array(BlockSchema),
 });
 
 export const PayloadJsonSchema = z

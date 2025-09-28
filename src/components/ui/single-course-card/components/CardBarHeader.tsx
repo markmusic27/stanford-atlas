@@ -1,4 +1,4 @@
-import type { CourseCardData } from "~/lib/blocks";
+import type { CourseCardData } from "~/lib/courseSchema";
 
 const CardBarHeader = ({ course }: { course: CourseCardData }) => {
   return (
