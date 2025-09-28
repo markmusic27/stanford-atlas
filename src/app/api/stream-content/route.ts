@@ -17,18 +17,21 @@ export const POST = async (req: NextRequest) => {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { body } = await req.json();
+    // Extract messages and format them
+    const cloned = req.clone();
+    const messages = (await cloned.json()) as ModelMessage[];
 
-    const messages = body as ModelMessage[];
-
-    const { object } = await streamObject({
+    const response = streamObject({
       model: openai("gpt-4o"),
       schema: Schema,
       messages: messages,
       system: PROMPT,
     });
 
-    return Response.json(result.response.messages);
+    return Response.json(
+      { stream: response.partialObjectStream },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error generating text:", error);
     return Response.json({ error: "Failed to generate text" }, { status: 500 });

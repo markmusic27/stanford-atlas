@@ -20,10 +20,7 @@ export const useStreamContent = () => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      const newMessages = (await res.json()) as ModelMessage[];
-
-      console.log(newMessages);
-      return newMessages;
+      return 0;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
