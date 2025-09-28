@@ -28,10 +28,33 @@ export const POST = async (req: NextRequest) => {
       system: PROMPT,
     });
 
-    return Response.json(
-      { stream: response.partialObjectStream },
-      { status: 200 },
-    );
+    // Stream partial objects to the client as NDJSON
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const encoder = new TextEncoder();
+
+    (async () => {
+      try {
+        for await (const obj of response.partialObjectStream) {
+          const line = JSON.stringify(obj) + "\n";
+          await writer.write(encoder.encode(line));
+        }
+      } catch (err) {
+        const errorPayload = JSON.stringify({ error: true }) + "\n";
+        await writer.write(encoder.encode(errorPayload));
+      } finally {
+        await writer.close();
+      }
+    })();
+
+    return new Response(readable, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/x-ndjson; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+      },
+    });
   } catch (error) {
     console.error("Error generating text:", error);
     return Response.json({ error: "Failed to generate text" }, { status: 500 });

@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import type { ModelMessage } from "ai";
 import { env } from "~/env";
+import { Schema } from "~/app/api/stream-content/returnSchema";
 
 export const useStreamContent = () => {
   const stream = useCallback(async (message: ModelMessage) => {
@@ -18,6 +19,55 @@ export const useStreamContent = () => {
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      // Consume NDJSON stream line by line
+      const reader = res.body?.getReader();
+      if (!reader) return 0;
+
+      const decoder = new TextDecoder();
+      let bufferedText = "";
+
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        bufferedText += decoder.decode(value, { stream: true });
+
+        let newlineIndex = bufferedText.indexOf("\n");
+        while (newlineIndex !== -1) {
+          const line = bufferedText.slice(0, newlineIndex).trim();
+          bufferedText = bufferedText.slice(newlineIndex + 1);
+
+          if (line.length > 0) {
+            try {
+              const obj = JSON.parse(line);
+              const parsed = Schema.partial().safeParse(obj);
+              if (parsed.success) {
+                console.dir(parsed.data.payload, { depth: null });
+              }
+            } catch (e) {
+              // Ignore malformed lines
+            }
+          }
+
+          newlineIndex = bufferedText.indexOf("\n");
+        }
+      }
+
+      // Flush any remaining buffered text
+      if (bufferedText.trim().length > 0) {
+        try {
+          const obj = JSON.parse(bufferedText.trim());
+          const parsed = Schema.partial().safeParse(obj);
+          console.clear();
+          if (parsed.success) {
+            console.dir(parsed.data, { depth: null });
+          } else {
+            console.dir(obj, { depth: null });
+          }
+        } catch (e) {
+          // ignore
+        }
       }
 
       return 0;
