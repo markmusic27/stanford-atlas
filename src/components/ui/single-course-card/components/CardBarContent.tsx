@@ -32,9 +32,9 @@ const CardBarContent = ({ course }: { course: CourseCardData }) => {
           <CardContentItem
             title="Instructor:"
             value={
-              course.instructors.length > 2
+              course.instructors.length > 3
                 ? `${course.instructors
-                    .slice(0, 2)
+                    .slice(0, 3)
                     .map((instructor) => instructor.displayName)
                     .join(", ")}, ...`
                 : course.instructors

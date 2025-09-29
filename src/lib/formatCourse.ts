@@ -1,4 +1,8 @@
-import type { ApiCourseResponse, CourseCardData } from "./courseSchema";
+import type {
+  ApiCourseResponse,
+  CourseCardData,
+  Schedule as ApiSchedule,
+} from "./courseSchema";
 
 const termCodes = new Map<string, number>([
   ["2025-2026 Autumn", 1262],
@@ -29,7 +33,55 @@ const getTermCode = (term: string) => {
   return code;
 };
 
+const shortDay = (day: string) => {
+  switch (day) {
+    case "Monday":
+      return "Mon";
+    case "Tuesday":
+      return "Tue";
+    case "Wednesday":
+      return "Wed";
+    case "Thursday":
+      return "Thu";
+    case "Friday":
+      return "Fri";
+    case "Saturday":
+      return "Sat";
+    case "Sunday":
+      return "Sun";
+    default:
+      return day;
+  }
+};
+
+const toIsoDateLike = (mmmdyyyy: string | undefined) => {
+  if (!mmmdyyyy) return "";
+  const date = new Date(mmmdyyyy);
+  if (Number.isNaN(date.getTime())) return "";
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const toHhMmAmPm = (twelveHour?: string): string => {
+  if (!twelveHour) return "";
+  const trimmed = twelveHour.trim();
+  const m = trimmed.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*([AP]M)$/i);
+  if (!m || !m[1] || !m[2] || !m[3]) return "";
+  const hNum = parseInt(m[1], 10);
+  if (Number.isNaN(hNum)) return "";
+  const h = String(hNum);
+  const mm = m[2];
+  const ampm = m[3].toLowerCase();
+  return `${h}:${mm}${ampm}`;
+};
+
+const pickPrimarySchedule = (schedules: ApiSchedule[]) => schedules?.[0];
+
 const formatCourseData = (data: ApiCourseResponse) => {
+  const sched = pickPrimarySchedule(data.section.schedules || []);
+
   const formatted: CourseCardData = {
     subjectCode: `${data.course.subject} ${data.course.code}`,
     termLabel: extractTermLabel(data.section.term),
@@ -44,17 +96,17 @@ const formatCourseData = (data: ApiCourseResponse) => {
       unitsMax: data.course.units_max,
     },
     schedule: {
-      startDate: "2025-09-01",
-      endDate: "2025-12-15",
-      days: ["Mon", "Wed"],
-      startTime: "09:00",
-      endTime: "10:15",
-      location: data.section.schedules[0]?.location,
+      startDate: toIsoDateLike(sched?.start_date),
+      endDate: toIsoDateLike(sched?.end_date),
+      days: (sched?.days || []).map(shortDay),
+      startTime: toHhMmAmPm(sched?.start_time),
+      endTime: toHhMmAmPm(sched?.end_time),
+      location: sched?.location || "",
     },
-    instructors: [
-      { displayName: "Dr. Ada Lovelace", isPrimary: true },
-      { displayName: "Alan Turing", isPrimary: false },
-    ],
+    instructors: (sched?.instructors || []).map((i) => ({
+      displayName: i.name,
+      isPrimary: i.is_primary_instructor,
+    })),
   };
 
   return formatted;
