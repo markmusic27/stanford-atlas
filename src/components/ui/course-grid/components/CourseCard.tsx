@@ -1,5 +1,8 @@
+"use client";
+
 import CourseCardHeader from "./CourseCardHeader";
 import CourseCardBody from "./CourseCardBody";
+import useCourseServer from "~/hooks/useCourseServer";
 import type { CourseCardData } from "~/lib/courseSchema";
 
 export interface CourseProps {
@@ -8,15 +11,20 @@ export interface CourseProps {
 }
 
 const CourseCard = (props: CourseProps) => {
+  const { state, data } = useCourseServer(props);
+
+  if (state !== "ok" || !data) return <p>loading</p>;
+
+  const course = data as CourseCardData;
+
   return (
-    // <div className="bg-primary-1 border-primary-7 flex flex-col items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
-    //   <CourseCardHeader
-    //     subjectCode={course.subjectCode}
-    //     termLabel={course.termLabel}
-    //   />
-    //   <CourseCardBody course={course} />
-    // </div>
-    <div></div>
+    <div className="bg-primary-1 border-primary-7 flex flex-col items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
+      <CourseCardHeader
+        subjectCode={course.subjectCode}
+        termLabel={course.termLabel}
+      />
+      <CourseCardBody course={course} />
+    </div>
   );
 };
 
