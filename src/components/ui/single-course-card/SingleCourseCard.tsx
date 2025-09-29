@@ -4,14 +4,12 @@ import CursorScale from "../CursorScale";
 import CardBarHeader from "./components/CardBarHeader";
 import CardBarContent from "./components/CardBarContent";
 import { useEffect, useRef, useState } from "react";
-import CardComponent from "../course-grid/components/CourseCard";
+import CardComponent, {
+  type CourseProps,
+} from "../course-grid/components/CourseCard";
 import type { CourseCardData } from "~/lib/courseSchema";
 
-interface SingleCourseCardProps {
-  course: number;
-}
-
-const SingleCourseCard = ({ course }: SingleCourseCardProps) => {
+const SingleCourseCard = (props: CourseProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isNarrow, setIsNarrow] = useState(false);
 

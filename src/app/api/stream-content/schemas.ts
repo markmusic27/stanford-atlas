@@ -11,14 +11,21 @@ export const MarkdownSchema = z
   })
   .strict();
 
+export const CourseSchema = z
+  .object({
+    courseId: z.number().describe("Numeric ID of the course."),
+    classId: z
+      .number()
+      .describe(
+        "Numeric section ID (specific class offering); a course can have several.",
+      ),
+  })
+  .strict();
+
 export const CourseCardSchema = z
   .object({
     type: z.literal("course-card"),
-    data: z
-      .number()
-      .describe(
-        "Single numeric course ID (example: 225317). Do not use catalog codes like 'CS 106A'.",
-      ),
+    data: CourseSchema,
   })
   .strict();
 
@@ -26,10 +33,8 @@ export const CourseListSchema = z
   .object({
     type: z.literal("course-list"),
     data: z
-      .array(z.number())
-      .describe(
-        "Array of numeric course IDs (example: 225317). Deduplicate and order by relevance.",
-      ),
+      .array(CourseSchema)
+      .describe("Array of courses. Deduplicate and order by relevance."),
   })
   .strict();
 
