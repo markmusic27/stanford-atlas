@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends
 from pydantic import BaseModel
 from typing import Optional, List
 import uvicorn
 
 from handlers import fetch_course_handler
+from auth import require_api_key
 
 # Response Models
 class APIResponse(BaseModel):
@@ -94,12 +95,12 @@ app = FastAPI(
     version="0.1.0"
 )
 
-@app.get("/", response_model=APIResponse)
+@app.get("/", response_model=APIResponse, dependencies=[Depends(require_api_key)])
 async def root():
     """Root endpoint returning basic API information."""
     return APIResponse(message="Course API", version="0.1.0")
 
-@app.get("/course", response_model=CourseResponse)
+@app.get("/course", response_model=CourseResponse, dependencies=[Depends(require_api_key)])
 async def get_course(
     id: str = Query(..., description="Course ID to retrieve"),
     class_id: str = Query(..., description="Class ID to retrieve")
