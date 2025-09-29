@@ -29,4 +29,4 @@ COPY .env* ./
 EXPOSE 8080
 
 # Run the application
-CMD ["uv", "run", "src"]
+CMD ["sh", "-c", "/app/.venv/bin/python -m uvicorn app:app --host 0.0.0.0 --port ${PORT:-8080} --app-dir /app/src"]

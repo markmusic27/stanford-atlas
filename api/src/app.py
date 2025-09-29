@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Query, Depends
 from pydantic import BaseModel
 from typing import Optional, List
 import uvicorn
+import os
 
 from handlers import fetch_course_handler
 from auth import require_api_key
@@ -226,9 +227,10 @@ async def get_course(
 
 def main():
     """Main function to run the FastAPI application."""
+    port = int(os.getenv("PORT", "8080"))
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=8080,
-        reload=True
+        port=port,
+        reload=False
     )
