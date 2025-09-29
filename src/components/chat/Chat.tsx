@@ -50,10 +50,12 @@ const Chat = () => {
 
   return (
     <div className="absolute h-full w-full overflow-y-auto">
-      <div className="mx-auto flex w-full max-w-[800px] flex-col gap-[44px] px-[16px] pt-[32px] md:pt-[48px]">
+      <div className="mx-auto flex w-full max-w-[800px] flex-col gap-[20px] px-[16px] pt-[32px] md:pt-[48px]">
         {generateGroups(chatHistory).map((group, i) =>
           group.type === "query" ? (
-            <Message key={i} message={group.payload} />
+            <div key={i} className={i != 0 ? "mt-[16px]" : ""}>
+              <Message key={i} message={group.payload} />
+            </div>
           ) : (
             <BlockRenderer key={i} blocks={group.payload} />
           ),
