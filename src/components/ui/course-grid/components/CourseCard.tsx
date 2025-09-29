@@ -2,6 +2,7 @@
 
 import CourseCardHeader from "./CourseCardHeader";
 import CourseCardBody from "./CourseCardBody";
+import CourseCardSkeleton from "./CourseCardSkeleton";
 import useCourseServer from "~/hooks/useCourseServer";
 import type { CourseCardData } from "~/lib/courseSchema";
 
@@ -13,7 +14,7 @@ export interface CourseProps {
 const CourseCard = (props: CourseProps) => {
   const { state, data } = useCourseServer(props);
 
-  if (state !== "ok" || !data) return <p>loading</p>;
+  if (state !== "ok" || !data) return <CourseCardSkeleton />;
 
   const course = data as CourseCardData;
 
