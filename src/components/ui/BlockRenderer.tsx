@@ -11,7 +11,7 @@ const BlockRenderer = ({ blocks }: { blocks: Block[] }) => {
           case "markdown":
             return <Markdown key={i} text={block.data} />;
           case "course-card":
-            return <SingleCourseCard key={i} course={block.data} />;
+            return <SingleCourseCard key={i} {...block.data} />;
           case "course-list":
             return <CourseGrid key={i} courses={block.data} />;
           default:
