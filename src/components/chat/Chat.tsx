@@ -5,8 +5,10 @@ import { useChatStore } from "~/store/chat.store";
 import BlockRenderer from "../ui/BlockRenderer";
 import Message from "../ui/message/Message";
 import type { Block, ChatHistory } from "~/app/api/stream-content/schemas";
+import ActivityTimeline from "../ui/activity-timeline/ActivityTimeline";
 const Chat = () => {
   const { chatHistory } = useChatStore();
+  const isStreaming = useChatStore((s) => s.isStreaming);
 
   function generateGroups(history: ChatHistory[]) {
     type Group =
@@ -48,18 +50,33 @@ const Chat = () => {
     return groups;
   }
 
+  const groups = generateGroups(chatHistory);
+  const lastGroup = groups.length ? groups[groups.length - 1] : undefined;
+  const showTimeline = isStreaming && lastGroup?.type === "query";
+
   return (
     <div className="absolute h-full w-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[800px] flex-col gap-[20px] px-[16px] pt-[32px] md:pt-[48px]">
-        {generateGroups(chatHistory).map((group, i) =>
+        {groups.map((group, i) =>
           group.type === "query" ? (
             <div key={i} className={i != 0 ? "mt-[16px]" : ""}>
               <Message key={i} message={group.payload} />
+              {showTimeline && i === groups.length - 1 ? (
+                <div className="mt-[12px]">
+                  <ActivityTimeline
+                    steps={[
+                      { text: "Thinking", tool: "thinking", loading: true },
+                    ]}
+                    loading={false}
+                  />
+                </div>
+              ) : null}
             </div>
           ) : (
             <BlockRenderer key={i} blocks={group.payload} />
           ),
         )}
+
         <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT * 2 }} />
       </div>
     </div>
