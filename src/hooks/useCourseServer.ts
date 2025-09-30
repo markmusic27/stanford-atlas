@@ -42,6 +42,7 @@ const useCourseServer = ({ courseId, classId }: CourseProps) => {
       }
 
       const data = (await res.json()) as ApiCourseResponse;
+      console.log(data.message);
 
       const formatted = formatCourseData(data);
 
