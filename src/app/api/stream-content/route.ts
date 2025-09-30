@@ -3,7 +3,11 @@ import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { PayloadSchema } from "./schemas";
 import { PROMPT } from "./prompt";
-import { streamObject, type ModelMessage } from "ai";
+import { streamText, type ModelMessage } from "ai";
+import {
+  YAML_FORMAT_INSTRUCTIONS as YAML_FMT,
+  parseBlocksFromYamlish as parseBlocksFromYamlishFmt,
+} from "./format";
 
 const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
 
@@ -21,81 +25,61 @@ export const POST = async (req: NextRequest) => {
     const cloned = req.clone();
     const messages = (await cloned.json()) as ModelMessage[];
 
-    // Stream partial objects to the client as NDJSON
+    // Stream text to the client as NDJSON by converting YAML-like output into the PayloadSchema
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
 
+    // YAML format instructions and parser are imported from ./format
+
     void (async () => {
       try {
-        const maxAttempts = 3;
-        let attempt = 1;
+        const response = streamText({
+          model: openai("gpt-5"),
+          messages,
+          system: `${PROMPT}\n\n${YAML_FMT}`,
+        });
+
+        let yamlBuffer = "";
+        let lastSentJson = "";
         let finalPayload: unknown = null;
-        let lastError: string | null = null;
 
-        const runAttempt = async (
-          attemptMessages: ModelMessage[],
-          shouldStream: boolean,
-        ) => {
-          const response = streamObject({
-            model: openai("gpt-5"),
-            mode: "tool",
-            schema: PayloadSchema,
-            messages: attemptMessages,
-            system: PROMPT,
-          });
-
-          let lastObj: unknown = null;
-          for await (const obj of response.partialObjectStream) {
-            lastObj = obj;
-            if (shouldStream) {
-              const line = JSON.stringify(obj) + "\n";
-              await writer.write(encoder.encode(line));
-            }
-          }
-          return lastObj;
-        };
-
-        // First attempt: stream to client as usual
-        finalPayload = await runAttempt(messages, true);
-
-        // Validate
-        let validation = PayloadSchema.safeParse(finalPayload);
-        if (!validation.success) {
-          lastError = validation.error.message;
-
-          // Retry up to maxAttempts without streaming
-          while (attempt < maxAttempts) {
-            attempt++;
-
-            const systemErrorMessage: ModelMessage = {
-              role: "system",
-              content:
-                `The previous assistant output failed schema validation. Error: ${lastError}. ` +
-                "Return ONLY a JSON object with shape: { blocks: [ { type: 'markdown' | 'course-card' | 'course-list', data: ... } ] }",
-            };
-
-            finalPayload = await runAttempt(
-              [...messages, systemErrorMessage],
-              true,
-            );
-
-            validation = PayloadSchema.safeParse(finalPayload);
+        for await (const delta of response.textStream) {
+          yamlBuffer += delta;
+          // Attempt to parse fully-formed blocks from current buffer
+          const blocks = parseBlocksFromYamlishFmt(yamlBuffer);
+          if (blocks.length > 0) {
+            const candidate = { blocks } as unknown;
+            const validation = PayloadSchema.safeParse(candidate);
             if (validation.success) {
-              break;
+              const jsonLine = JSON.stringify(validation.data) + "\n";
+              if (jsonLine !== lastSentJson) {
+                lastSentJson = jsonLine;
+                finalPayload = validation.data;
+                await writer.write(encoder.encode(jsonLine));
+              }
             }
-            lastError = validation.error.message;
           }
         }
 
-        if (!validation.success) {
-          const errorPayload =
-            JSON.stringify({
-              error: true,
-              reason: "Schema validation failed after max retry attempts",
-              details: lastError,
-            }) + "\n";
-          await writer.write(encoder.encode(errorPayload));
+        // Final validation after stream ends
+        if (finalPayload == null) {
+          const blocks = parseBlocksFromYamlishFmt(yamlBuffer);
+          const candidate = { blocks } as unknown;
+          const validation = PayloadSchema.safeParse(candidate);
+          if (validation.success) {
+            finalPayload = validation.data;
+            const jsonLine = JSON.stringify(validation.data) + "\n";
+            await writer.write(encoder.encode(jsonLine));
+          } else {
+            const errorPayload =
+              JSON.stringify({
+                error: true,
+                reason: "Schema validation failed for streamed YAML output",
+                details: validation.error.message,
+              }) + "\n";
+            await writer.write(encoder.encode(errorPayload));
+          }
         }
       } catch (err) {
         const errorPayload = JSON.stringify({ error: true }) + "\n";
