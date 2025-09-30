@@ -29,7 +29,7 @@ const ClientHomePage = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const vw = useViewportWidth();
   const { isStreaming } = useChatStore();
-  const { stream } = useStreamContent();
+  const { stream, stop } = useStreamContent();
 
   const handleOnSubmit = async (query: string) => {
     if (isStreaming) return;
@@ -147,7 +147,11 @@ const ClientHomePage = () => {
           <div className="h-[10dvh] max-h-[95px] min-h-[40px]" />
         </AnimatedCollapsable>
 
-        <SearchBar onSubmit={handleOnSubmit} isChatOpen={isChatOpen} />
+        <SearchBar
+          onSubmit={handleOnSubmit}
+          onStop={stop}
+          isChatOpen={isChatOpen}
+        />
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <div className="h-[36px]" />
           <Peripherals />

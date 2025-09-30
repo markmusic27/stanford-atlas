@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { env } from "~/env";
 import {
   PayloadSchema,
@@ -12,6 +12,7 @@ export const useStreamContent = () => {
   const setIsStreaming = useChatStore((s) => s.setIsStreaming);
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
   const { append, edit } = useChatStore();
+  const abortRef = useRef<AbortController | null>(null);
 
   const handleStreamUpdate = (obj: unknown) => {
     const parsed = PayloadSchema.safeParse(obj);
@@ -41,6 +42,13 @@ export const useStreamContent = () => {
 
   const stream = useCallback(
     async (query: string) => {
+      // If a previous stream is in-flight, abort it before starting a new one
+      if (abortRef.current) {
+        try {
+          abortRef.current.abort();
+        } catch {}
+      }
+
       const { chatHistory } = useChatStore.getState();
       const messages: ModelMessage[] = [
         ...parseChatHistory(chatHistory),
@@ -62,6 +70,9 @@ export const useStreamContent = () => {
         setErrorMessage(null);
         setIsStreaming(true);
 
+        const controller = new AbortController();
+        abortRef.current = controller;
+
         // Request
         const res = await fetch("/api/stream-content", {
           method: "POST",
@@ -70,6 +81,7 @@ export const useStreamContent = () => {
             Authorization: `Bearer ${env.NEXT_PUBLIC_API_SECRET_KEY}`,
           },
           body: JSON.stringify(messages),
+          signal: controller.signal,
         });
 
         if (!res.ok) {
@@ -120,13 +132,22 @@ export const useStreamContent = () => {
 
         return;
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "An unexpected error occurred";
-        console.log(errorMessage);
-        setErrorMessage(errorMessage);
-        throw err;
+        // Swallow abort errors
+        const isAbort =
+          (err as any)?.name === "AbortError" ||
+          (typeof DOMException !== "undefined" &&
+            err instanceof DOMException &&
+            err.name === "AbortError");
+        if (!isAbort) {
+          const errorMessage =
+            err instanceof Error ? err.message : "An unexpected error occurred";
+          console.log(errorMessage);
+          setErrorMessage(errorMessage);
+          throw err;
+        }
       } finally {
         setIsStreaming(false);
+        abortRef.current = null;
       }
     },
     [append, edit, handleStreamUpdate, setErrorMessage, setIsStreaming],
@@ -134,5 +155,13 @@ export const useStreamContent = () => {
 
   return {
     stream,
+    stop: () => {
+      const controller = abortRef.current;
+      if (controller) {
+        try {
+          controller.abort();
+        } catch {}
+      }
+    },
   };
 };

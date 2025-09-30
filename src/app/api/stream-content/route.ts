@@ -39,6 +39,7 @@ export const POST = async (req: NextRequest) => {
         ) => {
           const response = streamObject({
             model: openai("gpt-5"),
+            mode: "tool",
             schema: PayloadSchema,
             messages: attemptMessages,
             system: PROMPT,

@@ -8,9 +8,10 @@ enum SearchButtonState {
 
 interface SearchButtonProps {
   state: SearchButtonState;
+  onStop?: () => void;
 }
 
-const SearchButton = ({ state }: SearchButtonProps) => {
+const SearchButton = ({ state, onStop }: SearchButtonProps) => {
   const baseIconClasses = "transition-all duration-150";
   const iconColorClass =
     state === SearchButtonState.Default ? "text-primary-8" : "text-primary-1";
@@ -23,9 +24,14 @@ const SearchButton = ({ state }: SearchButtonProps) => {
 
   return (
     <button
-      type="submit"
+      type={state === SearchButtonState.Generating ? "button" : "submit"}
       disabled={disabled}
       className={`${backgroundClass} flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full transition-all duration-300`}
+      onClick={() => {
+        if (state === SearchButtonState.Generating) {
+          onStop?.();
+        }
+      }}
     >
       <Icon
         type={

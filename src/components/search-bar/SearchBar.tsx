@@ -13,10 +13,11 @@ import { useChatStore } from "~/store/chat.store";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
+  onStop?: () => void;
   isChatOpen: boolean;
 }
 
-const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
+const SearchBar = ({ onSubmit, onStop, isChatOpen }: SearchBarProps) => {
   const enqueue = usePageTransitionStore((state) => state.enqueue);
   const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
@@ -115,6 +116,7 @@ const SearchBar = ({ onSubmit, isChatOpen }: SearchBarProps) => {
                 ? SearchButtonState.Active
                 : SearchButtonState.Default
           }
+          onStop={onStop}
         />
       </div>
     </form>
