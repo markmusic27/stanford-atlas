@@ -39,7 +39,7 @@ const ClientHomePage = () => {
     if (!trimmed) return;
 
     // Intentionally fire-and-forget; stream manages its own errors/state
-    // void stream(trimmed);
+    void stream(trimmed);
   };
 
   useEffect(() => {
@@ -136,7 +136,7 @@ const ClientHomePage = () => {
     >
       {/* Chat Container */}
       <div
-        className="transition-[opacity] duration-300"
+        className="transition-[opacity] delay-350 duration-600 ease-in-out"
         style={{ opacity: isChatOpen ? 1 : 0 }}
       >
         <Chat />
