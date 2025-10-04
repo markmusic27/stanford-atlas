@@ -1,5 +1,51 @@
 import type { Block } from "./schemas";
 
+const test =
+  "Quick render test for CS 229, CS 109, and CS 230\n" +
+  "\n" +
+  "Here's a card for CS 229:\n" +
+  "\n" +
+  "\`\`\`course-card\n" +
+  "\n" +
+  "{ courseId: 105750, classId: 7511 }```\n" +
+  "Rendering test: CS 229, CS 109, CS 230\n" +
+  "\n" +
+  "Here are individual course cards:\n" +
+  "\n" +
+  "\`\`\`course-card\n" +
+  "\n" +
+  "{ courseId: 105750, classId: 7511 }\n" +
+  "\n" +
+  "\`\`\`\n" +
+  "\n" +
+  "--- a little markdown separator ---\n" +
+  "\n" +
+  "\`\`\`course-card\n" +
+  "\n" +
+  "{ courseId: 208528, classId: 2177 }\n" +
+  "\n" +
+  "\`\`\`\n" +
+  "\n" +
+  "--- and another divider ---\n" +
+  "\n" +
+  "\`\`\`course-card\n" +
+  "\n" +
+  "{ courseId: 219885, classId: 2418 }\n" +
+  "\n" +
+  "\`\`\`\n" +
+  "\n" +
+  "All three together in a single course list:\n" +
+  "\n" +
+  "\`\`\`course-list\n" +
+  "\n" +
+  "[\n" +
+  "  { courseId: 105750, classId: 7511 },\n" +
+  "  { courseId: 208528, classId: 2177 },\n" +
+  "  { courseId: 219885, classId: 2418 }\n" +
+  "]\n" +
+  "\n" +
+  "\`\`\`";
+
 // Types for better type safety
 interface CourseData {
   courseId: number;
@@ -67,6 +113,19 @@ const cleanJsonString = (jsonString: string): string => {
     .replace(/,\s*]/g, "]"); // Remove trailing commas before ]
 };
 
+// Accepts JSON-like (object-literal style) strings by quoting unquoted keys
+const normalizeJsonLikeString = (input: string): string => {
+  const cleaned = cleanJsonString(input);
+  // Quote unquoted keys: matches start of object or after comma, then an identifier key followed by ':'
+  // Examples: { courseId: 1 } -> { "courseId": 1 }
+  //           , classId: 2   -> , "classId": 2
+  const quoteKeys = cleaned.replace(
+    /([\{,]\s*)([A-Za-z_][A-Za-z0-9_]*)\s*:/g,
+    '$1"$2":',
+  );
+  return quoteKeys;
+};
+
 const parseJsonFromLines = (lines: string[]): string => {
   let jsonContent = "";
   let inJsonBlock = false;
@@ -101,8 +160,7 @@ const removeBlockTagFromMarkdown = (content: string, tag: string): string => {
     .replace(new RegExp(`\\\`\\\`\\\`${tag}[\\s]*$`, ""), "");
 };
 
-// Main parsing function
-const formatMarkdown = (buffer: string): Block[] => {
+export const parseBlocks = (buffer: string): Block[] => {
   const state: ParserState = {
     blocks: [],
     position: 0,
@@ -155,8 +213,8 @@ const formatMarkdown = (buffer: string): Block[] => {
           throw new Error("No valid JSON array found in course-list block");
         }
 
-        const cleanedJson = cleanJsonString(jsonContent);
-        const courseData = JSON.parse(cleanedJson);
+        const normalizedJson = normalizeJsonLikeString(jsonContent);
+        const courseData = JSON.parse(normalizedJson);
         const validatedData = validateCourseArray(courseData);
 
         state.blocks.push({
@@ -169,7 +227,8 @@ const formatMarkdown = (buffer: string): Block[] => {
           throw new Error("No valid JSON object found in course-card block");
         }
 
-        const courseData = JSON.parse(jsonMatch[0]);
+        const normalizedObjectJson = normalizeJsonLikeString(jsonMatch[0]);
+        const courseData = JSON.parse(normalizedObjectJson);
         const validatedData = validateCourseObject(courseData);
 
         state.blocks.push({
@@ -222,3 +281,6 @@ const formatMarkdown = (buffer: string): Block[] => {
 
   return state.blocks;
 };
+
+const blocks = parseBlocks(test);
+console.log(JSON.stringify(blocks, null, 2));

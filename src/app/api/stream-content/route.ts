@@ -10,6 +10,8 @@ import {
 } from "ai";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { MAX_STEPS } from "~/lib/constants";
+import { parseBlocks } from "./parser";
+import { PayloadSchema } from "./schemas";
 
 const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
 
@@ -62,6 +64,7 @@ export const POST = async (req: NextRequest) => {
         });
 
         let buffer: string | undefined = undefined;
+        let lastSentJson: string | undefined = undefined;
 
         for await (const delta of response.fullStream) {
           // Handles reasoning
@@ -88,27 +91,37 @@ export const POST = async (req: NextRequest) => {
             buffer += delta.text;
             console.clear();
             console.dir(buffer);
+
+            try {
+              // Parse blocks from the current buffer
+              const blocks = parseBlocks(buffer);
+
+              // Create payload and validate against schema
+              const candidate = { blocks } as unknown;
+              const validation = PayloadSchema.safeParse(candidate);
+
+              if (validation.success) {
+                const jsonLine = JSON.stringify(validation.data) + "\n";
+
+                // Only send if this is different from what we last sent
+                if (jsonLine !== lastSentJson) {
+                  lastSentJson = jsonLine;
+                  await writer.write(encoder.encode(jsonLine));
+                }
+              }
+            } catch (parseError) {
+              // If parsing fails, continue accumulating text without sending
+              // The parseBlocks function will throw if it can't validate the blocks
+              console.log(
+                "Parse error (continuing to accumulate):",
+                parseError,
+              );
+            }
           }
 
           if (delta.type == "text-end") {
             buffer = undefined;
           }
-
-          // yamlBuffer += delta;
-          // // Attempt to parse fully-formed blocks from current buffer
-          // const blocks = parseBlocksFromYamlishFmt(yamlBuffer);
-          // if (blocks.length > 0) {
-          //   const candidate = { blocks } as unknown;
-          //   const validation = PayloadSchema.safeParse(candidate);
-          //   if (validation.success) {
-          //     const jsonLine = JSON.stringify(validation.data) + "\n";
-          //     if (jsonLine !== lastSentJson) {
-          //       lastSentJson = jsonLine;
-          //       finalPayload = validation.data;
-          //       await writer.write(encoder.encode(jsonLine));
-          //     }
-          //   }
-          // }
         }
       } catch (err) {
         const errorPayload = JSON.stringify({ error: true }) + "\n";
