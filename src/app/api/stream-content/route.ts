@@ -1,13 +1,15 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
-import { PayloadSchema } from "./schemas";
 import { PROMPT } from "./prompt";
-import { streamText, type ModelMessage } from "ai";
 import {
-  YAML_FORMAT_INSTRUCTIONS as YAML_FMT,
-  parseBlocksFromYamlish as parseBlocksFromYamlishFmt,
-} from "./format";
+  experimental_createMCPClient,
+  streamText,
+  type ModelMessage,
+  stepCountIs,
+} from "ai";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { MAX_STEPS } from "~/lib/constants";
 
 const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
 
@@ -25,61 +27,88 @@ export const POST = async (req: NextRequest) => {
     const cloned = req.clone();
     const messages = (await cloned.json()) as ModelMessage[];
 
-    // Stream text to the client as NDJSON by converting YAML-like output into the PayloadSchema
+    // Stream text to the client as NDJSON by converting output into the PayloadSchema
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
 
-    // YAML format instructions and parser are imported from ./format
-
     void (async () => {
       try {
+        const httpTransport = new StreamableHTTPClientTransport(
+          new URL("https://stanfordmcp.com/mcp/"),
+          {
+            requestInit: {
+              headers: {
+                Authorization:
+                  "Bearer YJAna9RQePF@-uVw7_qBQt*apMF4*bZZfbTcybLobw*nGKCwteJMGh",
+                Accept: "application/json, text/event-stream",
+              },
+            },
+          },
+        );
+
+        const client = await experimental_createMCPClient({
+          transport: httpTransport,
+        });
+
+        const tools = await client.tools();
+
         const response = streamText({
           model: openai("gpt-5"),
           messages,
-          system: `${PROMPT}\n\n${YAML_FMT}`,
+          tools: tools,
+          stopWhen: stepCountIs(MAX_STEPS),
+          system: PROMPT,
         });
 
-        let yamlBuffer = "";
-        let lastSentJson = "";
-        let finalPayload: unknown = null;
+        let buffer: string | undefined = undefined;
 
-        for await (const delta of response.textStream) {
-          yamlBuffer += delta;
-          // Attempt to parse fully-formed blocks from current buffer
-          const blocks = parseBlocksFromYamlishFmt(yamlBuffer);
-          if (blocks.length > 0) {
-            const candidate = { blocks } as unknown;
-            const validation = PayloadSchema.safeParse(candidate);
-            if (validation.success) {
-              const jsonLine = JSON.stringify(validation.data) + "\n";
-              if (jsonLine !== lastSentJson) {
-                lastSentJson = jsonLine;
-                finalPayload = validation.data;
-                await writer.write(encoder.encode(jsonLine));
-              }
+        for await (const delta of response.fullStream) {
+          // Handles reasoning
+          if (delta.type == "reasoning-start") {
+            console.log("STARTED REASONING");
+          }
+
+          // Handles tool calling
+          if (delta.type == "tool-call") {
+            console.log("TOOL CALLED");
+            console.log(delta.toolName);
+          }
+
+          // Handles response
+          if (delta.type == "text-start") {
+            buffer = "";
+          }
+
+          if (delta.type == "text-delta") {
+            if (buffer == undefined) {
+              throw Error("Text was not started");
             }
-          }
-        }
 
-        // Final validation after stream ends
-        if (finalPayload == null) {
-          const blocks = parseBlocksFromYamlishFmt(yamlBuffer);
-          const candidate = { blocks } as unknown;
-          const validation = PayloadSchema.safeParse(candidate);
-          if (validation.success) {
-            finalPayload = validation.data;
-            const jsonLine = JSON.stringify(validation.data) + "\n";
-            await writer.write(encoder.encode(jsonLine));
-          } else {
-            const errorPayload =
-              JSON.stringify({
-                error: true,
-                reason: "Schema validation failed for streamed YAML output",
-                details: validation.error.message,
-              }) + "\n";
-            await writer.write(encoder.encode(errorPayload));
+            buffer += delta.text;
+            console.clear();
+            console.dir(buffer);
           }
+
+          if (delta.type == "text-end") {
+            buffer = undefined;
+          }
+
+          // yamlBuffer += delta;
+          // // Attempt to parse fully-formed blocks from current buffer
+          // const blocks = parseBlocksFromYamlishFmt(yamlBuffer);
+          // if (blocks.length > 0) {
+          //   const candidate = { blocks } as unknown;
+          //   const validation = PayloadSchema.safeParse(candidate);
+          //   if (validation.success) {
+          //     const jsonLine = JSON.stringify(validation.data) + "\n";
+          //     if (jsonLine !== lastSentJson) {
+          //       lastSentJson = jsonLine;
+          //       finalPayload = validation.data;
+          //       await writer.write(encoder.encode(jsonLine));
+          //     }
+          //   }
+          // }
         }
       } catch (err) {
         const errorPayload = JSON.stringify({ error: true }) + "\n";

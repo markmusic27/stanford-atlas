@@ -46,7 +46,7 @@ const ActivityTimeline = ({
               className="font-sans text-[14px] font-[400]"
               duration={1.4}
             >
-              Thinking. This may take a moment...
+              Thinking...
             </TextShimmer>
           </motion.div>
         )}

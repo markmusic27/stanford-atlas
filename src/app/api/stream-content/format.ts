@@ -1,236 +1,224 @@
-// Minimal, strict YAML guidance for the model
-export const YAML_FORMAT_INSTRUCTIONS = `
-Output strictly as YAML. No JSON, no code fences, no prose.
+import type { Block } from "./schemas";
 
-Rules:
-- Top-level key: blocks
-- Indentation: 2 spaces
-- Emit blocks incrementally (one by one)
-- Allowed blocks: markdown | course-card | course-list
+// Types for better type safety
+interface CourseData {
+  courseId: number;
+  classId: number;
+}
 
-Examples:
-blocks:
-  - type: markdown
-    data: |
-      <markdown text>
+interface ParserState {
+  blocks: Block[];
+  position: number;
+  markdownBuffer: string;
+}
 
-  - type: course-card
-    data:
-      courseId: number
-      classId: number
+// Constants
+const BLOCK_TAGS = {
+  COURSE_CARD: "course-card",
+  COURSE_LIST: "course-list",
+} as const;
 
-  - type: course-list
-    data:
-      - courseId: number
-        classId: number
-`;
+const CODE_BLOCK_FENCE = "```";
 
-// Helper: count leading spaces
-const countLeadingSpaces = (s: string) => {
-  let i = 0;
-  while (i < s.length && s[i] === " ") i++;
-  return i;
+// Validation functions
+const validateCourseData = (course: unknown): course is CourseData => {
+  return (
+    typeof course === "object" &&
+    course !== null &&
+    typeof (course as CourseData).courseId === "number" &&
+    typeof (course as CourseData).classId === "number"
+  );
 };
 
-// Helper: parse integer
-const parseInteger = (value: string): number | null => {
-  const m = value.trim().match(/^[-+]?[0-9]+$/);
-  if (!m) return null;
-  const n = Number(value.trim());
-  return Number.isFinite(n) ? n : null;
-};
-
-// Parse a minimal YAML subset for our specific schema; returns only fully parsed blocks
-export const parseBlocksFromYamlish = (yamlText: string): unknown[] => {
-  const lines = yamlText.split(/\r?\n/);
-  let i = 0;
-  // Seek top-level 'blocks:'
-  while (i < lines.length) {
-    const curr = lines[i] ?? "";
-    if (curr.trim() === "") {
-      i++;
-      continue;
-    }
-    break;
+const validateCourseArray = (data: unknown): CourseData[] => {
+  if (!Array.isArray(data)) {
+    throw new Error("course-list data must be an array");
   }
-  if (i >= lines.length) return [];
-  const firstLine = lines[i] ?? "";
-  if (firstLine.trim() !== "blocks:") return [];
-  i++;
 
-  const blocks: unknown[] = [];
+  for (const course of data) {
+    if (!validateCourseData(course)) {
+      throw new Error(
+        `Invalid course data: courseId and classId must be numbers, got courseId: ${typeof (
+          course as any
+        )?.courseId}, classId: ${typeof (course as any)?.classId}`,
+      );
+    }
+  }
 
-  const isTypeLine = (line: string) =>
-    /^(\s*)-\s*type:\s*(markdown|course-card|course-list)\s*$/.test(line);
-  const getTypeFromLine = (
-    line: string,
-  ): "markdown" | "course-card" | "course-list" | null => {
-    const m = line.match(
-      /^(\s*)-\s*type:\s*(markdown|course-card|course-list)\s*$/,
+  return data;
+};
+
+const validateCourseObject = (data: unknown): CourseData => {
+  if (!validateCourseData(data)) {
+    throw new Error(
+      `Invalid course data: courseId and classId must be numbers, got courseId: ${typeof (
+        data as any
+      )?.courseId}, classId: ${typeof (data as any)?.classId}`,
     );
-    return m ? (m[2] as any) : null;
+  }
+  return data;
+};
+
+// JSON parsing utilities
+const cleanJsonString = (jsonString: string): string => {
+  return jsonString
+    .replace(/\/\/.*$/gm, "") // Remove comments
+    .replace(/,\s*}/g, "}") // Remove trailing commas before }
+    .replace(/,\s*]/g, "]"); // Remove trailing commas before ]
+};
+
+const parseJsonFromLines = (lines: string[]): string => {
+  let jsonContent = "";
+  let inJsonBlock = false;
+
+  for (const line of lines) {
+    if (line.trim().startsWith("[")) {
+      inJsonBlock = true;
+    }
+    if (inJsonBlock) {
+      jsonContent += line + "\n";
+    }
+    if (line.trim().endsWith("]")) {
+      break;
+    }
+  }
+
+  return jsonContent.trim();
+};
+
+// Markdown cleaning utilities
+const cleanMarkdownContent = (content: string): string => {
+  return content
+    .trim()
+    .replace(/\n```[\s]*$/, "") // Remove trailing code block fence
+    .replace(/^```[^\n]*\n?/, "") // Remove leading code block fence
+    .replace(/```[\s]*$/, ""); // Remove standalone backticks at end
+};
+
+const removeBlockTagFromMarkdown = (content: string, tag: string): string => {
+  return content
+    .replace(/```[\s]*$/, "")
+    .replace(new RegExp(`\\\`\\\`\\\`${tag}[\\s]*$`, ""), "");
+};
+
+// Main parsing function
+const formatMarkdown = (buffer: string): Block[] => {
+  const state: ParserState = {
+    blocks: [],
+    position: 0,
+    markdownBuffer: "",
   };
 
-  while (i < lines.length) {
-    const line = lines[i] ?? "";
-    if (!isTypeLine(line)) {
-      // Skip unrelated or incomplete content until next type line
-      i++;
-      continue;
+  const saveMarkdownBlock = (content: string) => {
+    const cleanedContent = cleanMarkdownContent(content);
+    if (cleanedContent) {
+      state.blocks.push({
+        type: "markdown",
+        data: cleanedContent,
+      });
+    }
+    state.markdownBuffer = "";
+  };
+
+  const parseSpecialBlock = (
+    tag: string,
+    blockType: "course-list" | "course-card",
+  ): void => {
+    // Clean up accumulated markdown content
+    const cleanedMarkdown = removeBlockTagFromMarkdown(
+      state.markdownBuffer,
+      tag,
+    );
+    saveMarkdownBlock(cleanedMarkdown);
+
+    // Consume the special block content
+    let blockContent = "";
+    let shouldContinue = true;
+
+    while (shouldContinue && state.position < buffer.length) {
+      blockContent += buffer[state.position];
+      if (
+        buffer.substring(state.position + 1, state.position + 4) ===
+        CODE_BLOCK_FENCE
+      ) {
+        shouldContinue = false;
+      }
+      state.position++;
     }
 
-    const typeIndent = countLeadingSpaces(line);
-    const type = getTypeFromLine(line)!;
-    i++;
+    try {
+      if (blockType === "course-list") {
+        const lines = blockContent.split("\n");
+        const jsonContent = parseJsonFromLines(lines);
 
-    // Expect data line
-    if (i >= lines.length) break; // incomplete
-    const dataLine = lines[i] ?? "";
-    const dataIndent = countLeadingSpaces(dataLine);
-    const dataKey = dataLine.trim();
+        if (!jsonContent) {
+          throw new Error("No valid JSON array found in course-list block");
+        }
 
-    // Must be indented 2 spaces more than type line
-    if (dataIndent !== typeIndent + 2 || !dataKey.startsWith("data:")) {
-      // malformed/incomplete; try to resync at next block
-      continue;
+        const cleanedJson = cleanJsonString(jsonContent);
+        const courseData = JSON.parse(cleanedJson);
+        const validatedData = validateCourseArray(courseData);
+
+        state.blocks.push({
+          type: "course-list",
+          data: validatedData,
+        });
+      } else if (blockType === "course-card") {
+        const jsonMatch = blockContent.match(/\{[\s\S]*?\}/);
+        if (!jsonMatch) {
+          throw new Error("No valid JSON object found in course-card block");
+        }
+
+        const courseData = JSON.parse(jsonMatch[0]);
+        const validatedData = validateCourseObject(courseData);
+
+        state.blocks.push({
+          type: "course-card",
+          data: validatedData,
+        });
+      }
+    } catch (error) {
+      throw new Error(
+        `Failed to parse ${blockType} block: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+      );
     }
+  };
 
-    if (type === "markdown") {
-      // Expect 'data: |' then block scalar lines indented more
-      if (dataKey !== "data: |") {
-        // not complete yet
-        i++;
-        continue;
-      }
-      i++;
-      const contentLines: string[] = [];
-      while (i < lines.length) {
-        const l = lines[i] ?? "";
-        const indent = countLeadingSpaces(l);
-        // Markdown content lines must be indented at least 4 spaces beyond 'data: |'
-        if (indent >= dataIndent + 2) {
-          contentLines.push(l.slice(dataIndent + 2));
-          i++;
-        } else {
-          break;
-        }
-      }
-      if (contentLines.length === 0) {
-        // Incomplete block scalar; skip until more arrives
-        continue;
-      }
-      const data = contentLines.join("\n").replace(/[\s\n]+$/g, "");
-      blocks.push({ type: "markdown", data });
-      continue;
+  // Main parsing loop
+  while (state.position < buffer.length) {
+    // Check for course-list block
+    if (
+      state.position >= BLOCK_TAGS.COURSE_LIST.length &&
+      buffer.substring(
+        state.position - BLOCK_TAGS.COURSE_LIST.length,
+        state.position,
+      ) === BLOCK_TAGS.COURSE_LIST
+    ) {
+      parseSpecialBlock(BLOCK_TAGS.COURSE_LIST, "course-list");
     }
-
-    if (type === "course-card") {
-      // Expect 'data:' then 2 fields indented more
-      if (dataKey !== "data:") {
-        i++;
-        continue;
-      }
-      i++;
-      let courseId: number | null = null;
-      let classId: number | null = null;
-      while (i < lines.length) {
-        const l = lines[i] ?? "";
-        const indent = countLeadingSpaces(l);
-        if (indent < dataIndent + 2 || isTypeLine(l)) break;
-        const trimmed = l.trim();
-        const kv = trimmed.match(/^(courseId|classId)\s*:\s*(.+)$/);
-        if (kv) {
-          const key = kv[1];
-          const valRaw = kv[2] ?? "";
-          const num = parseInteger(valRaw);
-          if (num !== null) {
-            if (key === "courseId") courseId = num;
-            if (key === "classId") classId = num;
-          }
-        }
-        i++;
-      }
-      if (courseId !== null && classId !== null) {
-        blocks.push({ type: "course-card", data: { courseId, classId } });
-      }
-      continue;
+    // Check for course-card block
+    else if (
+      state.position >= BLOCK_TAGS.COURSE_CARD.length &&
+      buffer.substring(
+        state.position - BLOCK_TAGS.COURSE_CARD.length,
+        state.position,
+      ) === BLOCK_TAGS.COURSE_CARD
+    ) {
+      parseSpecialBlock(BLOCK_TAGS.COURSE_CARD, "course-card");
     }
-
-    if (type === "course-list") {
-      // Expect 'data:' then a list of items
-      if (dataKey !== "data:") {
-        i++;
-        continue;
-      }
-      i++;
-      const items: Array<{ courseId: number; classId: number }> = [];
-      while (i < lines.length) {
-        const l = lines[i] ?? "";
-        if (isTypeLine(l)) break; // next block
-        const indent = countLeadingSpaces(l);
-        if (indent < dataIndent + 2) break; // out of list scope
-
-        // Two supported forms:
-        // 1) inline:   - courseId: 105750, classId: 7511
-        // 2) nested:
-        //      -
-        //        courseId: 105750
-        //        classId: 7511
-
-        const inline = l.match(
-          /^\s*-\s*courseId\s*:\s*([0-9]+)\s*,\s*classId\s*:\s*([0-9]+)\s*$/,
-        );
-        if (inline) {
-          const ciParsed = parseInteger(inline[1] ?? "");
-          const clParsed = parseInteger(inline[2] ?? "");
-          if (ciParsed == null || clParsed == null) {
-            i++;
-            continue;
-          }
-          const ci = ciParsed;
-          const cl = clParsed;
-          items.push({ courseId: ci, classId: cl });
-          i++;
-          continue;
-        }
-
-        const itemStart = l.match(/^\s*-\s*$/);
-        if (itemStart) {
-          // Parse nested fields indented further
-          i++;
-          let courseId: number | null = null;
-          let classId: number | null = null;
-          while (i < lines.length) {
-            const li = lines[i] ?? "";
-            const ind = countLeadingSpaces(li);
-            if (ind < indent + 2 || /^\s*-\s*/.test(li)) break;
-            const kv = li.trim().match(/^(courseId|classId)\s*:\s*(.+)$/);
-            if (kv) {
-              const key = kv[1];
-              const raw = kv[2] ?? "";
-              const num = parseInteger(raw);
-              if (num !== null) {
-                if (key === "courseId") courseId = num;
-                if (key === "classId") classId = num;
-              }
-            }
-            i++;
-          }
-          if (courseId !== null && classId !== null) {
-            items.push({ courseId, classId });
-          }
-          continue;
-        }
-
-        // Unrecognized line in list; advance
-        i++;
-      }
-      if (items.length > 0) {
-        blocks.push({ type: "course-list", data: items });
-      }
-      continue;
+    // Regular character processing
+    else {
+      state.markdownBuffer += buffer[state.position];
+      state.position++;
     }
   }
 
-  return blocks;
+  // Save any remaining markdown content
+  if (state.markdownBuffer.length > 0) {
+    saveMarkdownBlock(state.markdownBuffer);
+  }
+
+  return state.blocks;
 };
