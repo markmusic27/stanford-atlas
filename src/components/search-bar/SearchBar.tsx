@@ -15,9 +15,15 @@ interface SearchBarProps {
   onSubmit: (query: string) => void;
   onStop?: () => void;
   isChatOpen: boolean;
+  onQueryChange?: (query: string) => void;
 }
 
-const SearchBar = ({ onSubmit, onStop, isChatOpen }: SearchBarProps) => {
+const SearchBar = ({
+  onSubmit,
+  onStop,
+  isChatOpen,
+  onQueryChange,
+}: SearchBarProps) => {
   const enqueue = usePageTransitionStore((state) => state.enqueue);
   const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
@@ -41,6 +47,7 @@ const SearchBar = ({ onSubmit, onStop, isChatOpen }: SearchBarProps) => {
 
         if (!isStreaming) {
           setQuery("");
+          onQueryChange?.("");
         }
       }}
       className={`bg-primary-1 border-primary-9 flex w-full flex-row rounded-[24px] border-[1px] shadow-[0_15px_40px_0_rgba(0,0,0,0.06)]`}
@@ -66,7 +73,10 @@ const SearchBar = ({ onSubmit, onStop, isChatOpen }: SearchBarProps) => {
           </div>
           <AnimatedTextarea
             value={query}
-            onChange={setQuery}
+            onChange={(value) => {
+              setQuery(value);
+              onQueryChange?.(value);
+            }}
             name="query"
             isChatOpen={isChatOpen}
           />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { FOOTER_HEIGHT } from "~/lib/constants";
 import { useChatStore } from "~/store/chat.store";
 import BlockRenderer from "../ui/BlockRenderer";
@@ -9,6 +10,18 @@ import ActivityTimeline from "../ui/activity-timeline/ActivityTimeline";
 const Chat = () => {
   const { chatHistory } = useChatStore();
   const isStreaming = useChatStore((s) => s.isStreaming);
+
+  // Scroll to bottom on submit/start streaming
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!isStreaming) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    const id = requestAnimationFrame(() => {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [isStreaming, chatHistory.length]);
 
   function generateGroups(history: ChatHistory[]) {
     type Group =
@@ -55,7 +68,7 @@ const Chat = () => {
   const showTimeline = isStreaming && lastGroup?.type === "query";
 
   return (
-    <div className="absolute h-full w-full overflow-y-auto">
+    <div ref={scrollRef} className="absolute h-full w-full overflow-y-auto">
       <div className="mx-auto flex w-full max-w-[800px] flex-col gap-[20px] px-[16px] pt-[32px] md:pt-[48px]">
         {groups.map((group, i) =>
           group.type === "query" ? (

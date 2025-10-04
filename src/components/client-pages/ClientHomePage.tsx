@@ -4,7 +4,7 @@ import { usePageTransitionStore } from "~/store/pageTransition.store";
 import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
-import { BAR_HEIGHT, SPACING, TRANSITION_DURATION } from "~/lib/constants";
+import { TRANSITION_DURATION } from "~/lib/constants";
 import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { motion } from "framer-motion";
@@ -18,7 +18,7 @@ import type { UserModelMessage } from "ai";
 
 const ClientHomePage = () => {
   // TODO: Change to false
-  const [isChatOpen, setIsChatOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [windowHeight, setWindowHeight] = useState<number | undefined>(
     undefined,
   );
@@ -39,7 +39,7 @@ const ClientHomePage = () => {
     if (!trimmed) return;
 
     // Intentionally fire-and-forget; stream manages its own errors/state
-    void stream(trimmed);
+    // void stream(trimmed);
   };
 
   useEffect(() => {
@@ -62,6 +62,18 @@ const ClientHomePage = () => {
       if (rafId != null) cancelAnimationFrame(rafId);
       window.removeEventListener("resize", updateSize);
     };
+  }, []);
+
+  // Observe search container height changes (e.g., textarea growth) to keep bottom alignment accurate
+  useEffect(() => {
+    const el = searchRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      const next = el.offsetHeight;
+      setSearchHeight((prev) => (prev === next ? prev : next));
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   // Animate Logo collapse/expand while also removing it from layout when collapsed
@@ -90,20 +102,16 @@ const ClientHomePage = () => {
   }, []);
 
   const computeSpacing = () => {
-    const scale = 2;
     if (windowHeight === undefined || searchHeight === undefined) {
       return 0;
     }
 
     if (isChatOpen) {
-      let minimizer = 0;
-
-      if (vw && vw < 630) {
-        minimizer = 16;
-      }
-      return windowHeight - (BAR_HEIGHT + SPACING) + minimizer;
+      const bottomGap = vw != null && vw > 630 ? 60 : 40;
+      return Math.max(0, windowHeight - searchHeight - bottomGap);
     }
 
+    const scale = 2;
     return (windowHeight - searchHeight) / (scale + 1);
   };
 
@@ -140,7 +148,7 @@ const ClientHomePage = () => {
         className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[16px] will-change-transform`}
         initial={false}
         animate={{ y: spacing }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <Logo />

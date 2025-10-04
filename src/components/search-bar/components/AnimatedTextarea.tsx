@@ -32,6 +32,7 @@ const AnimatedTextarea = ({
   const intervalMs = 4000;
   const timeoutRef = useRef<number | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // When chat is open, show a single static placeholder and disable animation
   const placeholders = isChatOpen
@@ -70,6 +71,21 @@ const AnimatedTextarea = ({
   const currentText = placeholders[currentIndex];
   const upcomingText = placeholders[nextIndex];
 
+  // Recalculate height when value changes programmatically (e.g., after submit)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    const maxHeight = window.innerHeight * 0.4;
+    el.style.height = "auto";
+    if (el.scrollHeight <= maxHeight) {
+      el.style.height = el.scrollHeight + "px";
+      el.style.overflowY = "hidden";
+    } else {
+      el.style.height = maxHeight + "px";
+      el.style.overflowY = "auto";
+    }
+  }, [value, isChatOpen]);
+
   return (
     <div className={`relative w-full ${className}`}>
       {/* Animated placeholder overlay - visible only when empty */}
@@ -102,6 +118,7 @@ const AnimatedTextarea = ({
       )}
 
       <textarea
+        ref={textareaRef}
         className={`text-primary-text placeholder-secondary-text-4 caret-text-cursor minimal-scrollbar max-h-[40vh] min-h-[24px] w-full resize-none bg-transparent text-[16px] outline-none`}
         autoComplete="off"
         aria-label="Search"

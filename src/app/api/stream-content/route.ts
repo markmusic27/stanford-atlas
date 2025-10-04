@@ -89,8 +89,6 @@ export const POST = async (req: NextRequest) => {
             }
 
             buffer += delta.text;
-            console.clear();
-            console.dir(buffer);
 
             try {
               // Parse blocks from the current buffer
@@ -109,14 +107,7 @@ export const POST = async (req: NextRequest) => {
                   await writer.write(encoder.encode(jsonLine));
                 }
               }
-            } catch (parseError) {
-              // If parsing fails, continue accumulating text without sending
-              // The parseBlocks function will throw if it can't validate the blocks
-              console.log(
-                "Parse error (continuing to accumulate):",
-                parseError,
-              );
-            }
+            } catch (parseError) {}
           }
 
           if (delta.type == "text-end") {
