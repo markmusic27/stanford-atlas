@@ -19,9 +19,7 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
       />
       <PeripheralCard
         title={"Build a 4-year plan"}
-        onClick={() => {
-          console.log("hello world");
-        }}
+        href="https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header"
       />
       <PeripheralCard
         title={"GitHub"}
