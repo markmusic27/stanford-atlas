@@ -1,4 +1,4 @@
-import { createOpenAI } from "@ai-sdk/openai";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { PROMPT } from "./prompt";
@@ -13,7 +13,7 @@ import { MAX_STEPS } from "~/lib/constants";
 import { parseBlocks } from "./parser";
 import { PayloadSchema } from "./schemas";
 
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
+const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
         const tools = await client.tools();
 
         const response = streamText({
-          model: openai("gpt-5"),
+          model: anthropic("claude-sonnet-4-5"),
           messages,
           tools: tools,
           stopWhen: stepCountIs(MAX_STEPS),
@@ -138,6 +138,7 @@ export const POST = async (req: NextRequest) => {
           }
         }
       } catch (err) {
+        ``;
         const errorPayload = JSON.stringify({ error: true }) + "\n";
         await writer.write(encoder.encode(errorPayload));
       } finally {
