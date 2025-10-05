@@ -160,7 +160,13 @@ const ClientHomePage = () => {
         />
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <div className="h-[36px]" />
-          <Peripherals />
+          <Peripherals
+            onWhyUseClick={() => {
+              handleOnSubmit(
+                "Why should I use this over Stanford Navigator or ChatGPT?",
+              );
+            }}
+          />
         </AnimatedCollapsable>
       </motion.div>
 

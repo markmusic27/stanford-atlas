@@ -1,6 +1,10 @@
 import PeripheralCard from "./components/PeripheralCard";
 
-const Peripherals = () => {
+interface PeripheralsProps {
+  onWhyUseClick: () => void;
+}
+
+const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
   return (
     <div className={`flex flex-row flex-wrap justify-center gap-[6px]`}>
       <PeripheralCard
@@ -10,10 +14,8 @@ const Peripherals = () => {
         }}
       />
       <PeripheralCard
-        title={"Why use this over Navigator"}
-        onClick={() => {
-          console.log("hello world");
-        }}
+        title={"Why use this over Navigator or ChatGPT"}
+        onClick={onWhyUseClick}
       />
       <PeripheralCard
         title={"Build a 4-year plan"}
