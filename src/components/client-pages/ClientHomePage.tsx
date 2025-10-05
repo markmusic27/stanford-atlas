@@ -157,6 +157,7 @@ const ClientHomePage = () => {
           onSubmit={handleOnSubmit}
           onStop={stop}
           isChatOpen={isChatOpen}
+          autoFocus
         />
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <div className="h-[36px]" />

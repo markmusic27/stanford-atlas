@@ -8,6 +8,7 @@ interface AnimatedTextareaProps {
   name?: string;
   className?: string;
   isChatOpen?: boolean;
+  autoFocus?: boolean;
 }
 
 const placeholderTexts = [
@@ -25,6 +26,7 @@ const AnimatedTextarea = ({
   name,
   className = "",
   isChatOpen = false,
+  autoFocus = false,
 }: AnimatedTextareaProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -86,6 +88,15 @@ const AnimatedTextarea = ({
     }
   }, [value, isChatOpen]);
 
+  // Focus textarea on mount when requested
+  useEffect(() => {
+    if (!autoFocus) return;
+    const rafId = window.requestAnimationFrame(() => {
+      textareaRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(rafId);
+  }, [autoFocus]);
+
   return (
     <div className={`relative w-full ${className}`}>
       {/* Animated placeholder overlay - visible only when empty */}
@@ -131,6 +142,8 @@ const AnimatedTextarea = ({
           height: "auto",
           minHeight: "24px",
         }}
+        // Provide native hint as well; React will hydrate and our effect ensures no scroll
+        autoFocus={autoFocus}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();

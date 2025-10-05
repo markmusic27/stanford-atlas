@@ -16,6 +16,7 @@ interface SearchBarProps {
   onStop?: () => void;
   isChatOpen: boolean;
   onQueryChange?: (query: string) => void;
+  autoFocus?: boolean;
 }
 
 const SearchBar = ({
@@ -23,6 +24,7 @@ const SearchBar = ({
   onStop,
   isChatOpen,
   onQueryChange,
+  autoFocus = false,
 }: SearchBarProps) => {
   const enqueue = usePageTransitionStore((state) => state.enqueue);
   const dequeue = usePageTransitionStore((state) => state.dequeue);
@@ -79,6 +81,7 @@ const SearchBar = ({
             }}
             name="query"
             isChatOpen={isChatOpen}
+            autoFocus={autoFocus}
           />
         </div>
         <AnimatedCollapsable isOpen={!isChatOpen} duration={300}>
