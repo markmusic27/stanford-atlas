@@ -1,3 +1,4 @@
+import type { User } from "@supabase/supabase-js";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -24,4 +25,20 @@ export function isoToUSDate(input: string): string {
   if (!isValid) return "invalid";
 
   return `${month}/${day}/${year}`;
+}
+
+export function extractUserData(user: User | undefined) {
+  const avatarUrl =
+    (user?.user_metadata as any)?.avatar_url ||
+    (user?.user_metadata as any)?.picture;
+
+  const displayName =
+    (user?.user_metadata as any)?.full_name ||
+    (user?.user_metadata as any)?.name ||
+    (user?.user_metadata as any)?.display_name ||
+    (user?.user_metadata as any)?.preferred_username ||
+    user?.email ||
+    "User";
+
+  return { displayName, avatarUrl };
 }

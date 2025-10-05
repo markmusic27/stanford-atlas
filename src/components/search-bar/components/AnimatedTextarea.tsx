@@ -12,12 +12,12 @@ interface AnimatedTextareaProps {
 }
 
 const placeholderTexts = [
-  // TODO: update placeholders to be shorter and more relevant
   "Find a 4 unit robotics course from 11 to 3pm on Thursdays",
-  "Show me computer science classes with Professor Smith",
-  "What are the prerequisites for CS 106A?",
+  "Show me computer science classes with Andrew Ng",
+  "Is Andrew Huberman lecturing any classes?",
+  "What are the prerequisites for CS 106B?",
   "Find biology labs that don't conflict with my schedule",
-  "Search for courses with high ratings and low workload",
+  "Do I really need to take ENGR 40M?",
 ];
 
 const AnimatedTextarea = ({

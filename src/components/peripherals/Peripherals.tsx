@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import PeripheralCard from "./components/PeripheralCard";
+import ProfileAvatar from "./components/ProfileAvatar";
 import { createClient } from "~/utils/supabase/client";
 import { signInWithGoogle } from "~/utils/auth/signIn";
 import { useUserStore } from "~/stores/user.store";
@@ -12,9 +13,14 @@ interface PeripheralsProps {
 
 const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
   const isSignedIn = useUserStore((s) => s.isSignedIn);
+  const user = useUserStore((s) => s.user);
 
   return (
-    <div className={`flex flex-row flex-wrap justify-center gap-[6px]`}>
+    <div
+      className={`flex flex-row flex-wrap items-center justify-center gap-[6px]`}
+    >
+      <ProfileAvatar />
+
       <PeripheralCard
         title={isSignedIn ? "Sign Out" : "Sign In"}
         onClick={async () => {
@@ -33,13 +39,14 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
         }}
       />
       <PeripheralCard
-        title={"Why use this over OnCourse or ChatGPT"}
-        onClick={onWhyUseClick}
-      />
-      <PeripheralCard
         title={"Build a 4-year plan"}
         href="https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header"
       />
+      <PeripheralCard
+        title={"Why this over OnCourse or ChatGPT"}
+        onClick={onWhyUseClick}
+      />
+
       <PeripheralCard
         title={"GitHub"}
         href="https://github.com/markmusic27/stanford-atlas"
