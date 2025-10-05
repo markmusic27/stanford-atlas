@@ -164,7 +164,7 @@ const ClientHomePage = () => {
           <Peripherals
             onWhyUseClick={() => {
               void handleOnSubmit(
-                "Why should I use this over Stanford Navigator or ChatGPT?",
+                "Why should I use this over OnCourse or ChatGPT?",
               );
             }}
           />

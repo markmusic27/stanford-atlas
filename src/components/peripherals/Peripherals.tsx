@@ -14,7 +14,7 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
         }}
       />
       <PeripheralCard
-        title={"Why use this over Navigator or ChatGPT"}
+        title={"Why use this over OnCourse or ChatGPT"}
         onClick={onWhyUseClick}
       />
       <PeripheralCard
