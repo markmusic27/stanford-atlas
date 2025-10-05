@@ -11,7 +11,8 @@ import type { ModelMessage } from "ai";
 export const useStreamContent = () => {
   const setIsStreaming = useChatStore((s) => s.setIsStreaming);
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
-  const { append, edit } = useChatStore();
+  const { append, edit, setChainOfThought, clearChainOfThought } =
+    useChatStore();
   const abortRef = useRef<AbortController | null>(null);
 
   const handleStreamUpdate = (obj: unknown) => {
@@ -21,6 +22,10 @@ export const useStreamContent = () => {
       if (data?.blocks) {
         // Only update when we have a payload for the response entry
         edit({ type: "response", payload: data.blocks });
+      }
+
+      if (data?.chainOfThought) {
+        setChainOfThought(data.chainOfThought);
       }
     }
   };
@@ -69,6 +74,7 @@ export const useStreamContent = () => {
         // Set all state values to initial state
         setErrorMessage(null);
         setIsStreaming(true);
+        clearChainOfThought();
 
         const controller = new AbortController();
         abortRef.current = controller;

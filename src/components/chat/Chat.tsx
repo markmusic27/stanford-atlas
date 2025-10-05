@@ -7,8 +7,18 @@ import BlockRenderer from "../ui/BlockRenderer";
 import Message from "../ui/message/Message";
 import type { Block, ChatHistory } from "~/app/api/stream-content/schemas";
 import ActivityTimeline from "../ui/activity-timeline/ActivityTimeline";
+function collapseConsecutiveDuplicates<T>(items: T[]): T[] {
+  if (items.length === 0) return [];
+  const result: T[] = [items[0]!];
+  for (let i = 1; i < items.length; i++) {
+    if (items[i] !== items[i - 1]) {
+      result.push(items[i]!);
+    }
+  }
+  return result;
+}
 const Chat = () => {
-  const { chatHistory } = useChatStore();
+  const { chatHistory, chainOfThought } = useChatStore();
   const isStreaming = useChatStore((s) => s.isStreaming);
 
   // Scroll to bottom on submit/start streaming
@@ -66,6 +76,7 @@ const Chat = () => {
   const groups = generateGroups(chatHistory);
   const lastGroup = groups.length ? groups[groups.length - 1] : undefined;
   const showTimeline = isStreaming && lastGroup?.type === "query";
+  const timelineChain = collapseConsecutiveDuplicates(chainOfThought);
 
   return (
     <div ref={scrollRef} className="absolute h-full w-full overflow-y-auto">
@@ -77,10 +88,30 @@ const Chat = () => {
               {showTimeline && i === groups.length - 1 ? (
                 <div className="mt-[12px]">
                   <ActivityTimeline
-                    steps={[
-                      { text: "Thinking", tool: "thinking", loading: true },
-                    ]}
-                    loading={false}
+                    steps={timelineChain.map((value, index) => {
+                      let text = "";
+                      switch (value) {
+                        case "reasoning":
+                          text = "Reasoning";
+                          break;
+                        case "search-courses":
+                          text = "Searching course catalog";
+                          break;
+                        case "get-course":
+                          text = "Fetching course details";
+                          break;
+                        default:
+                          text = "Reasoning";
+                          break;
+                      }
+
+                      return {
+                        text: text,
+                        tool: value == "reasoning" ? "reasoning" : "searching",
+                        loading: index == timelineChain.length - 1,
+                      };
+                    })}
+                    loading={chainOfThought.length == 0}
                   />
                 </div>
               ) : null}

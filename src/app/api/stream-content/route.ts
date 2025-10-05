@@ -63,19 +63,37 @@ export const POST = async (req: NextRequest) => {
           system: PROMPT,
         });
 
-        let buffer: string | undefined = undefined;
+        let buffer: string = "";
         let lastSentJson: string | undefined = undefined;
+        let chainOfThought: string[] = [];
+
+        const sendCurrentPayload = async () => {
+          try {
+            const blocks = parseBlocks(buffer);
+            const candidate = { chainOfThought, blocks } as unknown;
+            const validation = PayloadSchema.safeParse(candidate);
+
+            if (validation.success) {
+              const jsonLine = JSON.stringify(validation.data) + "\n";
+              if (jsonLine !== lastSentJson) {
+                lastSentJson = jsonLine;
+                await writer.write(encoder.encode(jsonLine));
+              }
+            }
+          } catch (parseError) {}
+        };
 
         for await (const delta of response.fullStream) {
           // Handles reasoning
           if (delta.type == "reasoning-start") {
-            console.log("STARTED REASONING");
+            chainOfThought.push("reasoning");
+            await sendCurrentPayload();
           }
 
           // Handles tool calling
           if (delta.type == "tool-call") {
-            console.log("TOOL CALLED");
-            console.log(delta.toolName);
+            chainOfThought.push(delta.toolName);
+            await sendCurrentPayload();
           }
 
           // Handles response
@@ -95,7 +113,7 @@ export const POST = async (req: NextRequest) => {
               const blocks = parseBlocks(buffer);
 
               // Create payload and validate against schema
-              const candidate = { blocks } as unknown;
+              const candidate = { chainOfThought, blocks } as unknown;
               const validation = PayloadSchema.safeParse(candidate);
 
               if (validation.success) {
@@ -108,10 +126,6 @@ export const POST = async (req: NextRequest) => {
                 }
               }
             } catch (parseError) {}
-          }
-
-          if (delta.type == "text-end") {
-            buffer = undefined;
           }
         }
       } catch (err) {

@@ -1,51 +1,5 @@
 import type { Block } from "./schemas";
 
-const test =
-  "Quick render test for CS 229, CS 109, and CS 230\n" +
-  "\n" +
-  "Here's a card for CS 229:\n" +
-  "\n" +
-  "\`\`\`course-card\n" +
-  "\n" +
-  "{ courseId: 105750, classId: 7511 }```\n" +
-  "Rendering test: CS 229, CS 109, CS 230\n" +
-  "\n" +
-  "Here are individual course cards:\n" +
-  "\n" +
-  "\`\`\`course-card\n" +
-  "\n" +
-  "{ courseId: 105750, classId: 7511 }\n" +
-  "\n" +
-  "\`\`\`\n" +
-  "\n" +
-  "--- a little markdown separator ---\n" +
-  "\n" +
-  "\`\`\`course-card\n" +
-  "\n" +
-  "{ courseId: 208528, classId: 2177 }\n" +
-  "\n" +
-  "\`\`\`\n" +
-  "\n" +
-  "--- and another divider ---\n" +
-  "\n" +
-  "\`\`\`course-card\n" +
-  "\n" +
-  "{ courseId: 219885, classId: 2418 }\n" +
-  "\n" +
-  "\`\`\`\n" +
-  "\n" +
-  "All three together in a single course list:\n" +
-  "\n" +
-  "\`\`\`course-list\n" +
-  "\n" +
-  "[\n" +
-  "  { courseId: 105750, classId: 7511 },\n" +
-  "  { courseId: 208528, classId: 2177 },\n" +
-  "  { courseId: 219885, classId: 2418 }\n" +
-  "]\n" +
-  "\n" +
-  "\`\`\`";
-
 // Types for better type safety
 interface CourseData {
   courseId: number;
@@ -281,6 +235,3 @@ export const parseBlocks = (buffer: string): Block[] => {
 
   return state.blocks;
 };
-
-const blocks = parseBlocks(test);
-console.log(JSON.stringify(blocks, null, 2));

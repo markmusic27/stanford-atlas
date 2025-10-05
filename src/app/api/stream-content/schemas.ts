@@ -51,6 +51,7 @@ export const BlockSchema = z
 export type Block = z.infer<typeof BlockSchema>;
 
 export const PayloadSchema = z.object({
+  chainOfThought: z.array(z.string()),
   blocks: z
     .array(BlockSchema)
     .describe(

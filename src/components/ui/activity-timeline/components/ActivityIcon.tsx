@@ -11,7 +11,7 @@ const ActivityIcon = ({ type }: { type: ActivityTool }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeInOut" }}
     >
-      {type === "thinking" ? (
+      {type === "reasoning" ? (
         <div className="bg-primary-8 h-[6px] w-[6px] rounded-full" />
       ) : (
         <Icon

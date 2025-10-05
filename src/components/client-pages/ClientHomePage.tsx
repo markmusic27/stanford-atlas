@@ -14,11 +14,9 @@ import Chat from "../chat/Chat";
 import { useViewportWidth } from "~/hooks/useViewportWidth";
 import { useChatStore } from "~/store/chat.store";
 import { useStreamContent } from "~/hooks/useStreamContent";
-import type { UserModelMessage } from "ai";
 
 const ClientHomePage = () => {
-  // TODO: Change to false
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(true);
   const [windowHeight, setWindowHeight] = useState<number | undefined>(
     undefined,
   );
@@ -136,7 +134,7 @@ const ClientHomePage = () => {
     >
       {/* Chat Container */}
       <div
-        className="transition-[opacity] delay-350 duration-600 ease-in-out"
+        className="transition-[opacity] delay-350 duration-300 ease-in-out"
         style={{ opacity: isChatOpen ? 1 : 0 }}
       >
         <Chat />
@@ -148,7 +146,7 @@ const ClientHomePage = () => {
         className={`relative z-2 mx-auto flex w-full max-w-[800px] flex-col px-[16px] will-change-transform`}
         initial={false}
         animate={{ y: spacing }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        transition={{ duration: 0.3, ease: [0, 0, 0.1, 1] }}
       >
         <AnimatedCollapsable isOpen={!isChatOpen}>
           <Logo />

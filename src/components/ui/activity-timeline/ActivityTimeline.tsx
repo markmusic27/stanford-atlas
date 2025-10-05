@@ -5,7 +5,7 @@ import ActivityLine from "./components/ActivityLine";
 import ActivityLoader from "./components/ActivityLoader";
 import ActivityText from "./components/ActivityText";
 
-export type ActivityTool = "thinking" | "searching";
+export type ActivityTool = "reasoning" | "searching";
 export interface Steps {
   text: string;
   tool: ActivityTool;
@@ -25,9 +25,9 @@ const ActivityTimeline = ({
         {loading ? (
           <motion.div
             key="loader"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex flex-col items-start"
           >
@@ -36,18 +36,37 @@ const ActivityTimeline = ({
         ) : (
           <motion.div
             key="content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex flex-col gap-[20px]"
           >
             <TextShimmer
-              className="font-sans text-[14px] font-[400]"
-              duration={1.4}
+              className="w-[65px] font-sans text-[14px] font-[400]"
+              duration={1}
             >
               Thinking...
             </TextShimmer>
+            <div className="flex flex-row gap-[8px]">
+              {/* Icons */}
+              <div className="flex w-[14px] flex-col">
+                {steps.map((step, i) => (
+                  <div className="flex flex-col items-center" key={i}>
+                    <ActivityIcon type={step.tool} />
+                    {i < steps.length - 1 ? (
+                      <ActivityLine pre={step.tool} post={steps[i + 1]!.tool} />
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              {/* Text */}
+              <div className="flex flex-col items-start">
+                {steps.map((step, i) => (
+                  <ActivityText text={step.text} i={i} key={i} />
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
