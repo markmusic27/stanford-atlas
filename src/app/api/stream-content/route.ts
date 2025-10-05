@@ -68,9 +68,9 @@ export const POST = async (req: NextRequest) => {
           },
         });
 
-        let buffer: string = "";
-        let lastSentJson: string | undefined = undefined;
-        let chainOfThought: string[] = [];
+        let buffer = "";
+        let lastSentJson: string | undefined;
+        const chainOfThought: string[] = [];
 
         const sendCurrentPayload = async () => {
           try {
@@ -85,7 +85,9 @@ export const POST = async (req: NextRequest) => {
                 await writer.write(encoder.encode(jsonLine));
               }
             }
-          } catch (parseError) {}
+          } catch {
+            // ignore parse errors while streaming partial content
+          }
         };
 
         for await (const delta of response.fullStream) {
@@ -130,7 +132,9 @@ export const POST = async (req: NextRequest) => {
                   await writer.write(encoder.encode(jsonLine));
                 }
               }
-            } catch (parseError) {}
+            } catch {
+              // ignore parse errors while streaming partial content
+            }
           }
         }
       } catch (err) {

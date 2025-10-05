@@ -35,25 +35,30 @@ const validateCourseArray = (data: unknown): CourseData[] => {
     throw new Error("course-list data must be an array");
   }
 
+  const result: CourseData[] = [];
   for (const course of data) {
     if (!validateCourseData(course)) {
       throw new Error(
         `Invalid course data: courseId and classId must be numbers, got courseId: ${typeof (
-          course as any
-        )?.courseId}, classId: ${typeof (course as any)?.classId}`,
+          course as Record<string, unknown>
+        )
+          ?.courseId}, classId: ${typeof (course as Record<string, unknown>)?.classId}`,
       );
     }
+    // After validation, the type is CourseData
+    result.push(course);
   }
 
-  return data;
+  return result;
 };
 
 const validateCourseObject = (data: unknown): CourseData => {
   if (!validateCourseData(data)) {
     throw new Error(
       `Invalid course data: courseId and classId must be numbers, got courseId: ${typeof (
-        data as any
-      )?.courseId}, classId: ${typeof (data as any)?.classId}`,
+        data as Record<string, unknown>
+      )
+        ?.courseId}, classId: ${typeof (data as Record<string, unknown>)?.classId}`,
     );
   }
   return data;
@@ -168,7 +173,7 @@ export const parseBlocks = (buffer: string): Block[] => {
         }
 
         const normalizedJson = normalizeJsonLikeString(jsonContent);
-        const courseData = JSON.parse(normalizedJson);
+        const courseData: unknown = JSON.parse(normalizedJson);
         const validatedData = validateCourseArray(courseData);
 
         state.blocks.push({
@@ -176,13 +181,13 @@ export const parseBlocks = (buffer: string): Block[] => {
           data: validatedData,
         });
       } else if (blockType === "course-card") {
-        const jsonMatch = blockContent.match(/\{[\s\S]*?\}/);
+        const jsonMatch = /\{[\s\S]*?\}/.exec(blockContent);
         if (!jsonMatch) {
           throw new Error("No valid JSON object found in course-card block");
         }
 
         const normalizedObjectJson = normalizeJsonLikeString(jsonMatch[0]);
-        const courseData = JSON.parse(normalizedObjectJson);
+        const courseData: unknown = JSON.parse(normalizedObjectJson);
         const validatedData = validateCourseObject(courseData);
 
         state.blocks.push({

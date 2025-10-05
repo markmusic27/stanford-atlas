@@ -67,20 +67,20 @@ const toIsoDateLike = (mmmdyyyy: string | undefined) => {
 const toHhMmAmPm = (twelveHour?: string): string => {
   if (!twelveHour) return "";
   const trimmed = twelveHour.trim();
-  const m = trimmed.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*([AP]M)$/i);
-  if (!m || !m[1] || !m[2] || !m[3]) return "";
-  const hNum = parseInt(m[1], 10);
+  const match = /^(\d{1,2}):(\d{2})(?::\d{2})?\s*([AP]M)$/i.exec(trimmed);
+  if (!match) return "";
+  const hNum = parseInt(match[1] ?? "", 10);
   if (Number.isNaN(hNum)) return "";
   const h = String(hNum);
-  const mm = m[2];
-  const ampm = m[3].toLowerCase();
+  const mm = match[2] ?? "";
+  const ampm = (match[3] ?? "").toLowerCase();
   return `${h}:${mm}${ampm}`;
 };
 
 const pickPrimarySchedule = (schedules: ApiSchedule[]) => schedules?.[0];
 
 const formatCourseData = (data: ApiCourseResponse) => {
-  const sched = pickPrimarySchedule(data.section.schedules || []);
+  const sched = pickPrimarySchedule(data.section.schedules ?? []);
 
   const formatted: CourseCardData = {
     subjectCode: `${data.course.subject} ${data.course.code}`,
@@ -98,12 +98,12 @@ const formatCourseData = (data: ApiCourseResponse) => {
     schedule: {
       startDate: toIsoDateLike(sched?.start_date),
       endDate: toIsoDateLike(sched?.end_date),
-      days: (sched?.days || []).map(shortDay),
+      days: (sched?.days ?? []).map(shortDay),
       startTime: toHhMmAmPm(sched?.start_time),
       endTime: toHhMmAmPm(sched?.end_time),
-      location: sched?.location || "",
+      location: sched?.location ?? "",
     },
-    instructors: (sched?.instructors || []).map((i) => ({
+    instructors: (sched?.instructors ?? []).map((i) => ({
       displayName: i.name,
       isPrimary: i.is_primary_instructor,
     })),

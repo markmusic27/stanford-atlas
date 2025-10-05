@@ -113,7 +113,7 @@ export const useStreamContent = () => {
 
             if (line.length > 0) {
               try {
-                const obj = JSON.parse(line) as unknown;
+                const obj: unknown = JSON.parse(line);
                 handleStreamUpdate(obj);
               } catch {
                 setErrorMessage(
@@ -129,7 +129,7 @@ export const useStreamContent = () => {
         // Flush any remaining buffered text
         if (bufferedText.trim().length > 0) {
           try {
-            const obj = JSON.parse(bufferedText.trim()) as unknown;
+            const obj: unknown = JSON.parse(bufferedText.trim());
             handleStreamUpdate(obj);
           } catch {
             setErrorMessage("An error occurred while processing the stream");
@@ -140,10 +140,10 @@ export const useStreamContent = () => {
       } catch (err) {
         // Swallow abort errors
         const isAbort =
-          (err as any)?.name === "AbortError" ||
           (typeof DOMException !== "undefined" &&
             err instanceof DOMException &&
-            err.name === "AbortError");
+            err.name === "AbortError") ||
+          (err instanceof Error && err.name === "AbortError");
         if (!isAbort) {
           const errorMessage =
             err instanceof Error ? err.message : "An unexpected error occurred";

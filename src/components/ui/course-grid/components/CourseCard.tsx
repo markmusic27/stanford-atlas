@@ -16,7 +16,7 @@ const CourseCard = (props: CourseProps) => {
   const { state, data } = useCourseServer(props);
 
   const isReady = state === "ok" && Boolean(data);
-  const course = (data ?? null) as CourseCardData | null;
+  const course: CourseCardData | null = data ?? null;
 
   return (
     <AnimatePresence mode="wait">

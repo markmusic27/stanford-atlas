@@ -162,7 +162,7 @@ const ClientHomePage = () => {
           <div className="h-[36px]" />
           <Peripherals
             onWhyUseClick={() => {
-              handleOnSubmit(
+              void handleOnSubmit(
                 "Why should I use this over Stanford Navigator or ChatGPT?",
               );
             }}
