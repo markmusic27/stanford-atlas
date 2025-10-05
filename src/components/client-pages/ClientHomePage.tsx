@@ -16,7 +16,7 @@ import { useChatStore } from "~/store/chat.store";
 import { useStreamContent } from "~/hooks/useStreamContent";
 
 const ClientHomePage = () => {
-  const [isChatOpen, setIsChatOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [windowHeight, setWindowHeight] = useState<number | undefined>(
     undefined,
   );

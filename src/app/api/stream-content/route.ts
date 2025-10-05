@@ -61,6 +61,11 @@ export const POST = async (req: NextRequest) => {
           tools: tools,
           stopWhen: stepCountIs(MAX_STEPS),
           system: PROMPT,
+          providerOptions: {
+            oepnai: {
+              reasoning_effort: "low",
+            },
+          },
         });
 
         let buffer: string = "";
