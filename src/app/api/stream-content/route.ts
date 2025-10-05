@@ -138,7 +138,6 @@ export const POST = async (req: NextRequest) => {
           }
         }
       } catch (err) {
-        ``;
         const errorPayload = JSON.stringify({ error: true }) + "\n";
         await writer.write(encoder.encode(errorPayload));
       } finally {
