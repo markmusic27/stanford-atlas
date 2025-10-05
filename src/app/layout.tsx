@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 import { type Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
+import UserStoreHydrator from "~/components/auth/UserStoreHydrator";
 
 export const metadata: Metadata = {
   title: "Stanford Atlas",
@@ -32,6 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-default bg-primary-2">
+        <UserStoreHydrator />
         {children}
         <Toaster position="top-center" />
       </body>

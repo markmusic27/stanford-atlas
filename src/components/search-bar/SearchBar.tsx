@@ -5,11 +5,11 @@ import CursorShimmer from "../ui/CursorShimmer";
 import { useEffect, useState } from "react";
 import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
-import { usePageTransitionStore } from "~/store/pageTransition.store";
+import { usePageTransitionStore } from "~/stores/pageTransition.store";
 import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
-import { useChatStore } from "~/store/chat.store";
+import { useChatStore } from "~/stores/chat.store";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;

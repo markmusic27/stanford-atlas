@@ -5,7 +5,7 @@ import {
   ResponseSchema,
   type ChatHistory,
 } from "~/app/api/stream-content/schemas";
-import { useChatStore } from "~/store/chat.store";
+import { useChatStore } from "~/stores/chat.store";
 import type { ModelMessage } from "ai";
 
 export const useStreamContent = () => {

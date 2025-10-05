@@ -12,7 +12,7 @@ export const env = createEnv({
     ANTHROPIC_API_KEY: z.string(),
     API_SECRET_KEY: z.string(),
     COURSE_API_KEY: z.string(),
-    
+    SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -22,7 +22,8 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_API_SECRET_KEY: z.string(),
-    
+    NEXT_PUBLIC_SUPABASE_URL: z.string(),
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string(),
   },
 
   /**
@@ -32,7 +33,10 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET: process.env.SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET,
     API_SECRET_KEY: process.env.API_SECRET_KEY,
     NEXT_PUBLIC_API_SECRET_KEY: process.env.NEXT_PUBLIC_API_SECRET_KEY,
     COURSE_API_KEY: process.env.COURSE_API_KEY,

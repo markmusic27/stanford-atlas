@@ -1,6 +1,6 @@
 "use client";
 
-import { usePageTransitionStore } from "~/store/pageTransition.store";
+import { usePageTransitionStore } from "~/stores/pageTransition.store";
 import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
@@ -12,7 +12,7 @@ import Footer from "../footer/Footer";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 import Chat from "../chat/Chat";
 import { useViewportWidth } from "~/hooks/useViewportWidth";
-import { useChatStore } from "~/store/chat.store";
+import { useChatStore } from "~/stores/chat.store";
 import { useStreamContent } from "~/hooks/useStreamContent";
 
 const ClientHomePage = () => {

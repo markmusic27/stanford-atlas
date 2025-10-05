@@ -1,18 +1,35 @@
+"use client";
+
 import { toast } from "sonner";
 import PeripheralCard from "./components/PeripheralCard";
-import { error } from "console";
+import { createClient } from "~/utils/supabase/client";
+import { signInWithGoogle } from "~/utils/auth/signIn";
+import { useUserStore } from "~/stores/user.store";
 
 interface PeripheralsProps {
   onWhyUseClick: () => void;
 }
 
 const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
+  const isSignedIn = useUserStore((s) => s.isSignedIn);
+
   return (
     <div className={`flex flex-row flex-wrap justify-center gap-[6px]`}>
       <PeripheralCard
-        title={"Sign In"}
-        onClick={() => {
-          toast("success");
+        title={isSignedIn ? "Sign Out" : "Sign In"}
+        onClick={async () => {
+          try {
+            if (isSignedIn) {
+              const supabase = createClient();
+              const { error } = await supabase.auth.signOut();
+              if (error) throw error;
+              toast("Successfully signed out.");
+            } else {
+              await signInWithGoogle("/");
+            }
+          } catch (err) {
+            toast("Error authenticating your account.");
+          }
         }}
       />
       <PeripheralCard

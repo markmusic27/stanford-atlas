@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { FOOTER_HEIGHT } from "~/lib/constants";
-import { useChatStore } from "~/store/chat.store";
+import { useChatStore } from "~/stores/chat.store";
 import BlockRenderer from "../ui/BlockRenderer";
 import Message from "../ui/message/Message";
 import type { Block, ChatHistory } from "~/app/api/stream-content/schemas";
