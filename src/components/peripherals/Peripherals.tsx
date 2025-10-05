@@ -1,4 +1,6 @@
+import { toast } from "sonner";
 import PeripheralCard from "./components/PeripheralCard";
+import { error } from "console";
 
 interface PeripheralsProps {
   onWhyUseClick: () => void;
@@ -10,7 +12,7 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
       <PeripheralCard
         title={"Sign In"}
         onClick={() => {
-          console.log("sign in");
+          toast("success");
         }}
       />
       <PeripheralCard

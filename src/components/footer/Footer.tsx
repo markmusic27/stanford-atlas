@@ -18,9 +18,7 @@ const Footer = ({ className, isChatOpen }: FooterProps) => {
     >
       <div className="flex-1" />
       <p className="text-secondary-text-6 w-full px-[16px] text-center text-[14px]">
-        {isChatOpen
-          ? "Atlas can make mistakes. Check important info."
-          : "Courses last updated yesterday @ 11:59 PM"}
+        {"Atlas can make mistakes. Check important info."}
       </p>
       <div
         className={`${isChatOpen ? "h-[12px] sm:h-[25px]" : "h-[36px]"} transition-all duration-300`}
