@@ -11,7 +11,7 @@ import type { ModelMessage } from "ai";
 export const useStreamContent = () => {
   const setIsStreaming = useChatStore((s) => s.setIsStreaming);
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
-  const { append, edit, setChainOfThought, clearChainOfThought } =
+  const { append, edit, setChainOfThought, clearChainOfThought, setReasoning } =
     useChatStore();
   const abortRef = useRef<AbortController | null>(null);
 
@@ -27,6 +27,8 @@ export const useStreamContent = () => {
       if (data?.chainOfThought) {
         setChainOfThought(data.chainOfThought);
       }
+
+      setReasoning(data.reasoning);
     }
   };
 

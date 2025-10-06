@@ -7,8 +7,35 @@ import UserStoreHydrator from "~/components/auth/UserStoreHydrator";
 
 export const metadata: Metadata = {
   title: "Stanford Atlas",
-  description: "Add description here", // TODO: Add description here
+  description:
+    "Smarter Stanford course planning with real data and personalized advice.",
+  themeColor: "#F8F8F8",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  metadataBase: new URL("https://stanfordatlas.com"),
+  openGraph: {
+    title: "Stanford Atlas",
+    description:
+      "Smarter Stanford course planning with real data and personalized advice.",
+    url: "https://stanfordatlas.com",
+    siteName: "Stanford Atlas",
+    images: [
+      {
+        url: "/thumbnail.png",
+        width: 1100,
+        height: 630,
+        alt: "Stanford Atlas course planning",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Stanford Atlas",
+    description:
+      "Smarter Stanford course planning with real data and personalized advice.",
+    images: ["/thumbnail.png"],
+  },
 };
 
 const geist = Geist({

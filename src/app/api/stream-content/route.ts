@@ -1,4 +1,5 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { createOpenAI } from "@ai-sdk/openai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { PROMPT } from "./prompt";
@@ -72,10 +73,10 @@ export const POST = async (req: NextRequest) => {
         let lastSentJson: string | undefined;
         const chainOfThought: string[] = [];
 
-        const sendCurrentPayload = async () => {
+        const sendCurrentPayload = async (reasoning: boolean) => {
           try {
             const blocks = parseBlocks(buffer);
-            const candidate = { chainOfThought, blocks } as unknown;
+            const candidate = { chainOfThought, reasoning, blocks } as unknown;
             const validation = PayloadSchema.safeParse(candidate);
 
             if (validation.success) {
@@ -94,13 +95,13 @@ export const POST = async (req: NextRequest) => {
           // Handles reasoning
           if (delta.type == "reasoning-start") {
             chainOfThought.push("reasoning");
-            await sendCurrentPayload();
+            await sendCurrentPayload(true);
           }
 
           // Handles tool calling
           if (delta.type == "tool-call") {
             chainOfThought.push(delta.toolName);
-            await sendCurrentPayload();
+            await sendCurrentPayload(true);
           }
 
           // Handles response
@@ -118,9 +119,15 @@ export const POST = async (req: NextRequest) => {
             try {
               // Parse blocks from the current buffer
               const blocks = parseBlocks(buffer);
+              const reasoning = false;
 
               // Create payload and validate against schema
-              const candidate = { chainOfThought, blocks } as unknown;
+              const candidate = {
+                chainOfThought,
+                reasoning,
+                blocks,
+              } as unknown;
+
               const validation = PayloadSchema.safeParse(candidate);
 
               if (validation.success) {

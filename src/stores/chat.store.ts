@@ -7,6 +7,8 @@ type ChatStore = {
   chatHistory: ChatHistory[];
   chainOfThought: string[];
   editingId: number;
+  reasoning: boolean;
+  setReasoning: (v: boolean) => void;
   setChainOfThought: (list: string[]) => void;
   clearChainOfThought: () => void;
   setIsStreaming: (isStreaming: boolean) => void;
@@ -21,8 +23,10 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   isStreaming: false,
   chainOfThought: [],
   errorMessage: null,
+  reasoning: false,
   chatHistory: [],
   editingId: -1,
+  setReasoning: (v: boolean) => set({ reasoning: v }),
   setChainOfThought: (list: string[]) =>
     set((state) => ({
       chainOfThought: list,

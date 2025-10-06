@@ -7,6 +7,8 @@ import BlockRenderer from "../ui/BlockRenderer";
 import Message from "../ui/message/Message";
 import type { Block, ChatHistory } from "~/app/api/stream-content/schemas";
 import ActivityTimeline from "../ui/activity-timeline/ActivityTimeline";
+import { TextShimmer } from "../ui/TextShimmer";
+import { motion, AnimatePresence } from "motion/react";
 function collapseConsecutiveDuplicates<T>(items: T[]): T[] {
   if (items.length === 0) return [];
   const result: T[] = [items[0]!];
@@ -17,8 +19,23 @@ function collapseConsecutiveDuplicates<T>(items: T[]): T[] {
   }
   return result;
 }
+
+function getEntriesAfterLastQuery(history: ChatHistory[]): boolean {
+  for (let i = history.length - 1; i >= 0; i--) {
+    if (history[i]?.type === "query") {
+      for (let j = i + 1; j < history.length; j++) {
+        const entry = history[j];
+        if (entry?.type === "response" && entry.payload.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  return false;
+}
 const Chat = () => {
-  const { chatHistory, chainOfThought } = useChatStore();
+  const { chatHistory, chainOfThought, reasoning } = useChatStore();
   const isStreaming = useChatStore((s) => s.isStreaming);
 
   // Scroll to bottom on submit/start streaming
@@ -73,6 +90,26 @@ const Chat = () => {
     return groups;
   }
 
+  const getToolName = (value: string): string => {
+    let text = "";
+    switch (value) {
+      case "reasoning":
+        text = "Reasoning";
+        break;
+      case "search-courses":
+        text = "Searching course catalog";
+        break;
+      case "get-course":
+        text = "Fetching course details";
+        break;
+      default:
+        text = "Reasoning";
+        break;
+    }
+
+    return text;
+  };
+
   const groups = generateGroups(chatHistory);
   const lastGroup = groups.length ? groups[groups.length - 1] : undefined;
   const showTimeline = isStreaming && lastGroup?.type === "query";
@@ -89,24 +126,8 @@ const Chat = () => {
                 <div className="mt-[12px]">
                   <ActivityTimeline
                     steps={timelineChain.map((value, index) => {
-                      let text = "";
-                      switch (value) {
-                        case "reasoning":
-                          text = "Reasoning";
-                          break;
-                        case "search-courses":
-                          text = "Searching course catalog";
-                          break;
-                        case "get-course":
-                          text = "Fetching course details";
-                          break;
-                        default:
-                          text = "Reasoning";
-                          break;
-                      }
-
                       return {
-                        text: text,
+                        text: getToolName(value),
                         tool: value == "reasoning" ? "reasoning" : "searching",
                         loading: index == timelineChain.length - 1,
                       };
@@ -120,6 +141,26 @@ const Chat = () => {
             <BlockRenderer key={i} blocks={group.payload} />
           ),
         )}
+        <AnimatePresence mode="wait">
+          {reasoning &&
+          chainOfThought.length > 0 &&
+          getEntriesAfterLastQuery(chatHistory) ? (
+            <motion.div
+              key="chat-textshimmer"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <TextShimmer
+                className="w-[250px] font-sans text-[14px] font-[400]"
+                duration={1}
+              >
+                {getToolName(chainOfThought[chainOfThought.length - 1] ?? "")}
+              </TextShimmer>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
 
         <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT * 2 }} />
       </div>
