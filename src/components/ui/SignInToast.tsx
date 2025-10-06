@@ -5,7 +5,7 @@ const SignInToast = () => {
     <div
       className="border-primary-9 cursor-pointer rounded-[16px] border-[1px] bg-white px-[16px] py-[12px]"
       onClick={() => {
-        signInWithGoogle("/");
+        void signInWithGoogle("/");
       }}
     >
       <p className="font-default text-primary-text text-[14px]">

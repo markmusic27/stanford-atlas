@@ -1,6 +1,7 @@
 "use client";
 
 import CursorScale from "~/components/ui/CursorScale";
+import Image from "next/image";
 import { toast } from "sonner";
 import { useUserStore } from "~/stores/user.store";
 import { extractUserData } from "~/lib/utils";
@@ -19,9 +20,11 @@ const ProfileAvatar = () => {
         aria-label="User profile picture"
         onClick={() => toast(`Signed in as ${displayName}`)}
       >
-        <img
+        <Image
           src={avatarUrl}
           alt="Profile picture"
+          width={28}
+          height={28}
           className="h-full w-full object-cover"
         />
       </div>

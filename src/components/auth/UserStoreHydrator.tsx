@@ -10,10 +10,15 @@ export default function UserStoreHydrator() {
 
     let isMounted = true;
 
-    supabase.auth.getUser().then(({ data }) => {
-      if (!isMounted) return;
-      useUserStore.getState().setUser(data.user ?? undefined);
-    });
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (!isMounted) return;
+        useUserStore.getState().setUser(data.user ?? undefined);
+      })
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+      });
 
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, session) => {

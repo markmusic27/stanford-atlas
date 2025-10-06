@@ -2,7 +2,7 @@
 
 import { createClient } from "~/utils/supabase/client";
 
-export async function signInWithGoogle(nextPath: string = "/") {
+export async function signInWithGoogle(nextPath = "/") {
   const supabase = createClient();
   const origin = window.location.origin;
 

@@ -27,17 +27,37 @@ export function isoToUSDate(input: string): string {
   return `${month}/${day}/${year}`;
 }
 
-export function extractUserData(user: User | undefined) {
+export function extractUserData(user: User | undefined): {
+  displayName: string;
+  avatarUrl: string;
+} {
+  type UserMetadataStringKey =
+    | "avatar_url"
+    | "picture"
+    | "full_name"
+    | "name"
+    | "display_name"
+    | "preferred_username";
+
+  const metadata = user?.user_metadata as Record<string, unknown> | undefined;
+
+  const getString = (
+    meta: Record<string, unknown> | undefined,
+    key: UserMetadataStringKey,
+  ): string | undefined => {
+    const value = meta?.[key];
+    return typeof value === "string" ? value : undefined;
+  };
+
   const avatarUrl =
-    (user?.user_metadata as any)?.avatar_url ||
-    (user?.user_metadata as any)?.picture;
+    getString(metadata, "avatar_url") ?? getString(metadata, "picture") ?? "";
 
   const displayName =
-    (user?.user_metadata as any)?.full_name ||
-    (user?.user_metadata as any)?.name ||
-    (user?.user_metadata as any)?.display_name ||
-    (user?.user_metadata as any)?.preferred_username ||
-    user?.email ||
+    getString(metadata, "full_name") ??
+    getString(metadata, "name") ??
+    getString(metadata, "display_name") ??
+    getString(metadata, "preferred_username") ??
+    user?.email ??
     "User";
 
   return { displayName, avatarUrl };
