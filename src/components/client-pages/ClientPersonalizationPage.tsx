@@ -22,7 +22,7 @@ const ClientPersonalizationPage = () => {
     enqueue();
     await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION));
     router.push("/");
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION));
     dequeue();
   }
 
@@ -50,7 +50,12 @@ const ClientPersonalizationPage = () => {
         <div className="h-[28px]" />
         <Card
           title="Enable Course Memory Feature"
-          isEnabled={false}
+          onToggle={() => {
+            window.open(
+              "https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header",
+              "_blank",
+            );
+          }}
           description="This allows the Atlas AI to remember what courses you've taken, providing you with better guidance on which courses to take later."
         />
         <div className="h-[28px]" />
