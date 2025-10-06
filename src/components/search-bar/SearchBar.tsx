@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 import { useChatStore } from "~/stores/chat.store";
+import { useUserStore } from "~/stores/user.store";
+import { toast } from "sonner";
+import SignInToast from "../ui/SignInToast";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
@@ -30,6 +33,7 @@ const SearchBar = ({
   const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
   const { isStreaming } = useChatStore();
+  const { isSignedIn } = useUserStore();
 
   useEffect(() => {
     dequeue();
@@ -93,6 +97,11 @@ const SearchBar = ({
           >
             <div
               onClick={async () => {
+                if (!isSignedIn) {
+                  toast.custom(() => <SignInToast />);
+                  return;
+                }
+
                 enqueue();
                 await new Promise((resolve) =>
                   setTimeout(resolve, TRANSITION_DURATION),

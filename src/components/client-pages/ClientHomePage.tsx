@@ -14,6 +14,9 @@ import Chat from "../chat/Chat";
 import { useViewportWidth } from "~/hooks/useViewportWidth";
 import { useChatStore } from "~/stores/chat.store";
 import { useStreamContent } from "~/hooks/useStreamContent";
+import { useUserStore } from "~/stores/user.store";
+import { toast, Toaster } from "sonner";
+import SignInToast from "../ui/SignInToast";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -26,8 +29,9 @@ const ClientHomePage = () => {
   );
   const searchRef = useRef<HTMLDivElement>(null);
   const vw = useViewportWidth();
-  const { isStreaming } = useChatStore();
+  const { isStreaming, chatHistory } = useChatStore();
   const { stream, stop } = useStreamContent();
+  const { isSignedIn } = useUserStore();
 
   const handleOnSubmit = async (query: string) => {
     if (isStreaming) return;
@@ -35,6 +39,11 @@ const ClientHomePage = () => {
 
     const trimmed = query.trim();
     if (!trimmed) return;
+
+    if (chatHistory.length >= 2 && !isSignedIn) {
+      toast.custom(() => <SignInToast />);
+      return;
+    }
 
     // Intentionally fire-and-forget; stream manages its own errors/state
     void stream(trimmed);
