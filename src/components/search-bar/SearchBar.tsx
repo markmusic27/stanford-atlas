@@ -5,7 +5,6 @@ import CursorShimmer from "../ui/CursorShimmer";
 import { useEffect, useState } from "react";
 import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
-import { usePageTransitionStore } from "~/stores/pageTransition.store";
 import { useRouter } from "next/navigation";
 import { TRANSITION_DURATION } from "~/lib/constants";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
@@ -29,15 +28,9 @@ const SearchBar = ({
   onQueryChange,
   autoFocus = false,
 }: SearchBarProps) => {
-  const enqueue = usePageTransitionStore((state) => state.enqueue);
-  const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
   const { isStreaming } = useChatStore();
   const { isSignedIn } = useUserStore();
-
-  useEffect(() => {
-    dequeue();
-  }, [dequeue]);
 
   // Framer Motion will handle mount/unmount animations for the shimmer row
   const [query, setQuery] = useState("");
@@ -102,15 +95,7 @@ const SearchBar = ({
                   return;
                 }
 
-                enqueue();
-                await new Promise((resolve) =>
-                  setTimeout(resolve, TRANSITION_DURATION),
-                );
                 router.push("/personalize");
-                await new Promise((resolve) =>
-                  setTimeout(resolve, 3 * TRANSITION_DURATION),
-                );
-                dequeue();
               }}
               className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-start gap-[10px] transition-all duration-300 hover:scale-101"
             >

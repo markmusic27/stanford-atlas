@@ -6,35 +6,18 @@ import Logo from "../ui/Logo";
 import SaveButton from "../ui/SaveButton";
 import { useFadeIn } from "../../hooks/useFadeIn";
 import { TRANSITION_DURATION } from "~/lib/constants";
-import { usePageTransitionStore } from "~/stores/pageTransition.store";
 import { useRouter } from "next/navigation";
 
 const ClientPersonalizationPage = () => {
-  const { opacity, transition } = useFadeIn(TRANSITION_DURATION);
-  const queuedTransition = usePageTransitionStore(
-    (state) => state.queuedTransition,
-  );
-  const enqueue = usePageTransitionStore((state) => state.enqueue);
-  const dequeue = usePageTransitionStore((state) => state.dequeue);
   const router = useRouter();
 
   async function handleRouter(): Promise<void> {
-    enqueue();
-    await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION));
     router.push("/");
-    await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION));
-    dequeue();
   }
-
-  // Override opacity to 0 when queuedTransition is true
-  const currentOpacity = queuedTransition ? 0 : opacity;
 
   return (
     <main className="w-full">
-      <div
-        className="mx-auto flex h-full w-full max-w-[660px] flex-col px-[12px]"
-        style={{ opacity: currentOpacity, transition }}
-      >
+      <div className="mx-auto flex h-full w-full max-w-[660px] flex-col px-[12px]">
         <div className="h-[6dvh] max-h-[60px] min-h-[20px]" />
         <div onClick={handleRouter} className="cursor-pointer">
           <Logo />

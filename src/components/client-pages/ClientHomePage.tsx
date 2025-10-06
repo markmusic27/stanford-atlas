@@ -1,6 +1,5 @@
 "use client";
 
-import { usePageTransitionStore } from "~/stores/pageTransition.store";
 import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
@@ -127,19 +126,9 @@ const ClientHomePage = () => {
     [windowHeight, searchHeight, isChatOpen, vw],
   );
 
-  // Transition state
-  const { opacity, transition } = useFadeIn(TRANSITION_DURATION);
-  const queuedTransition = usePageTransitionStore(
-    (state) => state.queuedTransition,
-  );
-
-  // Override opacity to 0 when queuedTransition is true
-  const currentOpacity = queuedTransition ? 0 : opacity;
-
   return (
     <main
       className={`relative h-[100dvh] w-full transition-all duration-[${TRANSITION_DURATION}]`}
-      style={{ opacity: currentOpacity, transition }}
     >
       {/* Chat Container */}
       <div
