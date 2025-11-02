@@ -4,6 +4,7 @@ import CursorScale from "~/components/ui/CursorScale";
 import { toast } from "sonner";
 import { useUserStore } from "~/stores/user.store";
 import { extractUserData } from "~/lib/utils";
+import Image from "next/image";
 
 const ProfileAvatar = () => {
   const isSignedIn = useUserStore((s) => s.isSignedIn);
@@ -17,14 +18,19 @@ const ProfileAvatar = () => {
       <div
         className="h-[28px] w-[28px] cursor-pointer overflow-hidden rounded-full border border-[#D1D1D1] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]"
         aria-label="User profile picture"
-        onClick={() => toast(`Signed in as ${displayName}`)}
+        onClick={() =>
+          toast(`Successfully Signed In`, {
+            description: `Welcome back, ${displayName}!`,
+            duration: 3500,
+          })
+        }
       >
-        <img
+        <Image
           src={avatarUrl}
           alt="Profile picture"
           width={28}
           height={28}
-          className="h-full w-full object-cover"
+          className="bg-primary-6 h-full w-full object-cover"
         />
       </div>
     </CursorScale>

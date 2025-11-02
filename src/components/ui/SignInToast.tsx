@@ -1,18 +1,16 @@
+import { toast } from "sonner";
 import { signInWithGoogle } from "~/utils/auth/signIn";
 
-const SignInToast = () => {
-  return (
-    <div
-      className="border-primary-9 cursor-pointer rounded-[16px] border-[1px] bg-white px-[16px] py-[12px]"
-      onClick={() => {
+const signInToast = (description: string) =>
+  toast("Sign In to Continue", {
+    description: description,
+    duration: 3500,
+    action: {
+      label: "Sign In",
+      onClick: () => {
         void signInWithGoogle("/");
-      }}
-    >
-      <p className="font-default text-primary-text text-[14px]">
-        {"Sign in to continue. Tap here to sign in."}
-      </p>
-    </div>
-  );
-};
+      },
+    },
+  });
 
-export default SignInToast;
+export default signInToast;

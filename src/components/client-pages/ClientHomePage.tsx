@@ -14,8 +14,7 @@ import { useViewportWidth } from "~/hooks/useViewportWidth";
 import { useChatStore } from "~/stores/chat.store";
 import { useStreamContent } from "~/hooks/useStreamContent";
 import { useUserStore } from "~/stores/user.store";
-import { toast, Toaster } from "sonner";
-import SignInToast from "../ui/SignInToast";
+import signInToast from "../ui/SignInToast";
 
 const ClientHomePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -40,7 +39,7 @@ const ClientHomePage = () => {
     if (!trimmed) return;
 
     if (chatHistory.length >= 2 && !isSignedIn) {
-      toast.custom(() => <SignInToast />);
+      signInToast("Continue chatting with Atlas.");
       return;
     }
 

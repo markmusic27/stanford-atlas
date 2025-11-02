@@ -1,15 +1,21 @@
 import "~/styles/globals.css";
 
-import { type Metadata } from "next";
+import { type Metadata, type Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import UserStoreHydrator from "~/components/auth/UserStoreHydrator";
+
+export const viewport: Viewport = {
+  themeColor: "#F8F8F8",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Stanford Atlas",
   description:
     "Smarter Stanford course planning with real data and personalized advice.",
-  themeColor: "#F8F8F8",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase: new URL("https://stanfordatlas.com"),
   openGraph: {
@@ -53,12 +59,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
-      <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-      </head>
       <body className="font-default bg-primary-2">
         <UserStoreHydrator />
         {children}

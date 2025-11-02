@@ -29,12 +29,23 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
               const supabase = createClient();
               const { error } = await supabase.auth.signOut();
               if (error) throw error;
-              toast("Successfully signed out.");
+              toast("Successfully Signed Out", {
+                description: "You can sign in again to continue.",
+                duration: 3500,
+              });
             } else {
               await signInWithGoogle("/");
             }
           } catch (err) {
-            toast("Error authenticating your account.");
+            toast.error("Error authenticating your account.", {
+              description:
+                "Error: " +
+                ((err as Error).message ?? "Unknown error")
+                  .split(" ")
+                  .slice(0, 10)
+                  .join(" "),
+              duration: 3500,
+            });
           }
         }}
       />

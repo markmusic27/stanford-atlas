@@ -43,7 +43,7 @@ export const POST = async (req: NextRequest) => {
             requestInit: {
               headers: {
                 Authorization:
-                  "Bearer YJAna9RQePF@-uVw7_qBQt*apMF4*bZZfbTcybLobw*nGKCwteJMGh",
+                  "Bearer YJAna9RQePF@-uVw7_qBQt*apMF4*bZZfbTcybLobw*nGKCwteJMGh", // TODO: FIX THIS
                 Accept: "application/json, text/event-stream",
               },
             },

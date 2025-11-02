@@ -2,16 +2,14 @@
 
 import Icon, { IconType } from "../ui/icons/Icon";
 import CursorShimmer from "../ui/CursorShimmer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
 import { useRouter } from "next/navigation";
-import { TRANSITION_DURATION } from "~/lib/constants";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 import { useChatStore } from "~/stores/chat.store";
 import { useUserStore } from "~/stores/user.store";
-import { toast } from "sonner";
-import SignInToast from "../ui/SignInToast";
+import signInToast from "../ui/SignInToast";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
@@ -91,7 +89,7 @@ const SearchBar = ({
             <div
               onClick={async () => {
                 if (!isSignedIn) {
-                  toast.custom(() => <SignInToast />);
+                  signInToast("Personalize your search with interests.");
                   return;
                 }
 
