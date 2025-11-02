@@ -23,12 +23,14 @@ const ClientPreferencesPage = () => {
   const [preferences, setPreferences] = useState<UserPreferences | undefined>(
     undefined,
   );
+  const [saving, setSaving] = useState(false);
 
   async function handleRouter(): Promise<void> {
     router.push("/");
   }
 
   useEffect(() => {
+    setSaving(false);
     fetchUserPreferences();
   }, [user?.id, supabase]);
 
@@ -71,6 +73,34 @@ const ClientPreferencesPage = () => {
     setPreferences(prefs);
   };
 
+  const handleSavePreferences = async (): Promise<boolean> => {
+    if (preferences === undefined) return false;
+    if (!user?.id) return false;
+    const { error } = await supabase
+      .from("user_preferences")
+      .update(preferences)
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast("Failed to save preferences", {
+        duration: 5000,
+        description: (error.message ?? "Unknown error")
+          .split(" ")
+          .slice(0, 15)
+          .join(" "),
+      });
+      console.error("Failed to save preferences:", error);
+      return false;
+    }
+
+    toast("Preferences saved successfully", {
+      description: "Your personalization settings have been updated.",
+      duration: 3500,
+    });
+
+    return true;
+  };
+
   return (
     <main className="w-full">
       <div className="mx-auto flex h-full w-full max-w-[660px] flex-col px-[12px]">
@@ -91,10 +121,22 @@ const ClientPreferencesPage = () => {
           title="Enable Course Memory Feature"
           preventToggle={true}
           onToggle={() => {
-            window.open(
-              "https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header",
-              "_blank",
-            );
+            toast("This feature is not available yet", {
+              duration: 5000,
+              description: "Sign up for early access!"
+                .split(" ")
+                .slice(0, 15)
+                .join(" "),
+              action: {
+                label: "Get Access",
+                onClick: () => {
+                  window.open(
+                    "https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header",
+                    "_blank",
+                  );
+                },
+              },
+            });
           }}
           description="This allows the Atlas AI to remember what courses you've taken, providing you with better guidance on which courses to take later."
         />
@@ -102,6 +144,11 @@ const ClientPreferencesPage = () => {
         <PersonalizationField
           title="What's your major—or your best guess?"
           defaultValue={preferences?.major}
+          onUpdate={(value) => {
+            if (preferences) {
+              setPreferences({ ...preferences, major: value });
+            }
+          }}
           placeholder="It doesn't matter if you haven't declared. Describe what you're interested in studying at Stanford here."
           loading={preferences === undefined}
         />
@@ -109,6 +156,11 @@ const ClientPreferencesPage = () => {
         <PersonalizationField
           title="Have any interests?"
           defaultValue={preferences?.interests}
+          onUpdate={(value) => {
+            if (preferences) {
+              setPreferences({ ...preferences, interests: value });
+            }
+          }}
           placeholder="Don't just include the academic! Clubs, causes, scenes you're into. Steve Jobs' favorite class was calligraphy. Weird interests can lead you to discover what could be your favorite class."
           loading={preferences === undefined}
         />
@@ -116,14 +168,25 @@ const ClientPreferencesPage = () => {
         <PersonalizationField
           title="What do you want to be when you grow up?"
           defaultValue={preferences?.future}
+          onUpdate={(value) => {
+            if (preferences) {
+              setPreferences({ ...preferences, future: value });
+            }
+          }}
           placeholder="Think in verbs, not titles: build, discover, teach, etc. Tell us the kinds of problems you want to tackle, who you hope to help, and the setting you imagine (lab, startup, classroom, clinic, stage, etc)."
           loading={preferences === undefined}
         />
         <div className="h-[28px]" />
         <SaveButton
           text="Save Preferences"
+          loading={saving}
           className="mx-auto"
-          onClick={handleRouter}
+          onClick={async () => {
+            setSaving(true);
+            let success = await handleSavePreferences();
+            if (!success) return;
+            handleRouter();
+          }}
         />
         <div className="h-[8dvh] max-h-[80px] min-h-[30px]" />
       </div>
