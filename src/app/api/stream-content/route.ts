@@ -12,9 +12,68 @@ import {
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { MAX_STEPS } from "~/lib/constants";
 import { parseBlocks } from "./parser";
-import { PayloadSchema } from "./schemas";
+import { PayloadSchema, RequestPayloadSchema } from "./schemas";
+import { createClient } from "~/utils/supabase/server";
 
 const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
+
+type UserPreferences = {
+  major: string;
+  interests: string;
+  future: string;
+};
+
+async function constructPrompt(userId?: string): Promise<string> {
+  let basePrompt = PROMPT;
+
+  // If no userId, return base prompt
+  if (!userId) {
+    return basePrompt;
+  }
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("user_preferences")
+      .select("major, interests, future")
+      .eq("user_id", userId)
+      .single();
+
+    if (error || !data) {
+      // If preferences don't exist or error, return base prompt
+      return basePrompt;
+    }
+
+    const prefs = data as UserPreferences;
+
+    // Check if any preferences are set (not empty strings)
+    const hasPreferences =
+      prefs.major?.trim() || prefs.interests?.trim() || prefs.future?.trim();
+
+    if (hasPreferences) {
+      basePrompt += "\n\n## User Personalization\n\n";
+      basePrompt +=
+        "The user has provided the following information about themselves. Use this to personalize your responses and course recommendations:\n\n";
+
+      if (prefs.major?.trim()) {
+        basePrompt += `**Major/Academic Interest:** ${prefs.major}\n\n`;
+      }
+
+      if (prefs.interests?.trim()) {
+        basePrompt += `**Interests:** ${prefs.interests}\n\n`;
+      }
+
+      if (prefs.future?.trim()) {
+        basePrompt += `**Future Goals:** ${prefs.future}\n\n`;
+      }
+    }
+
+    return basePrompt;
+  } catch (err) {
+    console.error("Error fetching user preferences:", err);
+    return basePrompt;
+  }
+}
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -26,9 +85,22 @@ export const POST = async (req: NextRequest) => {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Extract messages and format them
+    // Extract messages and userId
     const cloned = req.clone();
-    const messages = (await cloned.json()) as ModelMessage[];
+    const body = await cloned.json();
+    const parseResult = RequestPayloadSchema.safeParse(body);
+
+    let messages: ModelMessage[];
+    let userId: string | undefined;
+
+    if (parseResult.success) {
+      messages = parseResult.data.messages as ModelMessage[];
+      userId = parseResult.data.userId;
+    } else {
+      // Fallback for backwards compatibility
+      messages = body as ModelMessage[];
+      userId = undefined;
+    }
 
     // Stream text to the client as NDJSON by converting output into the PayloadSchema
     const { readable, writable } = new TransformStream();
@@ -56,12 +128,14 @@ export const POST = async (req: NextRequest) => {
 
         const tools = await client.tools();
 
+        const constructedPrompt = await constructPrompt(userId);
+
         const response = streamText({
           model: anthropic("claude-sonnet-4-5"),
           messages,
           tools: tools,
           stopWhen: stepCountIs(MAX_STEPS),
-          system: PROMPT,
+          system: constructedPrompt,
           providerOptions: {
             oepnai: {
               reasoning_effort: "low",

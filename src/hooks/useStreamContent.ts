@@ -6,6 +6,7 @@ import {
   type ChatHistory,
 } from "~/app/api/stream-content/schemas";
 import { useChatStore } from "~/stores/chat.store";
+import { useUserStore } from "~/stores/user.store";
 import type { ModelMessage } from "ai";
 
 export const useStreamContent = () => {
@@ -57,6 +58,7 @@ export const useStreamContent = () => {
       }
 
       const { chatHistory } = useChatStore.getState();
+      const { user } = useUserStore.getState();
       const messages: ModelMessage[] = [
         ...parseChatHistory(chatHistory),
         { role: "user", content: query },
@@ -88,7 +90,10 @@ export const useStreamContent = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${env.NEXT_PUBLIC_API_SECRET_KEY}`,
           },
-          body: JSON.stringify(messages),
+          body: JSON.stringify({
+            messages,
+            userId: user?.id,
+          }),
           signal: controller.signal,
         });
 

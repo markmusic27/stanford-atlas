@@ -4,7 +4,6 @@ import Peripherals from "../peripherals/Peripherals";
 import SearchBar from "../search-bar/SearchBar";
 import Logo from "../ui/Logo";
 import { TRANSITION_DURATION } from "~/lib/constants";
-import { useFadeIn } from "~/hooks/useFadeIn";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Footer from "../footer/Footer";
