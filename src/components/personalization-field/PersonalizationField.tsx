@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import CustomTextArea from "../ui/CustomTextArea";
 
 interface PersonalizationFieldProps {
@@ -9,6 +9,7 @@ interface PersonalizationFieldProps {
   defaultValue?: string;
   onUpdate?: (value: string) => void;
   loading?: boolean;
+  delay?: number;
 }
 const PersonalizationField = ({
   title,
@@ -16,38 +17,26 @@ const PersonalizationField = ({
   defaultValue,
   onUpdate,
   loading = false,
+  delay = 0,
 }: PersonalizationFieldProps) => {
+  if (loading) {
+    return <div className="h-[80px]" />;
+  }
+
   return (
-    <>
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <motion.div
-            key="skeleton"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.3 }}
-            className="bg-primary-4 border-primary-9 h-[80px] w-full animate-pulse rounded-[12px] border-[1px]"
-          />
-        ) : (
-          <motion.div
-            key="textarea"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <p className="text-primary-text text-[18px]">{title}</p>
-            <div className="h-[12px]" />
-            <CustomTextArea
-              placeholder={placeholder}
-              defaultValue={defaultValue}
-              onUpdate={onUpdate}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay }}
+    >
+      <p className="text-primary-text text-[18px]">{title}</p>
+      <div className="h-[12px]" />
+      <CustomTextArea
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        onUpdate={onUpdate}
+      />
+    </motion.div>
   );
 };
 

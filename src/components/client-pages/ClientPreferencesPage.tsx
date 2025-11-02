@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import PersonalizationField from "../personalization-field/PersonalizationField";
 import Card from "../ui/card/Card";
 import Logo from "../ui/Logo";
@@ -216,6 +217,7 @@ const ClientPreferencesPage = () => {
           }}
           placeholder="It doesn't matter if you haven't declared. Describe what you're interested in studying at Stanford here."
           loading={preferences === undefined}
+          delay={0}
         />
         <div className="h-[28px]" />
         <PersonalizationField
@@ -228,6 +230,7 @@ const ClientPreferencesPage = () => {
           }}
           placeholder="Don't just include the academic! Clubs, causes, scenes you're into. Steve Jobs' favorite class was calligraphy. Weird interests can lead you to discover what could be your favorite class."
           loading={preferences === undefined}
+          delay={0.2}
         />
         <div className="h-[28px]" />
         <PersonalizationField
@@ -240,19 +243,26 @@ const ClientPreferencesPage = () => {
           }}
           placeholder="Think in verbs, not titles: build, discover, teach, etc. Tell us the kinds of problems you want to tackle, who you hope to help, and the setting you imagine (lab, startup, classroom, clinic, stage, etc)."
           loading={preferences === undefined}
+          delay={0.4}
         />
         <div className="h-[28px]" />
-        <SaveButton
-          text="Save Preferences"
-          loading={saving}
-          className="mx-auto"
-          onClick={async () => {
-            setSaving(true);
-            const success = await handleSavePreferences();
-            if (!success) return;
-            void handleRouter();
-          }}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: preferences === undefined ? 0 : 1 }}
+          transition={{ duration: 0.3, delay: 0.6 }}
+          className="mx-auto w-fit"
+        >
+          <SaveButton
+            text="Save Preferences"
+            loading={saving}
+            onClick={async () => {
+              setSaving(true);
+              const success = await handleSavePreferences();
+              if (!success) return;
+              void handleRouter();
+            }}
+          />
+        </motion.div>
         <div className="h-[8dvh] max-h-[80px] min-h-[30px]" />
       </div>
     </main>
