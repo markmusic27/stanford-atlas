@@ -5,11 +5,13 @@ interface CustomSwitchProps {
   className?: string;
   onToggle?: (enabled: boolean) => void;
   defaultEnabled?: boolean;
+  preventToggle?: boolean;
 }
 
 const CustomSwitch = ({
   onToggle,
   className,
+  preventToggle = false,
   defaultEnabled,
 }: CustomSwitchProps) => {
   const [enabled, setEnabled] = useState(defaultEnabled ?? false);
@@ -19,7 +21,9 @@ const CustomSwitch = ({
       className={`relative flex h-[22px] w-[36px] cursor-pointer items-center rounded-full shadow-inner transition-all duration-200 ${enabled ? "bg-blue-500" : "bg-primary-9"} ${className ?? ""}`}
       onClick={() => {
         onToggle?.(!enabled);
-        setEnabled(!enabled);
+        if (!preventToggle) {
+          setEnabled(!enabled);
+        }
       }}
     >
       <div

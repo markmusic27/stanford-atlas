@@ -33,6 +33,7 @@ const ClientPersonalizationPage = () => {
         <div className="h-[28px]" />
         <Card
           title="Enable Course Memory Feature"
+          preventToggle={true}
           onToggle={() => {
             window.open(
               "https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header",

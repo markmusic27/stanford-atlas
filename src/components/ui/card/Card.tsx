@@ -8,11 +8,18 @@ import { CustomSwitch } from "../CustomSwitch";
 interface CardProps {
   title: string;
   description: string;
+  preventToggle?: boolean;
   className?: string;
   onToggle?: () => void;
 }
 
-const Card = ({ title, description, className, onToggle }: CardProps) => {
+const Card = ({
+  title,
+  description,
+  className,
+  onToggle,
+  preventToggle,
+}: CardProps) => {
   return (
     <div
       className={`bg-primary-4 flex flex-col items-start justify-between rounded-[16px] py-[20px] pr-[24px] pl-[18px] sm:flex-row sm:items-center ${className}`}
@@ -25,6 +32,7 @@ const Card = ({ title, description, className, onToggle }: CardProps) => {
       </div>
       <div className="pl-[8px] md:pl-0">
         <CustomSwitch
+          preventToggle={preventToggle}
           className="mt-[16px] scale-[1.3] sm:mt-0 md:scale-[1.1]"
           onToggle={onToggle}
         />
