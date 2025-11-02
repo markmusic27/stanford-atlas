@@ -1,8 +1,8 @@
-import ClientPersonalizationPage from "~/components/client-pages/ClientPersonalizationPage";
 import { createClient } from "~/utils/supabase/server";
 import { redirect } from "next/navigation";
+import ClientPreferencesPage from "~/components/client-pages/ClientPreferencesPage";
 
-export default async function PersonalizationPage() {
+export default async function PreferencesPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -12,5 +12,5 @@ export default async function PersonalizationPage() {
     redirect("/");
   }
 
-  return <ClientPersonalizationPage />;
+  return <ClientPreferencesPage />;
 }

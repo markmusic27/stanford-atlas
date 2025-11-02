@@ -21,6 +21,10 @@ const CustomTextArea = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const sizerRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
   const updateHeight = () => {
     const el = textareaRef.current;
     const sizer = sizerRef.current;

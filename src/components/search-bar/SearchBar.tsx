@@ -93,7 +93,7 @@ const SearchBar = ({
                   return;
                 }
 
-                router.push("/personalize");
+                router.push("/preferences");
               }}
               className="flex origin-center transform-gpu cursor-pointer flex-row items-center justify-start gap-[10px] transition-all duration-300 hover:scale-101"
             >

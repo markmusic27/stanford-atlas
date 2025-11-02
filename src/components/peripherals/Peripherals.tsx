@@ -37,7 +37,7 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
               await signInWithGoogle("/");
             }
           } catch (err) {
-            toast.error("Error authenticating your account.", {
+            toast("Error authenticating your account.", {
               description:
                 "Error: " +
                 ((err as Error).message ?? "Unknown error")

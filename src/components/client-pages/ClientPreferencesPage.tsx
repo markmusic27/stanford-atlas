@@ -1,19 +1,75 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import PersonalizationField from "../personalization-field/PersonalizationField";
 import Card from "../ui/card/Card";
 import Logo from "../ui/Logo";
 import SaveButton from "../ui/SaveButton";
-import { useFadeIn } from "../../hooks/useFadeIn";
-import { TRANSITION_DURATION } from "~/lib/constants";
 import { useRouter } from "next/navigation";
+import { createClient } from "~/utils/supabase/client";
+import { useUserStore } from "~/stores/user.store";
+import { toast } from "sonner";
 
-const ClientPersonalizationPage = () => {
+type UserPreferences = {
+  major: string;
+  interests: string;
+  future: string;
+};
+
+const ClientPreferencesPage = () => {
   const router = useRouter();
+  const supabase = createClient();
+  const user = useUserStore((state) => state.user);
+  const [preferences, setPreferences] = useState<UserPreferences | undefined>(
+    undefined,
+  );
 
   async function handleRouter(): Promise<void> {
     router.push("/");
   }
+
+  useEffect(() => {
+    fetchUserPreferences();
+  }, [user?.id, supabase]);
+
+  const fetchUserPreferences = async (): Promise<void> => {
+    if (!user?.id) return;
+
+    const { data, error } = await supabase
+      .from("user_preferences")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (error) {
+      toast("Failed to load preferences", {
+        duration: 5000,
+        description: (error.message ?? "Unknown error")
+          .split(" ")
+          .slice(0, 15)
+          .join(" "),
+      });
+      console.error("Failed to load preferences:", error);
+      return;
+    }
+
+    let prefs: UserPreferences;
+    try {
+      prefs = data as UserPreferences;
+    } catch (err) {
+      toast("Failed to parse preferences", {
+        duration: 5000,
+        description: ((err as Error).message ?? "Unknown error")
+          .split(" ")
+          .slice(0, 15)
+          .join(" "),
+      });
+      console.error("Failed to parse preferences:", err);
+      return;
+    }
+
+    setPreferences(prefs);
+  };
 
   return (
     <main className="w-full">
@@ -45,17 +101,23 @@ const ClientPersonalizationPage = () => {
         <div className="h-[28px]" />
         <PersonalizationField
           title="What's your major—or your best guess?"
+          defaultValue={preferences?.major}
           placeholder="It doesn't matter if you haven't declared. Describe what you're interested in studying at Stanford here."
+          loading={preferences === undefined}
         />
         <div className="h-[28px]" />
         <PersonalizationField
           title="Have any interests?"
+          defaultValue={preferences?.interests}
           placeholder="Don't just include the academic! Clubs, causes, scenes you're into. Steve Jobs' favorite class was calligraphy. Weird interests can lead you to discover what could be your favorite class."
+          loading={preferences === undefined}
         />
         <div className="h-[28px]" />
         <PersonalizationField
           title="What do you want to be when you grow up?"
+          defaultValue={preferences?.future}
           placeholder="Think in verbs, not titles: build, discover, teach, etc. Tell us the kinds of problems you want to tackle, who you hope to help, and the setting you imagine (lab, startup, classroom, clinic, stage, etc)."
+          loading={preferences === undefined}
         />
         <div className="h-[28px]" />
         <SaveButton
@@ -69,4 +131,4 @@ const ClientPersonalizationPage = () => {
   );
 };
 
-export default ClientPersonalizationPage;
+export default ClientPreferencesPage;
