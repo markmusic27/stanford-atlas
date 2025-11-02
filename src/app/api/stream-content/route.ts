@@ -1,5 +1,4 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { createOpenAI } from "@ai-sdk/openai";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { PROMPT } from "./prompt";
@@ -87,7 +86,7 @@ export const POST = async (req: NextRequest) => {
 
     // Extract messages and userId
     const cloned = req.clone();
-    const body = await cloned.json();
+    const body: unknown = await cloned.json();
     const parseResult = RequestPayloadSchema.safeParse(body);
 
     let messages: ModelMessage[];
@@ -114,8 +113,7 @@ export const POST = async (req: NextRequest) => {
           {
             requestInit: {
               headers: {
-                Authorization:
-                  "Bearer YJAna9RQePF@-uVw7_qBQt*apMF4*bZZfbTcybLobw*nGKCwteJMGh", // TODO: FIX THIS
+                Authorization: `Bearer ${env.MCP_KEY}`,
                 Accept: "application/json, text/event-stream",
               },
             },

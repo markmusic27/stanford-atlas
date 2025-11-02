@@ -12,9 +12,9 @@ interface AnimatedTextareaProps {
 }
 
 const placeholderTexts = [
-  "What PWR professor gives easy As",
-  "Find a 4 unit robotics course from 11 to 3pm on Thursdays",
+  "Find me an easy A PWR professor",
   "Show me computer science classes with Andrew Ng",
+  "Find a 4 unit robotics course from 11 to 3pm on Thursdays",
   "Is Andrew Huberman lecturing any classes?",
   "What are the prerequisites for CS 106B?",
   "Find biology labs that don't conflict with my schedule",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PersonalizationField from "../personalization-field/PersonalizationField";
 import Card from "../ui/card/Card";
 import Logo from "../ui/Logo";
@@ -29,11 +29,6 @@ const ClientPreferencesPage = () => {
     router.push("/");
   }
 
-  useEffect(() => {
-    setSaving(false);
-    fetchUserPreferences();
-  }, [user?.id, supabase]);
-
   const createUserPreferences = async (userId: string) => {
     const { error: insertError } = await supabase
       .from("user_preferences")
@@ -49,25 +44,25 @@ const ClientPreferencesPage = () => {
     }
   };
 
-  const fetchUserPreferences = async (): Promise<void> => {
+  const fetchUserPreferences = useCallback(async (): Promise<void> => {
     if (!user?.id) return;
 
-    const { data, error } = await supabase
+    const response = await supabase
       .from("user_preferences")
       .select("*")
       .eq("user_id", user.id)
       .single();
 
-    if (error) {
+    if (response.error) {
       // Check if error is due to missing preferences (PGRST116 or similar)
       const isMissingPreferences =
-        error.code === "PGRST116" ||
-        error.message?.toLowerCase().includes("no rows") ||
-        error.message?.toLowerCase().includes("not found");
+        response.error.code === "PGRST116" ||
+        response.error.message?.toLowerCase().includes("no rows") ||
+        response.error.message?.toLowerCase().includes("not found");
 
       if (isMissingPreferences) {
         // Create preferences with toast.promise
-        await toast.promise(createUserPreferences(user.id), {
+        void toast.promise(createUserPreferences(user.id), {
           loading: "Creating preferences...",
           success: "Preferences created",
           error: (err: unknown) => {
@@ -75,52 +70,54 @@ const ClientPreferencesPage = () => {
             const message =
               err instanceof Error
                 ? err.message
-                : String(err ?? "Unknown error");
+                : typeof err === "string"
+                  ? err
+                  : "Unknown error";
             return `Failed to create preferences: ${message.split(" ").slice(0, 15).join(" ")}`;
           },
         });
 
         // Fetch again after creating
-        const { data: newData, error: refetchError } = await supabase
+        const refetchResponse = await supabase
           .from("user_preferences")
           .select("*")
           .eq("user_id", user.id)
           .single();
 
-        if (refetchError) {
+        if (refetchResponse.error) {
           toast("Failed to load preferences", {
             duration: 5000,
-            description: (refetchError.message ?? "Unknown error")
+            description: (refetchResponse.error.message ?? "Unknown error")
               .split(" ")
               .slice(0, 15)
               .join(" "),
           });
           console.error(
             "Failed to load preferences after creation:",
-            refetchError,
+            refetchResponse.error,
           );
           return;
         }
 
-        setPreferences(newData as UserPreferences);
+        setPreferences(refetchResponse.data as UserPreferences);
         return;
       }
 
       // Some other error
       toast("Failed to load preferences", {
         duration: 5000,
-        description: (error.message ?? "Unknown error")
+        description: (response.error.message ?? "Unknown error")
           .split(" ")
           .slice(0, 15)
           .join(" "),
       });
-      console.error("Failed to load preferences:", error);
+      console.error("Failed to load preferences:", response.error);
       return;
     }
 
     let prefs: UserPreferences;
     try {
-      prefs = data as UserPreferences;
+      prefs = response.data as UserPreferences;
     } catch (err) {
       toast("Failed to parse preferences", {
         duration: 5000,
@@ -134,7 +131,12 @@ const ClientPreferencesPage = () => {
     }
 
     setPreferences(prefs);
-  };
+  }, [user?.id, supabase]);
+
+  useEffect(() => {
+    setSaving(false);
+    void fetchUserPreferences();
+  }, [fetchUserPreferences]);
 
   const handleSavePreferences = async (): Promise<boolean> => {
     if (preferences === undefined) return false;
@@ -246,9 +248,9 @@ const ClientPreferencesPage = () => {
           className="mx-auto"
           onClick={async () => {
             setSaving(true);
-            let success = await handleSavePreferences();
+            const success = await handleSavePreferences();
             if (!success) return;
-            handleRouter();
+            void handleRouter();
           }}
         />
         <div className="h-[8dvh] max-h-[80px] min-h-[30px]" />

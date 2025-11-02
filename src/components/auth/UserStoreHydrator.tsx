@@ -44,7 +44,7 @@ export default function UserStoreHydrator() {
         if (!isMounted) return;
         useUserStore.getState().setUser(data.user ?? undefined);
         if (data.user) {
-          ensureUserPreferences(data.user.id);
+          void ensureUserPreferences(data.user.id);
         }
       })
       .catch((error) => {
@@ -55,7 +55,7 @@ export default function UserStoreHydrator() {
       (_event, session) => {
         useUserStore.getState().setUser(session?.user ?? undefined);
         if (session?.user) {
-          ensureUserPreferences(session.user.id);
+          void ensureUserPreferences(session.user.id);
         }
       },
     );

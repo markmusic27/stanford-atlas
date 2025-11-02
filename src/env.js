@@ -12,6 +12,7 @@ export const env = createEnv({
     ANTHROPIC_API_KEY: z.string(),
     API_SECRET_KEY: z.string(),
     COURSE_API_KEY: z.string(),
+    MCP_KEY: z.string(),
     SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET: z.string(),
   },
 
@@ -42,6 +43,7 @@ export const env = createEnv({
     API_SECRET_KEY: process.env.API_SECRET_KEY,
     NEXT_PUBLIC_API_SECRET_KEY: process.env.NEXT_PUBLIC_API_SECRET_KEY,
     COURSE_API_KEY: process.env.COURSE_API_KEY,
+    MCP_KEY: process.env.MCP_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
