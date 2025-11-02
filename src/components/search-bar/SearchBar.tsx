@@ -28,7 +28,7 @@ const SearchBar = ({
 }: SearchBarProps) => {
   const router = useRouter();
   const { isStreaming } = useChatStore();
-  const { isSignedIn } = useUserStore();
+  const { isSignedIn, user } = useUserStore();
 
   // Framer Motion will handle mount/unmount animations for the shimmer row
   const [query, setQuery] = useState("");
@@ -87,8 +87,8 @@ const SearchBar = ({
             className="w-fit self-start pb-[6px]"
           >
             <div
-              onClick={async () => {
-                if (!isSignedIn) {
+              onClick={() => {
+                if (!isSignedIn || user === undefined) {
                   signInToast("Personalize your search with interests.");
                   return;
                 }

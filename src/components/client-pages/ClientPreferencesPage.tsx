@@ -34,6 +34,21 @@ const ClientPreferencesPage = () => {
     fetchUserPreferences();
   }, [user?.id, supabase]);
 
+  const createUserPreferences = async (userId: string) => {
+    const { error: insertError } = await supabase
+      .from("user_preferences")
+      .insert({
+        user_id: userId,
+        major: "",
+        interests: "",
+        future: "",
+      });
+
+    if (insertError) {
+      throw insertError;
+    }
+  };
+
   const fetchUserPreferences = async (): Promise<void> => {
     if (!user?.id) return;
 
@@ -44,6 +59,54 @@ const ClientPreferencesPage = () => {
       .single();
 
     if (error) {
+      // Check if error is due to missing preferences (PGRST116 or similar)
+      const isMissingPreferences =
+        error.code === "PGRST116" ||
+        error.message?.toLowerCase().includes("no rows") ||
+        error.message?.toLowerCase().includes("not found");
+
+      if (isMissingPreferences) {
+        // Create preferences with toast.promise
+        await toast.promise(createUserPreferences(user.id), {
+          loading: "Creating preferences...",
+          success: "Preferences created",
+          error: (err: unknown) => {
+            console.error("Failed to create preferences:", err);
+            const message =
+              err instanceof Error
+                ? err.message
+                : String(err ?? "Unknown error");
+            return `Failed to create preferences: ${message.split(" ").slice(0, 15).join(" ")}`;
+          },
+        });
+
+        // Fetch again after creating
+        const { data: newData, error: refetchError } = await supabase
+          .from("user_preferences")
+          .select("*")
+          .eq("user_id", user.id)
+          .single();
+
+        if (refetchError) {
+          toast("Failed to load preferences", {
+            duration: 5000,
+            description: (refetchError.message ?? "Unknown error")
+              .split(" ")
+              .slice(0, 15)
+              .join(" "),
+          });
+          console.error(
+            "Failed to load preferences after creation:",
+            refetchError,
+          );
+          return;
+        }
+
+        setPreferences(newData as UserPreferences);
+        return;
+      }
+
+      // Some other error
       toast("Failed to load preferences", {
         duration: 5000,
         description: (error.message ?? "Unknown error")

@@ -10,11 +10,42 @@ export default function UserStoreHydrator() {
 
     let isMounted = true;
 
+    const ensureUserPreferences = async (userId: string) => {
+      try {
+        const { error: selectError } = await supabase
+          .from("user_preferences")
+          .select("*")
+          .eq("user_id", userId)
+          .single();
+
+        if (selectError) {
+          // Preferences don't exist, create them
+          const { error: insertError } = await supabase
+            .from("user_preferences")
+            .insert({
+              user_id: userId,
+              major: "",
+              interests: "",
+              future: "",
+            });
+
+          if (insertError) {
+            console.error("Error creating user preferences:", insertError);
+          }
+        }
+      } catch (error) {
+        console.error("Error ensuring user preferences:", error);
+      }
+    };
+
     supabase.auth
       .getUser()
       .then(({ data }) => {
         if (!isMounted) return;
         useUserStore.getState().setUser(data.user ?? undefined);
+        if (data.user) {
+          ensureUserPreferences(data.user.id);
+        }
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -23,6 +54,9 @@ export default function UserStoreHydrator() {
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         useUserStore.getState().setUser(session?.user ?? undefined);
+        if (session?.user) {
+          ensureUserPreferences(session.user.id);
+        }
       },
     );
 
