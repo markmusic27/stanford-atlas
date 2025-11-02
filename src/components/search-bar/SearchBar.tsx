@@ -5,7 +5,7 @@ import CursorShimmer from "../ui/CursorShimmer";
 import { useState } from "react";
 import SearchButton, { SearchButtonState } from "./components/SearchButton";
 import AnimatedTextarea from "./components/AnimatedTextarea";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import AnimatedCollapsable from "../ui/AnimatedCollapsable";
 import { useChatStore } from "~/stores/chat.store";
 import { useUserStore } from "~/stores/user.store";

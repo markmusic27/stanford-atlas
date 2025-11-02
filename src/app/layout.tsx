@@ -1,5 +1,5 @@
 import "~/styles/globals.css";
-
+import NextTopLoader from "nextjs-toploader";
 import { type Metadata, type Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
@@ -61,6 +61,7 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body className="font-default bg-primary-2">
         <UserStoreHydrator />
+        <NextTopLoader zIndex={1000} showSpinner={false} />
         {children}
         <Toaster position="top-center" />
       </body>

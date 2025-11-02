@@ -6,7 +6,7 @@ import PersonalizationField from "../personalization-field/PersonalizationField"
 import Card from "../ui/card/Card";
 import Logo from "../ui/Logo";
 import SaveButton from "../ui/SaveButton";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { createClient } from "~/utils/supabase/client";
 import { useUserStore } from "~/stores/user.store";
 import { toast } from "sonner";
