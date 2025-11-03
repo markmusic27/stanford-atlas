@@ -13,4 +13,4 @@
 
 Lorem Ipsum
 
-![Project Demo](https://github.com/markmusic27/stanford-atlas/blob/main/public/demo.png?raw=true)
+![Project Demo](https://github.com/markmusic27/stanford-atlas/blob/main/public/image.png?raw=true)
