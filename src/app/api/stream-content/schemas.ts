@@ -60,6 +60,19 @@ export const PayloadSchema = z.object({
     ),
 });
 
+// Error payload emitted by the streaming endpoint when a fatal error occurs
+export const StreamErrorSchema = z
+  .object({
+    error: z.literal(true),
+    message: z.string(),
+    provider: z.string().optional(),
+    statusCode: z.number().optional(),
+    code: z.string().optional(),
+  })
+  .strict();
+
+export type StreamError = z.infer<typeof StreamErrorSchema>;
+
 export const ResponseSchema = z.object({
   type: z.literal("response"),
   payload: z.array(BlockSchema),

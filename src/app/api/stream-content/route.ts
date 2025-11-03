@@ -234,8 +234,59 @@ export const POST = async (req: NextRequest) => {
           }
         }
       } catch (err) {
+        // Normalize provider/model errors into a client-readable payload
+        const normalizeError = (unknownErr: unknown) => {
+          let baseMessage = "Unexpected error occurred";
+          let provider: string | undefined;
+          let statusCode: number | undefined;
+          let code: string | undefined;
+
+          try {
+            const e: any = unknownErr as any;
+            const last = e?.lastError ?? e;
+            // Prefer provider-specific message if available
+            if (last?.data?.message && typeof last.data.message === "string") {
+              baseMessage = last.data.message as string;
+            } else if (typeof e?.message === "string" && e.message.length) {
+              baseMessage = e.message as string;
+            }
+
+            const url: string | undefined = last?.url ?? e?.url;
+            const modelName: string | undefined =
+              last?.requestBodyValues?.model ?? e?.requestBodyValues?.model;
+
+            if (typeof url === "string") {
+              if (url.includes("mistral.ai")) provider = "mistral";
+              else if (url.includes("openai.com")) provider = "openai";
+              else if (url.includes("anthropic.com")) provider = "anthropic";
+            } else if (typeof modelName === "string") {
+              if (modelName.includes("mistral")) provider = "mistral";
+              else if (modelName.includes("gpt")) provider = "openai";
+              else if (modelName.includes("claude")) provider = "anthropic";
+            }
+
+            statusCode =
+              (typeof last?.statusCode === "number" && last.statusCode) ||
+              (typeof e?.statusCode === "number" && e.statusCode) ||
+              undefined;
+            code =
+              (typeof last?.data?.code === "string" && last.data.code) ||
+              (typeof e?.code === "string" && e.code) ||
+              undefined;
+          } catch {
+            // fallthrough to defaults
+          }
+
+          const message = provider
+            ? `${provider}: ${baseMessage}`
+            : baseMessage;
+          return { message, provider, statusCode, code } as const;
+        };
+
+        const { message, provider, statusCode, code } = normalizeError(err);
         const errorPayload =
-          JSON.stringify({ error: true, message: err }) + "\n";
+          JSON.stringify({ error: true, message, provider, statusCode, code }) +
+          "\n";
         await writer.write(encoder.encode(errorPayload));
       } finally {
         await writer.close();

@@ -10,6 +10,7 @@ import type { Block, ChatHistory } from "~/app/api/stream-content/schemas";
 import ActivityTimeline from "../ui/activity-timeline/ActivityTimeline";
 import { TextShimmer } from "../ui/TextShimmer";
 import { SignInPrompt } from "../ui/SignInPrompt";
+import modelErrorToast from "../ui/ModelErrorToast";
 import { motion, AnimatePresence } from "motion/react";
 function collapseConsecutiveDuplicates<T>(items: T[]): T[] {
   if (items.length === 0) return [];
@@ -39,6 +40,7 @@ function getEntriesAfterLastQuery(history: ChatHistory[]): boolean {
 const Chat = () => {
   const { chatHistory, chainOfThought, reasoning } = useChatStore();
   const isStreaming = useChatStore((s) => s.isStreaming);
+  const errorMessage = useChatStore((s) => s.errorMessage);
   const { isSignedIn } = useUserStore();
 
   // Scroll to bottom on submit/start streaming
@@ -52,6 +54,20 @@ const Chat = () => {
     });
     return () => cancelAnimationFrame(id);
   }, [isStreaming, chatHistory.length]);
+
+  // Show a toast when a model/stream error is received
+  useEffect(() => {
+    if (errorMessage) {
+      modelErrorToast(errorMessage, () => {
+        // TODO: Fix this to use logsnag or proper analytics / logging
+        window.location.href =
+          "mailto:mmusic@stanford.edu?subject=Model%20Error%20Report&body=" +
+          encodeURIComponent(
+            `Stanford Atlas: Model error message\n\n${errorMessage}\n\n(Describe what you were doing; optional)`,
+          );
+      });
+    }
+  }, [errorMessage]);
 
   function generateGroups(history: ChatHistory[]) {
     type Group =

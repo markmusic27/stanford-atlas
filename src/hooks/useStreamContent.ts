@@ -3,6 +3,7 @@ import { env } from "~/env";
 import {
   PayloadSchema,
   ResponseSchema,
+  StreamErrorSchema,
   type ChatHistory,
 } from "~/app/api/stream-content/schemas";
 import { useChatStore } from "~/stores/chat.store";
@@ -128,7 +129,13 @@ export const useStreamContent = () => {
             if (line.length > 0) {
               try {
                 const obj: unknown = JSON.parse(line);
-                handleStreamUpdate(obj);
+                // First, check if the line is a stream error from the server
+                const maybeErr = StreamErrorSchema.safeParse(obj);
+                if (maybeErr.success) {
+                  setErrorMessage(maybeErr.data.message);
+                } else {
+                  handleStreamUpdate(obj);
+                }
               } catch {
                 setErrorMessage(
                   "An error occurred while processing the stream",
@@ -144,7 +151,12 @@ export const useStreamContent = () => {
         if (bufferedText.trim().length > 0) {
           try {
             const obj: unknown = JSON.parse(bufferedText.trim());
-            handleStreamUpdate(obj);
+            const maybeErr = StreamErrorSchema.safeParse(obj);
+            if (maybeErr.success) {
+              setErrorMessage(maybeErr.data.message);
+            } else {
+              handleStreamUpdate(obj);
+            }
           } catch {
             setErrorMessage("An error occurred while processing the stream");
           }
