@@ -22,37 +22,49 @@ type UserPreferences = {
   future: string;
 };
 
-async function constructPrompt(userId?: string): Promise<string> {
+async function constructPrompt(
+  userId?: string,
+  displayName?: string,
+): Promise<string> {
   let basePrompt = PROMPT;
 
-  // If no userId, return base prompt
-  if (!userId) {
+  // If there is no userId and no displayName to inject, return the base prompt
+  if (!userId && !displayName?.trim()) {
     return basePrompt;
   }
 
   try {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("user_preferences")
-      .select("major, interests, future")
-      .eq("user_id", userId)
-      .single();
+    let data: unknown = undefined;
+    let error: unknown = undefined;
 
-    if (error || !data) {
-      // If preferences don't exist or error, return base prompt
-      return basePrompt;
+    if (userId) {
+      const supabase = await createClient();
+      const result = await supabase
+        .from("user_preferences")
+        .select("major, interests, future")
+        .eq("user_id", userId)
+        .single();
+      data = result.data;
+      error = result.error;
     }
 
-    const prefs = data as UserPreferences;
+    const prefs = (data || {}) as Partial<UserPreferences>;
 
-    // Check if any preferences are set (not empty strings)
     const hasPreferences =
-      prefs.major?.trim() || prefs.interests?.trim() || prefs.future?.trim();
+      Boolean(prefs.major?.trim()) ||
+      Boolean(prefs.interests?.trim()) ||
+      Boolean(prefs.future?.trim());
 
-    if (hasPreferences) {
+    const hasDisplayName = Boolean(displayName?.trim());
+
+    if (hasPreferences || hasDisplayName) {
       basePrompt += "\n\n## User Personalization\n\n";
       basePrompt +=
         "The user has provided the following information about themselves. Use this to personalize your responses and course recommendations:\n\n";
+
+      if (hasDisplayName && displayName) {
+        basePrompt += `**Display Name:** ${displayName}\n\n`;
+      }
 
       if (prefs.major?.trim()) {
         basePrompt += `**Major/Academic Interest:** ${prefs.major}\n\n`;
@@ -84,21 +96,26 @@ export const POST = async (req: NextRequest) => {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Extract messages and userId
+    // Extract messages, userId, and displayName
     const cloned = req.clone();
     const body: unknown = await cloned.json();
     const parseResult = RequestPayloadSchema.safeParse(body);
 
     let messages: ModelMessage[];
     let userId: string | undefined;
+    let displayName: string | undefined;
 
     if (parseResult.success) {
       messages = parseResult.data.messages as ModelMessage[];
       userId = parseResult.data.userId;
+      displayName = parseResult.data.displayName?.trim()
+        ? parseResult.data.displayName
+        : undefined;
     } else {
       // Fallback for backwards compatibility
       messages = body as ModelMessage[];
       userId = undefined;
+      displayName = undefined;
     }
 
     // Stream text to the client as NDJSON by converting output into the PayloadSchema
@@ -126,7 +143,7 @@ export const POST = async (req: NextRequest) => {
 
         const tools = await client.tools();
 
-        const constructedPrompt = await constructPrompt(userId);
+        const constructedPrompt = await constructPrompt(userId, displayName);
 
         const response = streamText({
           model: anthropic("claude-sonnet-4-5"),

@@ -8,6 +8,7 @@ import {
 import { useChatStore } from "~/stores/chat.store";
 import { useUserStore } from "~/stores/user.store";
 import type { ModelMessage } from "ai";
+import { extractUserData } from "~/lib/utils";
 
 export const useStreamContent = () => {
   const setIsStreaming = useChatStore((s) => s.setIsStreaming);
@@ -58,7 +59,7 @@ export const useStreamContent = () => {
       }
 
       const { chatHistory } = useChatStore.getState();
-      const { user } = useUserStore.getState();
+      const { user, isSignedIn } = useUserStore.getState();
       const messages: ModelMessage[] = [
         ...parseChatHistory(chatHistory),
         { role: "user", content: query },
@@ -84,6 +85,9 @@ export const useStreamContent = () => {
         abortRef.current = controller;
 
         // Request
+        const { displayName } = extractUserData(user);
+        const trimmedDisplayName = displayName?.trim();
+
         const res = await fetch("/api/stream-content", {
           method: "POST",
           headers: {
@@ -93,6 +97,9 @@ export const useStreamContent = () => {
           body: JSON.stringify({
             messages,
             userId: user?.id,
+            ...(isSignedIn && trimmedDisplayName
+              ? { displayName: trimmedDisplayName }
+              : {}),
           }),
           signal: controller.signal,
         });
