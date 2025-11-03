@@ -91,44 +91,60 @@ The server converts model deltas into a buffer and periodically emits NDJSON lin
 This design achieves low-latency interactivity while keeping the client strictly typed.
 
 
-## Local development
+## File structure
 
-Prereqs: Node 20+, pnpm, a Supabase project, and API keys.
+```text
+atlas/
+  api/                     # Python FastAPI service (ExploreCourses wrapper)
+    Dockerfile
+    pyproject.toml
+    src/
+      app.py              # /course endpoint
+      auth.py             # Bearer auth guard
+      handlers.py         # explorecourses integration
 
-```bash
-pnpm install
-pnpm dev
+  src/                     # Next.js 15 app
+    app/
+      api/
+        stream-content/    # Streaming LLM + MCP
+          route.ts
+          prompt.ts
+          parser.ts
+          schemas.ts
+        course/
+          route.ts         # Proxy → FastAPI course service
+      layout.tsx
+      page.tsx
+    components/            # UI components (Tailwind CSS)
+    hooks/                 # e.g., useStreamContent, useCourseServer
+    lib/                   # schemas, utils, formatting
+    stores/                # Zustand stores (chat, user)
+    utils/
+      supabase/            # client, server, middleware
+  public/                  # static assets (logos, images)
+  package.json             # scripts, deps
+  next.config.js
+  README.md
 ```
 
-Environment variables (see `src/env.js` for validation):
+## API
 
-```bash
-# Server-only
-NODE_ENV=development
-API_SECRET_KEY=...                # server gate for /api/stream-content
-COURSE_API_KEY=...                # bearer for the Course API proxy
-MISTRAL_API_KEY=...               # used by @ai-sdk/mistral
-OPENAI_API_KEY=...                # reserved; not required for Mistral flow
-ANTHROPIC_API_KEY=...             # reserved; not required for Mistral flow
-MCP_KEY=...                       # bearer for remote MCP server
-SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET=...
+- POST `/api/stream-content`
+  - Streams NDJSON lines matching `PayloadSchema`.
+  - Uses Mistral Medium (`mistral-medium-latest`) and remote MCP tools.
+  - Requires header `Authorization: Bearer <server API secret>`.
 
-# Exposed to client
-NEXT_PUBLIC_API_SECRET_KEY=...    # client → server auth for /api/stream-content
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
+- GET `/api/course`
+  - Proxy to the FastAPI service (ExploreCourses wrapper).
+  - Query params: `id`, `class_id` (both required), returns JSON course payload.
 
-Key scripts:
+The FastAPI course service is located under `api/` and exposes typed responses (`CourseResponse`).
 
-```bash
-pnpm dev        # run Next.js in dev
-pnpm build      # production build
-pnpm preview    # build + start
-pnpm typecheck  # TypeScript checks
-pnpm lint       # ESLint
-```
+## Conventions
+
+- Conventional Commits for history clarity (e.g., `feat(ui): add course-card hover state`).
+- Tailwind CSS 4 for styling; utility-first classes across all components.
+- Zustand for global state: `src/stores/chat.store.ts`, `src/stores/user.store.ts`.
 
 
 ## Tech stack
