@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.23",
+    "@ai-sdk/mistral": "^2.0.22",
     "@ai-sdk/openai": "^2.0.32",
     "@ai-sdk/react": "^2.0.48",
     "@icons-pack/react-simple-icons": "^13.8.0",

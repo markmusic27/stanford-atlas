@@ -1,4 +1,3 @@
-import { createAnthropic } from "@ai-sdk/anthropic";
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { PROMPT } from "./prompt";
@@ -10,11 +9,13 @@ import {
 } from "ai";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { MAX_STEPS } from "~/lib/constants";
+import { createMistral } from "@ai-sdk/mistral";
 import { parseBlocks } from "./parser";
 import { PayloadSchema, RequestPayloadSchema } from "./schemas";
 import { createClient } from "~/utils/supabase/server";
 
-const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
+// const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
+const mistral = createMistral({ apiKey: env.MISTRAL_API_KEY });
 
 type UserPreferences = {
   major: string;
@@ -146,10 +147,10 @@ export const POST = async (req: NextRequest) => {
         const constructedPrompt = await constructPrompt(userId, displayName);
 
         const response = streamText({
-          model: anthropic("claude-sonnet-4-5"),
+          model: mistral("mistral-medium-latest"),
           messages,
           tools: tools,
-          stopWhen: stepCountIs(MAX_STEPS),
+          stopWhen: stepCountIs(4), // TODO: Change to stepCountIs(MAX_STEPS)
           system: constructedPrompt,
           providerOptions: {
             oepnai: {
