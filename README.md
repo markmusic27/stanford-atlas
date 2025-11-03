@@ -1,29 +1,16 @@
-# Stanford Atlas
-<!-- TODO: Finish these todos -->
-- [ ] UI stuff
-  - [ ] Add proper loading state for markdown
-  - [ ] Delete /public/temp
-  - [ ] Implement loading properly in Chat component
-  - [ ] Add generating state to search bar button (make it so you can't send a request at this time)
-  - [ ] Add an intro animation for components
-  - [ ] Add a generating animation in markdown. Typewriter? Think of this
-  
-- [ ] Server stuff
-  - [ ] Figure out later
+<p align="center">
+<p align="center">
+   <img width="130" height="130" src="https://github.com/markmusic27/stanford-atlas/blob/main/public/brand/logo.png?raw=true" alt="Logo">
+  </p>
+  <h1 align="center"><b>Stanford Atlas</b></h1>
+  <p align="center">
+  ✶ AI Course Planning & Academic Advising Platform  ✶
+    <br />
+    <a href="https://stanfordatlas.com">Try it out »</a>
+    <br />
+  </p>
+</p>
 
-- [ ] After server stuff
-  - [ ] Add auth (Clerk)
-  - [ ] Add a limit per user FROM SERVER (if not hacker friends will just change it in client)
-  - [ ] Course memory
+Lorem Ipsum
 
-- [ ] Misc
-  - [ ] Add description
-  - [ ] Add dark mode
-  - [ ] Add thumbnail / links for stuff...
-  - [ ] Make proper readme
-  - [ ] Add contributing (just email me bro)
-    - [ ] Add list of extensions 
-  
-### Possible Extensions
-- Course tracker (with calendar to see courses)
-- Proper 4 year plan tracker UI (ideate this...)
+![Project Demo](https://github.com/markmusic27/stanford-atlas/blob/main/public/demo.png?raw=true)
