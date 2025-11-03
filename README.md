@@ -20,10 +20,9 @@ At its core, Stanford Atlas takes what has always been a word-of-mouth process, 
 
 Like most Stanford students, I found the process of deciding which courses to take, and how to balance what I wanted to study with what I had to, almost incomprehensible. As a sophomore still deciding between EE and CS, I felt the advising resources fell short of helping students make truly informed decisions. Many classes turned out to be very different from what their descriptions suggested—*sometimes harder, less engaging, or packed with unexpected prerequisites.*
 
-By combining all the scattered pieces—course data, grade histories, professor ratings, schedules, and requirements—Atlas builds a complete picture of what a course is actually like. It also extends beyond static search: Atlas leverages LLMs to work for you, programmatically fetching, synthesizing, and reasoning over Stanford’s entire academic dataset to surface what matters most. In doing so, it turns course discovery and degree planning from a manual, fragmented process into an intelligent, conversational experience.
+By combining all the scattered pieces—course data, historical grade distributions, professor ratings, schedules, and requirements—Atlas builds a complete picture of what a course is actually like. It also extends beyond static search: Atlas leverages LLMs to work for you, programmatically fetching, synthesizing, and reasoning over Stanford’s entire academic dataset to surface what matters most. In doing so, it turns course discovery and degree planning from a manual, fragmented process into an intelligent, conversational experience.
 
-## Technical Overview
-
+## Technical Overvie
 Atlas combines a modern web stack with LLM-based orchestration to create an interactive, data-driven advising platform.
 
 - **Remote MCP Server** — Python + FastAPI service deployed via Docker on Cloud Run. Exposes structured course search and retrieval tools built on Stanford’s ExploreCourses dataset. [[link to GitHub](https://github.com/markmusic27/stanford-mcp)]
@@ -68,7 +67,7 @@ atlas/
   README.md
 ```
 
-## Inference and streaming API
+## Inference and Streaming API
 **`POST /api/stream-content`**
   - File: `src/app/api/stream-content/route.ts`
   - Uses `@ai-sdk/mistral` with `mistral("mistral-medium-latest")` to stream text and tool calls.

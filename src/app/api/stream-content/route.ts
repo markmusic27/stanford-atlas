@@ -12,6 +12,7 @@ import { createMistral } from "@ai-sdk/mistral";
 import { parseBlocks } from "./parser";
 import { PayloadSchema, RequestPayloadSchema } from "./schemas";
 import { createClient } from "~/utils/supabase/server";
+import { normalizeError } from "./utils";
 
 // const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 const mistral = createMistral({ apiKey: env.MISTRAL_API_KEY });
@@ -35,7 +36,6 @@ async function constructPrompt(
 
   try {
     let data: unknown = undefined;
-    let error: unknown = undefined;
 
     if (userId) {
       const supabase = await createClient();
@@ -45,7 +45,7 @@ async function constructPrompt(
         .eq("user_id", userId)
         .single();
       data = result.data;
-      error = result.error;
+      // Ignore result.error to avoid logging sensitive provider details; proceed with defaults
     }
 
     const prefs = (data ?? {}) as Partial<UserPreferences>;
@@ -235,54 +235,6 @@ export const POST = async (req: NextRequest) => {
         }
       } catch (err) {
         // Normalize provider/model errors into a client-readable payload
-        const normalizeError = (unknownErr: unknown) => {
-          let baseMessage = "Unexpected error occurred";
-          let provider: string | undefined;
-          let statusCode: number | undefined;
-          let code: string | undefined;
-
-          try {
-            const e: any = unknownErr as any;
-            const last = e?.lastError ?? e;
-            // Prefer provider-specific message if available
-            if (last?.data?.message && typeof last.data.message === "string") {
-              baseMessage = last.data.message as string;
-            } else if (typeof e?.message === "string" && e.message.length) {
-              baseMessage = e.message as string;
-            }
-
-            const url: string | undefined = last?.url ?? e?.url;
-            const modelName: string | undefined =
-              last?.requestBodyValues?.model ?? e?.requestBodyValues?.model;
-
-            if (typeof url === "string") {
-              if (url.includes("mistral.ai")) provider = "mistral";
-              else if (url.includes("openai.com")) provider = "openai";
-              else if (url.includes("anthropic.com")) provider = "anthropic";
-            } else if (typeof modelName === "string") {
-              if (modelName.includes("mistral")) provider = "mistral";
-              else if (modelName.includes("gpt")) provider = "openai";
-              else if (modelName.includes("claude")) provider = "anthropic";
-            }
-
-            statusCode =
-              (typeof last?.statusCode === "number" && last.statusCode) ||
-              (typeof e?.statusCode === "number" && e.statusCode) ||
-              undefined;
-            code =
-              (typeof last?.data?.code === "string" && last.data.code) ||
-              (typeof e?.code === "string" && e.code) ||
-              undefined;
-          } catch {
-            // fallthrough to defaults
-          }
-
-          const message = provider
-            ? `${provider}: ${baseMessage}`
-            : baseMessage;
-          return { message, provider, statusCode, code } as const;
-        };
-
         const { message, provider, statusCode, code } = normalizeError(err);
         const errorPayload =
           JSON.stringify({ error: true, message, provider, statusCode, code }) +

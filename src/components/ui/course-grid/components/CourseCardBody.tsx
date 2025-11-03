@@ -59,7 +59,7 @@ const CourseCardBody = ({ course }: { course: CourseCardData }) => {
       <CardContentItem title="Instructor:" value={instructorValue} />
       <div className="h-[18px]" />
       <CourseCardButton
-        text="View details"
+        text="View on Navigator"
         onClick={() => {
           window.open(
             `https://navigator.stanford.edu/classes/${course.termCode}/${course.section.classNumber}`,
