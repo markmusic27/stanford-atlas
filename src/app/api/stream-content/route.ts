@@ -8,7 +8,6 @@ import {
   stepCountIs,
 } from "ai";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { MAX_STEPS } from "~/lib/constants";
 import { createMistral } from "@ai-sdk/mistral";
 import { parseBlocks } from "./parser";
 import { PayloadSchema, RequestPayloadSchema } from "./schemas";
