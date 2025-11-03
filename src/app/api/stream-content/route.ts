@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
-import { PROMPT } from "./prompt";
+import { MISTRAL_ADDITIONAL_INSTRUCTIONS, PROMPT } from "./prompt";
 import {
   experimental_createMCPClient,
   streamText,
@@ -27,7 +27,7 @@ async function constructPrompt(
   userId?: string,
   displayName?: string,
 ): Promise<string> {
-  let basePrompt = PROMPT;
+  let basePrompt = PROMPT + MISTRAL_ADDITIONAL_INSTRUCTIONS; // TODO: remove this after testing mistral
 
   // If there is no userId and no displayName to inject, return the base prompt
   if (!userId && !displayName?.trim()) {
@@ -176,7 +176,7 @@ export const POST = async (req: NextRequest) => {
               }
             }
           } catch {
-            // ignore parse errors while streaming partial content
+            console.log("Error sending payload");
           }
         };
 
