@@ -3,11 +3,13 @@
 import { useEffect, useRef } from "react";
 import { FOOTER_HEIGHT } from "~/lib/constants";
 import { useChatStore } from "~/stores/chat.store";
+import { useUserStore } from "~/stores/user.store";
 import BlockRenderer from "../ui/BlockRenderer";
 import Message from "../ui/message/Message";
 import type { Block, ChatHistory } from "~/app/api/stream-content/schemas";
 import ActivityTimeline from "../ui/activity-timeline/ActivityTimeline";
 import { TextShimmer } from "../ui/TextShimmer";
+import { SignInPrompt } from "../ui/SignInPrompt";
 import { motion, AnimatePresence } from "motion/react";
 function collapseConsecutiveDuplicates<T>(items: T[]): T[] {
   if (items.length === 0) return [];
@@ -37,6 +39,7 @@ function getEntriesAfterLastQuery(history: ChatHistory[]): boolean {
 const Chat = () => {
   const { chatHistory, chainOfThought, reasoning } = useChatStore();
   const isStreaming = useChatStore((s) => s.isStreaming);
+  const { isSignedIn } = useUserStore();
 
   // Scroll to bottom on submit/start streaming
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -161,6 +164,12 @@ const Chat = () => {
             </motion.div>
           ) : null}
         </AnimatePresence>
+
+        {chatHistory.length >= 2 && !isSignedIn && !isStreaming && (
+          <div className="mt-[16px]">
+            <SignInPrompt />
+          </div>
+        )}
 
         <div className={`w-[10px]`} style={{ height: FOOTER_HEIGHT * 2 }} />
       </div>

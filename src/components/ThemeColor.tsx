@@ -15,7 +15,7 @@ export function ThemeColor() {
     if (!mounted) return;
 
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    const color = resolvedTheme === "dark" ? "#111111" : "#F8F8F8";
+    const color = resolvedTheme === "dark" ? "#111111" : "#fdfdfd";
 
     if (metaThemeColor) {
       metaThemeColor.setAttribute("content", color);
