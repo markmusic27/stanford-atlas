@@ -11,6 +11,6 @@
   </p>
 </p>
 
-Stanford Atlas is an intelligent planning interface built on Stanford’s sole MCP server ([also developed for Atlas](https://github.com/markmusic27/stanford-mcp)), designed to make course exploration and degree mapping effortless for every student. It aggregates 128,000+ course records alongside professor reviews, grade distributions, scheduling data, and major requirements to create a unified academic knowledge source of Stanford.
+Stanford Atlas is an intelligent planning interface built on Stanford’s sole MCP server ([also developed for Atlas](https://github.com/markmusic27/stanford-mcp)), designed to make course exploration and degree mapping effortless for every student. It aggregates *128k course records* alongside professor reviews, grade distributions, scheduling data, and major requirements to create a **unified academic knowledge base of Stanford.**
 
 ![Project Demo](https://github.com/markmusic27/stanford-atlas/blob/main/public/demo.png?raw=true)
