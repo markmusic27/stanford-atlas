@@ -48,7 +48,7 @@ async function constructPrompt(
       error = result.error;
     }
 
-    const prefs = (data || {}) as Partial<UserPreferences>;
+    const prefs = (data ?? {}) as Partial<UserPreferences>;
 
     const hasPreferences =
       Boolean(prefs.major?.trim()) ||
