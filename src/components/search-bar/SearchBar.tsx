@@ -84,6 +84,7 @@ const SearchBar = ({
           <CursorShimmer
             strength={0.5}
             radius={90}
+            color="var(--color-primary-1)"
             className="w-fit self-start pb-[6px]"
           >
             <div

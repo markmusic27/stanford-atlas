@@ -8,7 +8,7 @@ const CourseCardHeader = ({
   termLabel,
 }: CourseCardHeaderProps) => {
   return (
-    <div className="bg-primary-2 relative flex flex-row items-center justify-between px-[16px] pt-[20px] pb-[14px]">
+    <div className="bg-primary-2 dark:bg-primary-4 relative flex flex-row items-center justify-between px-[16px] pt-[20px] pb-[14px]">
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute right-0 bottom-0 left-0 h-[1px] w-full"

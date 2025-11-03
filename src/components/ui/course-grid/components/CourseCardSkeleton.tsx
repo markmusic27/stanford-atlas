@@ -19,7 +19,7 @@ const ShimmerBlock = ({
       animate={{ backgroundPosition: "0% center" }}
       transition={{ repeat: Infinity, duration, ease: "linear" }}
       style={{
-        backgroundImage: `linear-gradient(90deg, transparent calc(50% - ${spread}px), rgba(255,255,255,0.35), transparent calc(50% + ${spread}px)), linear-gradient(var(--color-primary-6), var(--color-primary-6))`,
+        backgroundImage: `linear-gradient(90deg, transparent calc(50% - ${spread}px), var(--color-shimmer), transparent calc(50% + ${spread}px)), linear-gradient(var(--color-primary-6), var(--color-primary-6))`,
         backgroundSize: "250% 100%, auto",
         backgroundRepeat: "no-repeat, repeat",
       }}
@@ -29,8 +29,8 @@ const ShimmerBlock = ({
 
 const CourseCardSkeleton = () => {
   return (
-    <div className="bg-primary-1 border-primary-7 flex flex-col items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
-      <div className="bg-primary-2 relative flex flex-row items-center justify-between px-[16px] pt-[20px] pb-[14px]">
+    <div className="bg-primary-1 dark:bg-primary-2 border-primary-7 flex flex-col items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
+      <div className="bg-primary-2 dark:bg-primary-4 relative flex flex-row items-center justify-between px-[16px] pt-[20px] pb-[14px]">
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute right-0 bottom-0 left-0 h-[1px] w-full"

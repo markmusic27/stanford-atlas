@@ -19,7 +19,7 @@ const ShimmerBlock = ({
       animate={{ backgroundPosition: "0% center" }}
       transition={{ repeat: Infinity, duration, ease: "linear" }}
       style={{
-        backgroundImage: `linear-gradient(90deg, transparent calc(50% - ${spread}px), rgba(255,255,255,0.35), transparent calc(50% + ${spread}px)), linear-gradient(var(--color-primary-6), var(--color-primary-6))`,
+        backgroundImage: `linear-gradient(90deg, transparent calc(50% - ${spread}px), var(--color-shimmer), transparent calc(50% + ${spread}px)), linear-gradient(var(--color-primary-6), var(--color-primary-6))`,
         backgroundSize: "250% 100%, auto",
         backgroundRepeat: "no-repeat, repeat",
       }}
@@ -29,7 +29,7 @@ const ShimmerBlock = ({
 
 const SingleCourseCardSkeleton = () => {
   return (
-    <div className="bg-primary-1 border-primary-7 flex w-full cursor-pointer flex-row items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
+    <div className="bg-primary-1 dark:bg-primary-2 border-primary-7 flex w-full cursor-pointer flex-row items-stretch overflow-clip rounded-[24px] border-[1px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]">
       {/* Left bar header area */}
       <div className="flex max-w-[175px] min-w-[132px] flex-col items-center justify-center px-[24px]">
         <ShimmerBlock className="h-[16px] w-[120px]" />

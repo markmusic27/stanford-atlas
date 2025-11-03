@@ -16,7 +16,7 @@ const ProfileAvatar = () => {
   return (
     <CursorScale hoverScale={1.01} maxTranslate={1}>
       <div
-        className="h-[28px] w-[28px] cursor-pointer overflow-hidden rounded-full border border-[#D1D1D1] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]"
+        className="border-primary-7 h-[28px] w-[28px] cursor-pointer overflow-hidden rounded-full border shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]"
         aria-label="User profile picture"
         onClick={() =>
           toast(`Successfully Signed In`, {

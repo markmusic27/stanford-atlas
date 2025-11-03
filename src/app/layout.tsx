@@ -4,6 +4,8 @@ import { type Metadata, type Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import UserStoreHydrator from "~/components/auth/UserStoreHydrator";
+import { ThemeProvider } from "next-themes";
+import { ThemeColor } from "~/components/ThemeColor";
 
 export const viewport: Viewport = {
   themeColor: "#F8F8F8",
@@ -58,12 +60,19 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geist.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body className="font-default bg-primary-2">
-        <UserStoreHydrator />
-        <NextTopLoader zIndex={1000} showSpinner={false} />
-        {children}
-        <Toaster position="top-center" />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeColor />
+          <UserStoreHydrator />
+          <NextTopLoader zIndex={1000} showSpinner={false} />
+          {children}
+          <Toaster position="top-center" />
+        </ThemeProvider>
       </body>
     </html>
   );

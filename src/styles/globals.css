@@ -38,10 +38,42 @@
 
   /* Misc Colors */
   --color-text-cursor: #dddee0;
+  --color-shimmer: rgba(255, 255, 255, 0.35);
 
   /* Border radius with custom corner rounding */
   --radius-md: 20px;
   --radius-lg: 24px;
+}
+
+/* Dark mode color overrides TODO: OVERRIDE */
+
+.dark {
+  --color-primary-1: #2d2d2d;
+  --color-primary-2: #111111;
+  --color-primary-2-rgb: 17, 17, 17;
+  --color-primary-4: #151515;
+  --color-primary-5: #262627;
+  --color-primary-6: #1a1a1a;
+  --color-primary-7: #2a2b2c;
+  --color-primary-8: #686868;
+  --color-primary-9: #454749;
+  --color-primary-10: #212121;
+  --color-primary-11: #444444;
+  --color-primary-accent: #fbfbfb;
+
+  /* Text Colors */
+  --color-primary-text: #fbfbfb;
+  --color-secondary-text-1: #dcdcdd;
+  --color-secondary-text-2: #989898;
+  --color-secondary-text-3: #aaaaaa;
+  --color-secondary-text-4: #9c9c9c;
+  --color-secondary-text-5: #616161;
+  --color-secondary-text-6: #343434;
+  --color-shimmer-text: #c9c9c9;
+
+  /* Misc Colors */
+  --color-text-cursor: #dddee0;
+  --color-shimmer: rgba(255, 255, 255, 0.08);
 }
 
 @utility font-default {
@@ -72,6 +104,19 @@
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
 }
 
+/* Dark mode scrollbar */
+.dark .minimal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dark .minimal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dark .minimal-scrollbar {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
 .footer-gradient {
   background: linear-gradient(
     to top,
@@ -91,22 +136,22 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 .markdown h1 {
-  @apply mt-4 mb-2 text-[24px] font-[500];
+  @apply text-primary-text mt-4 mb-2 text-[24px] font-[500];
 }
 .markdown h2 {
-  @apply mt-4 mb-2 text-[20px] font-[500];
+  @apply text-primary-text mt-4 mb-2 text-[20px] font-[500];
 }
 .markdown h3 {
-  @apply mt-3 mb-2.5 text-[18px] font-[500];
+  @apply text-primary-text mt-3 mb-2.5 text-[18px] font-[500];
 }
 .markdown h4 {
-  @apply mt-3 mb-2.5 text-[16px] font-[500];
+  @apply text-primary-text mt-3 mb-2.5 text-[16px] font-[500];
 }
 .markdown h5 {
-  @apply mt-2 mb-1 text-[16px] font-[500];
+  @apply text-primary-text mt-2 mb-1 text-[16px] font-[500];
 }
 .markdown h6 {
-  @apply mt-2 mb-1 text-[16px] font-[350];
+  @apply text-primary-text mt-2 mb-1 text-[16px] font-[350];
 }
 
 .markdown p {
@@ -117,14 +162,18 @@
   @apply rounded-[16px] shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)];
 }
 
+.dark .markdown img {
+  @apply shadow-[0px_4px_10px_0px_rgba(255,255,255,0.05)];
+}
+
 .markdown strong {
-  @apply font-semibold;
+  @apply text-primary-text font-semibold;
 }
 .markdown em {
-  @apply italic;
+  @apply text-primary-text italic;
 }
 .markdown del {
-  @apply line-through;
+  @apply text-primary-text line-through;
 }
 
 .markdown a {
@@ -132,13 +181,13 @@
 }
 
 .markdown ul {
-  @apply my-3 list-disc pl-6;
+  @apply text-primary-text my-3 list-disc pl-6;
 }
 .markdown ol {
-  @apply my-3 list-decimal pl-6;
+  @apply text-primary-text my-3 list-decimal pl-6;
 }
 .markdown li {
-  @apply my-1;
+  @apply text-primary-text my-1;
 }
 
 .markdown blockquote {
@@ -167,15 +216,16 @@
 }
 
 .markdown table {
-  @apply my-6 w-full border-collapse text-left;
+  @apply text-primary-text my-6 w-full border-collapse text-left;
 }
 .markdown th {
-  @apply border-primary-11 border-b pb-2 font-[500];
+  @apply border-primary-11 text-primary-text border-b pb-2 font-[500];
 }
 .markdown td {
-  @apply border-primary-9 border-b py-2 align-top;
+  @apply border-primary-9 text-primary-text border-b py-2 align-top;
 }
 
-.dark .markdown {
-  @apply text-primary-1;
+/* Dark mode link color adjustment */
+.dark .markdown a {
+  @apply text-blue-400;
 }

@@ -51,7 +51,24 @@ const Peripherals = ({ onWhyUseClick }: PeripheralsProps) => {
       />
       <PeripheralCard
         title={"Build a 4-year plan"}
-        href="https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header"
+        onClick={() => {
+          toast("This feature is not available yet", {
+            duration: 5000,
+            description: "Sign up for early access!"
+              .split(" ")
+              .slice(0, 15)
+              .join(" "),
+            action: {
+              label: "Get Access",
+              onClick: () => {
+                window.open(
+                  "https://docs.google.com/forms/d/e/1FAIpQLScJHq_sfozpOV5A8Kavwn3_YBjGR6K2ZRrrjFx8vb_27zkL6Q/viewform?usp=header",
+                  "_blank",
+                );
+              },
+            },
+          });
+        }}
       />
       <PeripheralCard
         title={"Why this over OnCourse or ChatGPT"}

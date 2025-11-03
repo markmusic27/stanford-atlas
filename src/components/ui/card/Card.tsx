@@ -22,7 +22,7 @@ const Card = ({
 }: CardProps) => {
   return (
     <div
-      className={`bg-primary-4 flex flex-col items-start justify-between rounded-[16px] py-[20px] pr-[24px] pl-[18px] sm:flex-row sm:items-center ${className}`}
+      className={`bg-primary-4 dark:bg-primary-6 flex flex-col items-start justify-between rounded-[16px] py-[20px] pr-[24px] pl-[18px] sm:flex-row sm:items-center ${className}`}
     >
       <div className="flex max-w-[440px] flex-1 flex-col gap-[6px] sm:max-w-none">
         <p className="text-primary-text cursor-default text-[16px]">{title}</p>

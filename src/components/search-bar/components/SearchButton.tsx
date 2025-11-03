@@ -17,7 +17,7 @@ const SearchButton = ({ state, onStop }: SearchButtonProps) => {
     state === SearchButtonState.Default ? "text-primary-8" : "text-primary-1";
   const backgroundClass =
     state === SearchButtonState.Default
-      ? "bg-primary-6"
+      ? "bg-primary-6 dark:bg-[#373737]"
       : "bg-primary-accent hover:scale-103";
 
   const disabled = state === SearchButtonState.Default;
