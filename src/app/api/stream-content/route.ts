@@ -124,9 +124,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     const normalizedEmail = email?.trim().toLowerCase();
-    const isStanfordEmail =
-      normalizedEmail !== undefined &&
-      normalizedEmail.endsWith("@stanford.edu");
+    const isStanfordEmail = normalizedEmail?.endsWith("@stanford.edu") ?? false;
 
     // Stream text to the client as NDJSON by converting output into the PayloadSchema
     const { readable, writable } = new TransformStream();
