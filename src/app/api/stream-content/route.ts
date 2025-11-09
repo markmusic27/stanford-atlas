@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
-import { MISTRAL_ADDITIONAL_INSTRUCTIONS, PROMPT } from "./prompt";
+import { ADDITIONAL_INSTRUCTIONS, PROMPT } from "./prompt";
 import {
   experimental_createMCPClient,
   streamText,
@@ -8,13 +8,15 @@ import {
   stepCountIs,
 } from "ai";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { createMistral } from "@ai-sdk/mistral";
 import { parseBlocks } from "./parser";
 import { PayloadSchema, RequestPayloadSchema } from "./schemas";
 import { createClient } from "~/utils/supabase/server";
 import { normalizeError } from "./utils";
+import { MAX_STEPS } from "~/lib/constants";
 
-// const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
+const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 const mistral = createMistral({ apiKey: env.MISTRAL_API_KEY });
 
 type UserPreferences = {
@@ -27,7 +29,7 @@ async function constructPrompt(
   userId?: string,
   displayName?: string,
 ): Promise<string> {
-  let basePrompt = PROMPT + MISTRAL_ADDITIONAL_INSTRUCTIONS; // TODO: remove this after testing mistral
+  let basePrompt = PROMPT + ADDITIONAL_INSTRUCTIONS;
 
   // If there is no userId and no displayName to inject, return the base prompt
   if (!userId && !displayName?.trim()) {
@@ -104,6 +106,7 @@ export const POST = async (req: NextRequest) => {
     let messages: ModelMessage[];
     let userId: string | undefined;
     let displayName: string | undefined;
+    let email: string | undefined;
 
     if (parseResult.success) {
       messages = parseResult.data.messages as ModelMessage[];
@@ -111,12 +114,19 @@ export const POST = async (req: NextRequest) => {
       displayName = parseResult.data.displayName?.trim()
         ? parseResult.data.displayName
         : undefined;
+      email = parseResult.data.email ?? undefined;
     } else {
       // Fallback for backwards compatibility
       messages = body as ModelMessage[];
       userId = undefined;
       displayName = undefined;
+      email = undefined;
     }
+
+    const normalizedEmail = email?.trim().toLowerCase();
+    const isStanfordEmail =
+      normalizedEmail !== undefined &&
+      normalizedEmail.endsWith("@stanford.edu");
 
     // Stream text to the client as NDJSON by converting output into the PayloadSchema
     const { readable, writable } = new TransformStream();
@@ -145,17 +155,16 @@ export const POST = async (req: NextRequest) => {
 
         const constructedPrompt = await constructPrompt(userId, displayName);
 
+        const model = isStanfordEmail
+          ? anthropic("claude-sonnet-4-5")
+          : mistral("mistral-medium-latest");
+
         const response = streamText({
-          model: mistral("mistral-medium-latest"),
+          model,
           messages,
-          tools: tools,
-          stopWhen: stepCountIs(4), // TODO: Change to stepCountIs(MAX_STEPS)
+          tools,
+          stopWhen: stepCountIs(MAX_STEPS),
           system: constructedPrompt,
-          providerOptions: {
-            oepnai: {
-              reasoning_effort: "low",
-            },
-          },
         });
 
         let buffer = "";

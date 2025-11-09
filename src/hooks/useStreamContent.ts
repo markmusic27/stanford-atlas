@@ -88,6 +88,7 @@ export const useStreamContent = () => {
         // Request
         const { displayName } = extractUserData(user);
         const trimmedDisplayName = displayName?.trim();
+        const normalizedEmail = user?.email?.trim().toLowerCase();
 
         const res = await fetch("/api/stream-content", {
           method: "POST",
@@ -100,6 +101,9 @@ export const useStreamContent = () => {
             userId: user?.id,
             ...(isSignedIn && trimmedDisplayName
               ? { displayName: trimmedDisplayName }
+              : {}),
+            ...(isSignedIn && normalizedEmail
+              ? { email: normalizedEmail }
               : {}),
           }),
           signal: controller.signal,

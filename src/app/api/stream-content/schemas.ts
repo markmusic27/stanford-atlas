@@ -109,4 +109,5 @@ export const RequestPayloadSchema = z.object({
   messages: z.array(z.any()), // ModelMessage type
   userId: z.string().optional(),
   displayName: z.string().optional(),
+  email: z.string().trim().email().optional(),
 });
