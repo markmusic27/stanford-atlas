@@ -5,7 +5,6 @@ import { streamText, type ModelMessage, stepCountIs } from "ai";
 import { createMCPClient } from "@ai-sdk/mcp";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { createMistral } from "@ai-sdk/mistral";
 import { parseBlocks } from "./parser";
 import { PayloadSchema, RequestPayloadSchema } from "./schemas";
 import { createClient } from "~/utils/supabase/server";
@@ -13,7 +12,6 @@ import { normalizeError } from "./utils";
 import { MAX_STEPS } from "~/lib/constants";
 
 const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
-const mistral = createMistral({ apiKey: env.MISTRAL_API_KEY });
 
 type UserPreferences = {
   major: string;
