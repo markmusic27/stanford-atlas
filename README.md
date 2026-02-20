@@ -22,11 +22,11 @@ Like most Stanford students, I found the process of deciding which courses to ta
 
 By combining all the scattered pieces—course data, historical grade distributions, professor ratings, schedules, and requirements—Atlas builds a complete picture of what a course is actually like. It also extends beyond static search: Atlas leverages LLMs to work for you, programmatically fetching, synthesizing, and reasoning over Stanford’s entire academic dataset to surface what matters most. In doing so, it turns course discovery and degree planning from a manual, fragmented process into an intelligent, conversational experience.
 
-## Technical Overvie
+## Technical Overview
 Atlas combines a modern web stack with LLM-based orchestration to create an interactive, data-driven advising platform.
 
 - **Remote MCP Server** — Python + FastAPI service deployed via Docker on Cloud Run. Exposes structured course search and retrieval tools built on Stanford’s ExploreCourses dataset. [[link to GitHub](https://github.com/markmusic27/stanford-mcp)]
-- **LLM Tool-Calling Agent** — Powered by `mistral-medium-latest`, the agent dynamically calls MCP tools to search, reason, and synthesize results. Runs server-side via SSR in Next.js for consistent, low-latency responses.  
+- **LLM Tool-Calling Agent** — Powered by **Claude Sonnet 4.6** (`@ai-sdk/anthropic`), the agent dynamically calls MCP tools to search, reason, and synthesize results. Runs server-side via SSR in Next.js for consistent, low-latency responses.  
 - **React + Next.js 15 Frontend** — TypeScript/Tailwind app deployed on Vercel, using `zod` for type validation and `zustand` for global state management.
 - **Typed Streaming Protocol** — Streams partial assistant responses as structured UI blocks, progressively rendering course cards, grids, and recommendations as results are generated.
 - **Supabase Integration** — Manages authentication, session hydration, and user preference–based personalization.
@@ -70,7 +70,7 @@ atlas/
 ## Inference and Streaming API
 **`POST /api/stream-content`**
   - File: `src/app/api/stream-content/route.ts`
-  - Uses `@ai-sdk/mistral` with `mistral("mistral-medium-latest")` to stream text and tool calls.
+  - Uses `@ai-sdk/anthropic` with `anthropic("claude-sonnet-4-6")` to stream text and tool calls.
   - Initializes an MCP client to `https://stanfordmcp.com/mcp/` and registers tools (course search, course detail fetch, etc.).
   - Emits NDJSON lines shaped as `PayloadSchema` (see `schemas.ts`) to the browser, ensuring each line is valid and only sending incremental changes.
 
@@ -78,7 +78,7 @@ atlas/
 
 - POST `/api/stream-content`
   - Streams NDJSON lines matching `PayloadSchema`.
-  - Uses Mistral Medium (`mistral-medium-latest`) and remote MCP tools.
+  - Uses Claude Sonnet 4.6 and remote MCP tools.
   - Requires header `Authorization: Bearer <server API secret>`.
 
 - GET `/api/course`

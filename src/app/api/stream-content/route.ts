@@ -1,12 +1,8 @@
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { ADDITIONAL_INSTRUCTIONS, PROMPT } from "./prompt";
-import {
-  experimental_createMCPClient,
-  streamText,
-  type ModelMessage,
-  stepCountIs,
-} from "ai";
+import { streamText, type ModelMessage, stepCountIs } from "ai";
+import { createMCPClient } from "@ai-sdk/mcp";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createMistral } from "@ai-sdk/mistral";
@@ -145,7 +141,7 @@ export const POST = async (req: NextRequest) => {
           },
         );
 
-        const client = await experimental_createMCPClient({
+        const client = await createMCPClient({
           transport: httpTransport,
         });
 
@@ -153,14 +149,12 @@ export const POST = async (req: NextRequest) => {
 
         const constructedPrompt = await constructPrompt(userId, displayName);
 
-        const model = isStanfordEmail
-          ? anthropic("claude-sonnet-4-5")
-          : mistral("mistral-medium-latest");
-
+        const model = anthropic("claude-sonnet-4-6");
         const response = streamText({
           model,
           messages,
-          tools,
+          // MCP client returns v3 tools; ai@5 streamText expects v2 types — compatible at runtime
+          tools: tools as Parameters<typeof streamText>[0]["tools"],
           stopWhen: stepCountIs(MAX_STEPS),
           system: constructedPrompt,
         });
