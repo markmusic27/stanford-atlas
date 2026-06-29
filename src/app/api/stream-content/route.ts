@@ -147,7 +147,7 @@ export const POST = async (req: NextRequest) => {
 
         const constructedPrompt = await constructPrompt(userId, displayName);
 
-        const model = anthropic("claude-sonnet-4-6");
+        const model = anthropic("claude-opus-4-6");
         const response = streamText({
           model,
           messages,
