@@ -1,8 +1,12 @@
 import type { NextRequest } from "next/server";
 import { env } from "~/env";
 import { ADDITIONAL_INSTRUCTIONS, PROMPT } from "./prompt";
-import { streamText, type ModelMessage, stepCountIs } from "ai";
-import { createMCPClient } from "@ai-sdk/mcp";
+import {
+  streamText,
+  type ModelMessage,
+  stepCountIs,
+  experimental_createMCPClient as createMCPClient,
+} from "ai";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { parseBlocks } from "./parser";
@@ -10,6 +14,7 @@ import { PayloadSchema, RequestPayloadSchema } from "./schemas";
 import { createClient } from "~/utils/supabase/server";
 import { normalizeError } from "./utils";
 import { MAX_STEPS } from "~/lib/constants";
+import { sanitizeAssistantToolInputs, coerceToolInputToObject } from "./tool-input-sanitizer";
 
 const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
@@ -147,14 +152,33 @@ export const POST = async (req: NextRequest) => {
 
         const constructedPrompt = await constructPrompt(userId, displayName);
 
-        const model = anthropic("claude-opus-4-6");
+        const model = anthropic("claude-opus-4-8");
         const response = streamText({
           model,
           messages,
-          // MCP client returns v3 tools; ai@5 streamText expects v2 types — compatible at runtime
-          tools: tools as Parameters<typeof streamText>[0]["tools"],
+          tools,
           stopWhen: stepCountIs(MAX_STEPS),
           system: constructedPrompt,
+          // Anthropic rejects requests where any historical `tool_use.input` is
+          // not a JSON object. When Opus emits a malformed or partial tool-call
+          // payload, ai@5's parseToolCall falls back to leaving `input` as the
+          // raw string (see node_modules/ai/dist/index.mjs ~line 1877), which
+          // then poisons every subsequent step in the loop. Coerce any non-object
+          // input back into an object before the next step is sent.
+          prepareStep: ({ messages: stepMessages }) => ({
+            messages: sanitizeAssistantToolInputs(stepMessages),
+          }),
+          // Salvage the first occurrence too: if the streamed tool input is
+          // unparsable, hand the parser a valid empty object so the tool-call
+          // is still recorded (just with no arguments) instead of poisoning
+          // the history with a raw string.
+          experimental_repairToolCall: async ({ toolCall }) => {
+            const repairedInput = coerceToolInputToObject(toolCall.input);
+            return {
+              ...toolCall,
+              input: JSON.stringify(repairedInput),
+            };
+          },
         });
 
         let buffer = "";
